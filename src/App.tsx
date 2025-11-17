@@ -10,7 +10,7 @@ function App() {
 
   return (
     <>
-     <h1>Routes <Button className='text-danger'>Click</Button></h1>
+     <h1>Routes page <Button className='text-danger'>Click</Button></h1>
      <Routes>
        <Route path="/dashboard" element={<KiduTable/>}/>   
      </Routes>
