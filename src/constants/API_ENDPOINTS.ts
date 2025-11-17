@@ -1,0 +1,151 @@
+//API_ENDPOINTS.ts
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || 'http://sreenathganga-001-site13.jtempurl.com/api';
+
+export const API_ENDPOINTS = {
+  CUSTOMER: {
+    GET_ALL: `${API_BASE_URL}/Customer`,
+    GET_BY_ID: (id: number) => `${API_BASE_URL}/Customer/${id}`,
+    CREATE: `${API_BASE_URL}/Customer`,
+    UPDATE: (id: number) => `${API_BASE_URL}/Customer/${id}`,
+    DELETE: (id: number) => `${API_BASE_URL}/Customer/${id}`,
+  },
+
+  DRIVER: {
+    GET_ALL: `${API_BASE_URL}/Driver/GetAll`,
+    GET_BY_ID: (id: number) => `${API_BASE_URL}/Driver/GetById//${id}`,
+    CREATE: `${API_BASE_URL}/Driver/Create`,
+    UPDATE: (id: number) => `${API_BASE_URL}/Driver/Update/${id}`,
+    DELETE: (id: number) => `${API_BASE_URL}/Driver/Delete/${id}`,
+    UPLOAD_PROFILE_PIC: `${API_BASE_URL}/Driver/UploadProfilePic/upload-profile-pic`,
+  },
+
+  TRIP: {
+    // GET_ALL: `${API_BASE_URL}/TripOrder`,
+    GET_ALL: `${API_BASE_URL}/TripOrder/GetAll`,
+    GET_ALL_TRIPLIST: `${API_BASE_URL}/TripOrder/GetAllTripList`,
+    GET_BY_ID: (id: number) => `${API_BASE_URL}/TripOrder/${id}`,
+    CREATE: `${API_BASE_URL}/TripOrder`,
+    UPDATE: (id: number) => `${API_BASE_URL}/TripOrder/${id}`,
+    UPDATESTATUS: `${API_BASE_URL}/TripOrder/UpdateTripStatus`,
+    DELETE: (id: number) => `${API_BASE_URL}/TripOrder/${id}`,
+
+    GET_ALL_BY_STATUS: (status: string) => // Get trips by status
+      `${API_BASE_URL}/TripOrder/GetAllTripListbyStatus?status=${encodeURIComponent(status)}`,
+    GET_ALL_BY_YEAR: (year: number) =>  //Get trips by selected year
+      `${API_BASE_URL}/TripOrder/GetAllTripLists?year=${year}`,
+    GET_CANCELLED_TRIPS: `${API_BASE_URL}/TripOrder/CancelTrip`,  //  Get cancelled trips (Trip Notes per Trip)
+    GET_SCHEDULED_TRIPS: `${API_BASE_URL}/TripOrder/GetAllTripListbyStatus?status=Scheduled`,
+    GET_COMPLETED_TRIPS: `${API_BASE_URL}/TripOrder/GetAllTripListbyStatus?status=Completed`,
+    GET_BookingMode_TRIPS: `${API_BASE_URL}/TripBookingMode`,
+  },
+
+  //Trip Dashboard
+  TRIP_DASHBOARD: {
+    GET_DASHBOARD: `${API_BASE_URL}/TripDashboard/GetTripDashboard`,
+    GET_TODAYS_TRIP: `${API_BASE_URL}/TripDashboard/today`,
+    GET_MONTHLY_SUMMARY: (year: number) => `${API_BASE_URL}/TripDashboard/monthly-summary?year=${year}`
+  },
+
+  AUDIT_LOG: {
+    GET_BY_TABLE_AND_ID: (tableName: string, recordId: number) =>
+      `${API_BASE_URL}/AuditLog/${tableName}/${recordId}`,
+    GET_BY_ID: (logID: string) => `${API_BASE_URL}/AuditLog/GetById/${logID}`,
+  },
+
+  ATTACHMENT: {
+
+    GET_BY_TABLE_AND_ID: (tableName: string, recordId: number) =>
+      `${API_BASE_URL}/Attachment/${tableName}/${recordId}`,
+
+    GET_BY_ID: (attachmentId: number) => `${API_BASE_URL}/Attachment/${attachmentId}`,
+    UPLOAD: `${API_BASE_URL}/Attachment/upload`,
+    DELETE: (attachmentId: number) => `${API_BASE_URL}/Attachment/${attachmentId}`,
+    GET: `${API_BASE_URL}/Attachment`,
+    DOWNLOAD: (attachmentId: number) => `${API_BASE_URL}/Attachment/download/${attachmentId}`,
+
+  },
+
+  USER: {
+    GET_ALL: `${API_BASE_URL}/User`,
+    GET_BY_ID: (id: number) => `${API_BASE_URL}/User/${id}`,
+    CREATE: `${API_BASE_URL}/User`,
+    UPDATE: (id: number) => `${API_BASE_URL}/User/${id}`,
+    DELETE: (id: number) => `${API_BASE_URL}/User/${id}`,
+  },
+
+  COMPANY: {
+    GET_ALL: `${API_BASE_URL}/Company/GetAll/admin-getall-company`,
+    GET_BY_ID: (id: number) => `${API_BASE_URL}/Company/GetById/${id}`,
+    CREATE: `${API_BASE_URL}/Company/Create`,
+    UPDATE: (id: number) => `${API_BASE_URL}/Company/Update/${id}`,
+    DELETE: (id: number) => `${API_BASE_URL}/Company/Delete/${id}`,
+  },
+  //  New Trip Notes Endpoints
+  TRIP_NOTES: {
+    GET_ALL: `${API_BASE_URL}/TripOrder/GetTripNotes`,
+    GET_BY_ID: (id: number) => `${API_BASE_URL}/TripOrder/GetTripNotespfTrip/${id}`,
+    CREATE: `${API_BASE_URL}/TripOrder/CreateTripNotes`,
+    // UPDATE: (id: number) => `${API_BASE_URL}/TripNotes/Update/${id}`,
+    // DELETE: (id: number) => `${API_BASE_URL}/TripNotes/Delete/${id}`,
+  },
+
+  TRIP_KILOMETER: {
+
+    GET_ALL: `${API_BASE_URL}/TripkiloMeter`,
+    GET_BY_ID: (id: number) => `${API_BASE_URL}/TripkiloMeter/${id}`,
+    CREATE: `${API_BASE_URL}/TripkiloMeter`,
+    UPDATE: (id: number) => `${API_BASE_URL}/TripkiloMeter/${id}`,
+    DELETE: (id: number) => `${API_BASE_URL}/TripkiloMeter/${id}`,
+  },
+
+  AUTH: {
+    LOGIN: `${API_BASE_URL}/Auth/login`,
+    LOGOUT: `${API_BASE_URL}/Auth/logout`,
+    CHANGE_PASSWORD: `${API_BASE_URL}/Auth/change-password`,
+    // REFRESH_TOKEN: `${API_BASE_URL}/Auth/refresh-token`,
+  },
+
+  INVOICE_MASTER: {
+    GET_ALL: `${API_BASE_URL}/InvoiceMaster`,
+    GET_BY_ID: (id: number) => `${API_BASE_URL}/InvoiceMaster/${id}`,
+    CREATE: `${API_BASE_URL}/InvoiceMaster`,
+    UPDATE: (id: number) => `${API_BASE_URL}/InvoiceMaster/${id}`,
+    DELETE: (id: number) => `${API_BASE_URL}/InvoiceMaster/${id}`,
+  },
+
+  EXPENSE_TYPE: {
+    GET_ALL: `${API_BASE_URL}/ExpenseType`,
+    GET_BY_ID: (id: number) => `${API_BASE_URL}/ExpenseType/${id}`,
+    CREATE: `${API_BASE_URL}/ExpenseType`,
+    UPDATE: (id: number) => `${API_BASE_URL}/ExpenseType/${id}`,
+    DELETE: (id: number) => `${API_BASE_URL}/ExpenseType/${id}`,
+  },
+
+  EXPENSE_MASTER: {
+    GET_ALL: `${API_BASE_URL}/ExpenseMaster`,
+    GET_BY_ID: (id: number) => `${API_BASE_URL}/ExpenseMaster/${id}`,
+    CREATE: `${API_BASE_URL}/ExpenseMaster`,
+    UPDATE: (id: number) => `${API_BASE_URL}/ExpenseMaster/${id}`,
+    DELETE: (id: number) => `${API_BASE_URL}/ExpenseMaster/${id}`,
+    GET_BY_TABLE_AND_RECORD: (tableName: string, recordId: number) => //Get expenses by table name and record ID
+      `${API_BASE_URL}/ExpenseMaster/${tableName}/${recordId}`,
+  },
+
+  VEHICLE: {
+    GET_ALL: `${API_BASE_URL}/Vehicle`,
+    GET_BY_ID: (id: number) => `${API_BASE_URL}/Vehicle/${id}`,
+    CREATE: `${API_BASE_URL}/Vehicle`,
+    UPDATE: (id: number) => `${API_BASE_URL}/Vehicle/${id}`,
+    DELETE: (id: number) => `${API_BASE_URL}/Vehicle/${id}`,
+  },
+
+  VEHICLE_MAINTENANCE: {
+    GET_ALL: `${API_BASE_URL}/VehicleMaintenanceRecord`,
+    GET_BY_ID: (id: number) => `${API_BASE_URL}/VehicleMaintenanceRecord/${id}`,
+    CREATE: `${API_BASE_URL}/VehicleMaintenanceRecord`,
+    UPDATE: (id: number) => `${API_BASE_URL}/VehicleMaintenanceRecord/${id}`,
+    DELETE: (id: number) => `${API_BASE_URL}/VehicleMaintenanceRecord/${id}`,
+  },
+
+};
