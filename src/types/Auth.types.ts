@@ -1,5 +1,8 @@
-// src/types/User.types.ts
-import type { AuditTrails } from "../common/AuditLog.types";
+//types/Auth.types.ts
+export interface LoginRequest {
+    email: string;
+    password: string;
+}
 
 export interface User {
     userId: number;
@@ -14,5 +17,11 @@ export interface User {
     lastlogin: string;
     lastloginString: string;
     createAtSyring: string;
-    auditLogs?: AuditTrails[];
+    auditLogs: any[];
+}
+
+export interface LoginResponse {
+    token: string;
+    expiresAt: string;
+    user: User;
 }

@@ -1,0 +1,45 @@
+import type { AuditTrails } from "./common/AuditLog.types";
+
+export interface Trip {
+    tripOrderId: number;
+    tripOrder?: string;
+    tripBookingModeId: number;
+    recivedVia?: string;
+    customerId: number;
+    driverId: number;
+    fromDate: string | null;
+    fromDateString: string | null;
+    toDate: string | null;
+    toDateString: string | null;
+    fromLocation: string;
+    pickUpFrom?: string;
+    toLocation1: string;
+    toLocation2: string;
+    toLocation3: string;
+    toLocation4: string;
+    bookedBy: string;
+    tripDetails: string;
+    tripStatus: string;
+    tripAmount: number;
+    advanceAmount: number;
+    balanceAmount: number;
+    isActive: boolean;
+    paymentMode: string;
+    paymentDetails: string;
+    customerName: string;
+    driverName: string;
+    auditLogs?: AuditTrails[];
+}
+
+export interface TripStatus {
+    tripOrderId: number;
+    tripStatus: string;
+    remark: string;
+
+}
+export interface TripBookingMode {
+    tripBookingModeId: number;
+    tripBookingModeName: string;
+    tripModeName: string;
+
+}
