@@ -21,7 +21,6 @@ export const API_ENDPOINTS = {
   },
 
   TRIP: {
-    // GET_ALL: `${API_BASE_URL}/TripOrder`,
     GET_ALL: `${API_BASE_URL}/TripOrder/GetAll`,
     GET_ALL_TRIPLIST: `${API_BASE_URL}/TripOrder/GetAllTripList`,
     GET_BY_ID: (id: number) => `${API_BASE_URL}/TripOrder/${id}`,
