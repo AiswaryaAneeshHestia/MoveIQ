@@ -1,8 +1,9 @@
 import { Route, Routes } from 'react-router-dom'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css'
-import { Button } from 'react-bootstrap';
 import Login from './Auth/Login';
+import Preloader from './pages/dashboard/PreLoader';
+import PageNotFound from './pages/PageNotFound';
 
 
 function App() {
@@ -11,7 +12,7 @@ function App() {
   return (
     <>
      <Routes>
-       <Route path="/" element={<Login/>}/>   
+       <Route path="/login" element={<Login/>}/>   
      </Routes>
       <Routes>
 
