@@ -1,14 +1,18 @@
 import { Route, Routes } from 'react-router-dom'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css'
-import Preloader from './pages/dashboard/PreLoader';
-import PageNotFound from './pages/PageNotFound';
+import { Button } from 'react-bootstrap';
+import Login from './Auth/Login';
+
 
 function App() {
 
 
   return (
     <>
+     <Routes>
+       <Route path="/" element={<Login/>}/>   
+     </Routes>
       <Routes>
 
         {/* Auth */}
