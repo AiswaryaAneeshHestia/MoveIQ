@@ -122,7 +122,7 @@ const validatePassword = (value: string): string => {
             setEmail("");
             setPassword("");
 
-            setTimeout(() => navigate("/admin-dashboard"), 1000);
+            setTimeout(() => navigate("/dashboard"), 1000);
           } else {
             toast.error("Login successful but data storage failed.", {
               autoClose: 3000,

@@ -6,7 +6,7 @@ import { FaFileInvoice } from "react-icons/fa6";
 import { BiLogOut } from "react-icons/bi";
 import AuthService from "../services/common/Auth.services";
 
-const AdminSidebar: React.FC = () => {
+const Sidebar: React.FC = () => {
     const [hovered, setHovered] = useState(false);
     const [settingsOpen, setSettingsOpen] = useState(false);
     const [vehiclesOpen, setVehiclesOpen] = useState(false);
@@ -234,4 +234,4 @@ const AdminSidebar: React.FC = () => {
     );
 };
 
-export default AdminSidebar;
+export default Sidebar;

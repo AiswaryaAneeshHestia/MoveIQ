@@ -4,6 +4,7 @@ import './App.css'
 import Login from './Auth/Login';
 import Preloader from './pages/dashboard/PreLoader';
 import PageNotFound from './pages/PageNotFound';
+import HomePage from './layout/HomePage';
 
 
 function App() {
@@ -11,18 +12,21 @@ function App() {
 
   return (
     <>
-     <Routes>
-       <Route path="/login" element={<Login/>}/>   
-     </Routes>
       <Routes>
-
-        {/* Auth */}
+        {/* Preloader */}
         <Route path='/' element={<Preloader />} />
+        <Route path="/login" element={<Login />} />
 
-        
-          {/* Catch-All Route for 404 */}
-          <Route path='*' element={<PageNotFound />} />
-          
+
+        {/* Homepage */}
+        <Route path="/dashboard" element={<HomePage />}>
+
+
+
+        </Route>
+        {/* Catch-All Route for 404 */}
+        <Route path='*' element={<PageNotFound />} />
+
       </Routes>
     </>
   )
