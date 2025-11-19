@@ -1,4 +1,4 @@
-//API_ENDPOINTS.ts
+// src/constants/API_ENDPOINTS.ts
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || 'http://sreenathganga-001-site13.jtempurl.com/api';
 
@@ -29,21 +29,20 @@ export const API_ENDPOINTS = {
     UPDATESTATUS: `${API_BASE_URL}/TripOrder/UpdateTripStatus`,
     DELETE: (id: number) => `${API_BASE_URL}/TripOrder/${id}`,
 
-    GET_ALL_BY_STATUS: (status: string) => // Get trips by status
+    GET_ALL_BY_STATUS: (status: string) =>
       `${API_BASE_URL}/TripOrder/GetAllTripListbyStatus?status=${encodeURIComponent(status)}`,
-    GET_ALL_BY_YEAR: (year: number) =>  //Get trips by selected year
+    GET_ALL_BY_YEAR: (year: number) =>
       `${API_BASE_URL}/TripOrder/GetAllTripLists?year=${year}`,
-    GET_CANCELLED_TRIPS: `${API_BASE_URL}/TripOrder/CancelTrip`,  //  Get cancelled trips (Trip Notes per Trip)
+    GET_CANCELLED_TRIPS: `${API_BASE_URL}/TripOrder/CancelTrip`,
     GET_SCHEDULED_TRIPS: `${API_BASE_URL}/TripOrder/GetAllTripListbyStatus?status=Scheduled`,
     GET_COMPLETED_TRIPS: `${API_BASE_URL}/TripOrder/GetAllTripListbyStatus?status=Completed`,
     GET_BookingMode_TRIPS: `${API_BASE_URL}/TripBookingMode`,
   },
 
-  //Trip Dashboard
   TRIP_DASHBOARD: {
     GET_DASHBOARD: `${API_BASE_URL}/TripDashboard/GetTripDashboard`,
     GET_TODAYS_TRIP: `${API_BASE_URL}/TripDashboard/today`,
-    GET_MONTHLY_SUMMARY: (year: number) => `${API_BASE_URL}/TripDashboard/monthly-summary?year=${year}`
+    GET_MONTHLY_SUMMARY: (year: number) => `${API_BASE_URL}/TripDashboard/monthly-summary?year=${year}`,
   },
 
   AUDIT_LOG: {
@@ -53,16 +52,13 @@ export const API_ENDPOINTS = {
   },
 
   ATTACHMENT: {
-
     GET_BY_TABLE_AND_ID: (tableName: string, recordId: number) =>
       `${API_BASE_URL}/Attachment/${tableName}/${recordId}`,
-
     GET_BY_ID: (attachmentId: number) => `${API_BASE_URL}/Attachment/${attachmentId}`,
     UPLOAD: `${API_BASE_URL}/Attachment/upload`,
     DELETE: (attachmentId: number) => `${API_BASE_URL}/Attachment/${attachmentId}`,
     GET: `${API_BASE_URL}/Attachment`,
     DOWNLOAD: (attachmentId: number) => `${API_BASE_URL}/Attachment/download/${attachmentId}`,
-
   },
 
   USER: {
@@ -80,17 +76,14 @@ export const API_ENDPOINTS = {
     UPDATE: (id: number) => `${API_BASE_URL}/Company/Update/${id}`,
     DELETE: (id: number) => `${API_BASE_URL}/Company/Delete/${id}`,
   },
-  //  New Trip Notes Endpoints
+
   TRIP_NOTES: {
     GET_ALL: `${API_BASE_URL}/TripOrder/GetTripNotes`,
     GET_BY_ID: (id: number) => `${API_BASE_URL}/TripOrder/GetTripNotespfTrip/${id}`,
     CREATE: `${API_BASE_URL}/TripOrder/CreateTripNotes`,
-    // UPDATE: (id: number) => `${API_BASE_URL}/TripNotes/Update/${id}`,
-    // DELETE: (id: number) => `${API_BASE_URL}/TripNotes/Delete/${id}`,
   },
 
   TRIP_KILOMETER: {
-
     GET_ALL: `${API_BASE_URL}/TripkiloMeter`,
     GET_BY_ID: (id: number) => `${API_BASE_URL}/TripkiloMeter/${id}`,
     CREATE: `${API_BASE_URL}/TripkiloMeter`,
@@ -102,7 +95,6 @@ export const API_ENDPOINTS = {
     LOGIN: `${API_BASE_URL}/Auth/login`,
     LOGOUT: `${API_BASE_URL}/Auth/logout`,
     CHANGE_PASSWORD: `${API_BASE_URL}/Auth/change-password`,
-    // REFRESH_TOKEN: `${API_BASE_URL}/Auth/refresh-token`,
   },
 
   INVOICE_MASTER: {
@@ -127,7 +119,7 @@ export const API_ENDPOINTS = {
     CREATE: `${API_BASE_URL}/ExpenseMaster`,
     UPDATE: (id: number) => `${API_BASE_URL}/ExpenseMaster/${id}`,
     DELETE: (id: number) => `${API_BASE_URL}/ExpenseMaster/${id}`,
-    GET_BY_TABLE_AND_RECORD: (tableName: string, recordId: number) => //Get expenses by table name and record ID
+    GET_BY_TABLE_AND_RECORD: (tableName: string, recordId: number) =>
       `${API_BASE_URL}/ExpenseMaster/${tableName}/${recordId}`,
   },
 
@@ -146,5 +138,4 @@ export const API_ENDPOINTS = {
     UPDATE: (id: number) => `${API_BASE_URL}/VehicleMaintenanceRecord/${id}`,
     DELETE: (id: number) => `${API_BASE_URL}/VehicleMaintenanceRecord/${id}`,
   },
-
 };
