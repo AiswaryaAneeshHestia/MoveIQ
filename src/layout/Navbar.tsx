@@ -5,6 +5,7 @@ import { Container, Image, Offcanvas, Button, Navbar } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import AuthService from "../services/common/Auth.services";
 import Profile from "./Profile";
+import ActivityPanel from "./ActivityPanel";
 
 const NavbarComponent: React.FC = () => {
   const [showNotifications, setShowNotifications] = useState(false);
@@ -128,7 +129,7 @@ const NavbarComponent: React.FC = () => {
       </Navbar>
 
       {/* Notification Offcanvas */}
-      {/* <ActivityPanel show={showNotifications} handleClose={handleClose} /> */}
+      <ActivityPanel show={showNotifications} handleClose={handleClose} />
 
       {/* Admin Settings Offcanvas */}
       <Offcanvas
