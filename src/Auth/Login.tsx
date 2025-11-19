@@ -24,51 +24,52 @@ const Login: React.FC = () => {
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  // -------------------- VALIDATION --------------------
-  const validateEmail = (value: string): string => {
-    const val = value?.trim() ?? "";
+const validateEmail = (value: string): string => {
+  const val = value?.trim() ?? "";
 
-    if (!val) return "* Email is required";
-    if (!emailRegex.test(val)) return "* Please enter a valid email address";
+  if (!val) return "* Email is required";
+  if (!emailRegex.test(val)) return "* Please enter a valid email address";
 
-    try {
-      const kv = KiduValidation.validate(val, {
-        type: "email",
-        required: true,
-        label: "Email",
-      });
+  try {
+    const kv = KiduValidation.validate(val, {
+      type: "email",
+      required: true,
+      label: "Email",
+    });
 
-      if (!kv.isValid && kv.message) {
-        return `* ${kv.message}`;
-      }
-    } catch {
-      // ignore exception
+    if (!kv.isValid && kv.message) {
+      return `* ${kv.message}`;
     }
+  } catch (err) {
+    void err; // reference to avoid "unused variable" errors
+  }
 
-    return "";
-  };
+  return "";
+};
 
-  const validatePassword = (value: string): string => {
-    if (!value) return "* Password is required";
+const validatePassword = (value: string): string => {
+  if (!value) return "* Password is required";
 
-    try {
-      const kv = KiduValidation.validate(value, {
-        type: "password",
-        required: true,
-        label: "Password",
-      });
+  try {
+    const kv = KiduValidation.validate(value, {
+      type: "password",
+      required: true,
+      label: "Password",
+    });
 
-      if (!kv.isValid && kv.message?.toLowerCase().includes("required")) {
-        return "* Password is required";
-      }
-    } catch {
-      // ignore
+    // Only take "required" message — ignore complexity (since login)
+    if (!kv.isValid && kv.message?.toLowerCase().includes("required")) {
+      return "* Password is required";
     }
+  } catch (err) {
+    void err; // reference to avoid "unused variable" errors
+  }
 
-    return "";
-  };
+  return "";
+};
 
-  // -------------------- HANDLERS --------------------
+
+
   const handleEmailChange = (e: ChangeEvent<HTMLInputElement>): void => {
     const value = e.target.value;
     setEmail(value);
@@ -135,13 +136,10 @@ const Login: React.FC = () => {
             { autoClose: 3000 }
           );
         }
-      } catch (error) {
-        const message =
-          error instanceof Error ? error.message : String(error);
-
-        if (message.includes("401")) {
+      } catch (error: any) {
+        if (error?.message?.includes("401")) {
           toast.error("Invalid email or password.", { autoClose: 3000 });
-        } else if (message.includes("Network")) {
+        } else if (error?.message?.includes("Network")) {
           toast.error("Network error. Please check your connection.", {
             autoClose: 3000,
           });
@@ -158,72 +156,100 @@ const Login: React.FC = () => {
 
   const togglePassword = (): void => setShowPassword(!showPassword);
 
-  // -------------------- UI --------------------
   return (
     <>
       <Container fluid className="background">
         <Row>
           <Col></Col>
           <Col className="justify-content-center align-items-center mt-3">
-            <form className="form" onSubmit={handleSubmit} autoComplete="off">
-              {/* Hidden fake fields to disable Chrome autofill */}
-              <input type="text" style={{ display: "none" }} autoComplete="off" />
-              <input type="password" style={{ display: "none" }} autoComplete="off" />
+            {/* AUTO-FILL FULLY DISABLED */}
+            <form
+              className="form"
+              onSubmit={handleSubmit}
+              autoComplete="off"
+            >
+              {/* Hidden fake username + password fields (Chrome autofill bypass) */}
+              <input
+                type="text"
+                name="fakeusernameremembered"
+                style={{ display: "none" }}
+                autoComplete="off"
+              />
+              <input
+                type="password"
+                name="fakepasswordremembered"
+                style={{ display: "none" }}
+                autoComplete="off"
+              />
 
               <div
                 className="container bg-white shadow border px-5 py-4"
-                style={{ borderRadius: "24px", marginTop: "80px" }}
+                style={{
+                  borderRadius: "24px",
+                  marginTop: "80px",
+                }}
               >
                 <h1
                   className="fw-medium text-center fs-3"
-                  style={{ fontFamily: "Plus Jakarta Sans", fontWeight: 600 }}
+                  style={{
+                    fontFamily: "Plus Jakarta Sans",
+                    fontWeight: 600,
+                    fontSize: "28px",
+                  }}
                 >
                   Sign in
                 </h1>
 
                 {/* Email */}
-                <label
-                  className="mt-4"
-                  style={{
-                    fontFamily: "Urbanist",
-                    color: "#A6A6A6",
-                    fontSize: "15px",
-                  }}
-                >
-                  Email
-                </label>
-
-                <input
-                  type="text"
-                  autoComplete="new-password"
-                  className={`p-2 rounded-2 border ${
-                    errors.email ? "border-danger" : ""
-                  }`}
-                  value={email}
-                  onChange={handleEmailChange}
-                />
-                {submitted && errors.email && (
-                  <span
-                    className="text-danger"
-                    style={{ fontFamily: "Urbanist", fontSize: "13px" }}
+                <div className="d-grid gap-2 mb-2 mt-4">
+                  <label
+                    style={{
+                      fontFamily: "Urbanist",
+                      color: "#A6A6A6",
+                      fontSize: "15px",
+                    }}
                   >
-                    {errors.email}
-                  </span>
-                )}
+                    Email
+                  </label>
+                </div>
+
+                <div className="d-grid gap-2 mb-2">
+                  <input
+                    type="text"
+                    autoComplete="new-password"
+                    className={`p-2 rounded-2 border ${
+                      errors.email ? "border-danger" : ""
+                    }`}
+                    value={email}
+                    onChange={handleEmailChange}
+                  />
+                  {submitted && errors.email && (
+                    <span
+                      className="text-danger"
+                      style={{ fontFamily: "Urbanist", fontSize: "13px" }}
+                    >
+                      {errors.email}
+                    </span>
+                  )}
+                </div>
 
                 {/* Password */}
-                <label
-                  className="mt-3"
-                  style={{
-                    fontFamily: "Urbanist",
-                    color: "#A6A6A6",
-                    fontSize: "15px",
-                  }}
-                >
-                  Password
-                </label>
+                <div className="d-grid gap-2 mb-2">
+                  <label
+                    style={{
+                      fontFamily: "Urbanist",
+                      color: "#A6A6A6",
+                      fontSize: "15px",
+                    }}
+                  >
+                    Password
+                  </label>
+                </div>
 
-                <div style={{ position: "relative" }}>
+                <div
+                  className="d-grid gap-2 mb-2"
+                  style={{ position: "relative" }}
+                >
                   <input
                     type={showPassword ? "text" : "password"}
                     autoComplete="new-password"
@@ -260,22 +286,24 @@ const Login: React.FC = () => {
                 )}
 
                 {/* Submit */}
-                <button
-                  className="rounded-3 p-2 border-0 mt-3"
-                  type="submit"
-                  disabled={isLoading}
-                  style={{
-                    backgroundColor: "#18575A",
-                    fontFamily: "Urbanist",
-                    fontSize: "15px",
-                    color: "#FFFFFF",
-                    fontWeight: 800,
-                    opacity: isLoading ? 0.7 : 1,
-                    cursor: isLoading ? "not-allowed" : "pointer",
-                  }}
-                >
-                  {isLoading ? "Logging in..." : "Log in"}
-                </button>
+                <div className="d-grid gap-2">
+                  <button
+                    className="rounded-3 p-2 border-0"
+                    type="submit"
+                    disabled={isLoading}
+                    style={{
+                      backgroundColor: "#18575A",
+                      fontFamily: "Urbanist",
+                      fontSize: "15px",
+                      color: "#FFFFFF",
+                      fontWeight: 800,
+                      opacity: isLoading ? 0.7 : 1,
+                      cursor: isLoading ? "not-allowed" : "pointer",
+                    }}
+                  >
+                    {isLoading ? "Logging in..." : "Log in"}
+                  </button>
+                </div>
 
                 {/* Terms */}
                 <p
