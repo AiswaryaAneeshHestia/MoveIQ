@@ -24,6 +24,7 @@ const Login: React.FC = () => {
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+  // -------------------- VALIDATION --------------------
   const validateEmail = (value: string): string => {
     const val = value?.trim() ?? "";
 
@@ -36,8 +37,13 @@ const Login: React.FC = () => {
         required: true,
         label: "Email",
       });
-      if (!kv.isValid && kv.message) return `* ${kv.message}`;
-    } catch {}
+
+      if (!kv.isValid && kv.message) {
+        return `* ${kv.message}`;
+      }
+    } catch {
+      // ignore exception
+    }
 
     return "";
   };
@@ -52,14 +58,17 @@ const Login: React.FC = () => {
         label: "Password",
       });
 
-      if (!kv.isValid && kv.message.toLowerCase().includes("required")) {
+      if (!kv.isValid && kv.message?.toLowerCase().includes("required")) {
         return "* Password is required";
       }
-    } catch {}
+    } catch {
+      // ignore
+    }
 
     return "";
   };
 
+  // -------------------- HANDLERS --------------------
   const handleEmailChange = (e: ChangeEvent<HTMLInputElement>): void => {
     const value = e.target.value;
     setEmail(value);
@@ -126,10 +135,13 @@ const Login: React.FC = () => {
             { autoClose: 3000 }
           );
         }
-      } catch (error: any) {
-        if (error?.message?.includes("401")) {
+      } catch (error) {
+        const message =
+          error instanceof Error ? error.message : String(error);
+
+        if (message.includes("401")) {
           toast.error("Invalid email or password.", { autoClose: 3000 });
-        } else if (error?.message?.includes("Network")) {
+        } else if (message.includes("Network")) {
           toast.error("Network error. Please check your connection.", {
             autoClose: 3000,
           });
@@ -146,100 +158,72 @@ const Login: React.FC = () => {
 
   const togglePassword = (): void => setShowPassword(!showPassword);
 
+  // -------------------- UI --------------------
   return (
     <>
       <Container fluid className="background">
         <Row>
           <Col></Col>
           <Col className="justify-content-center align-items-center mt-3">
-            {/* AUTO-FILL FULLY DISABLED */}
-            <form
-              className="form"
-              onSubmit={handleSubmit}
-              autoComplete="off"
-            >
-              {/* Hidden fake username + password fields (Chrome autofill bypass) */}
-              <input
-                type="text"
-                name="fakeusernameremembered"
-                style={{ display: "none" }}
-                autoComplete="off"
-              />
-              <input
-                type="password"
-                name="fakepasswordremembered"
-                style={{ display: "none" }}
-                autoComplete="off"
-              />
+            <form className="form" onSubmit={handleSubmit} autoComplete="off">
+              {/* Hidden fake fields to disable Chrome autofill */}
+              <input type="text" style={{ display: "none" }} autoComplete="off" />
+              <input type="password" style={{ display: "none" }} autoComplete="off" />
 
               <div
                 className="container bg-white shadow border px-5 py-4"
-                style={{
-                  borderRadius: "24px",
-                  marginTop: "80px",
-                }}
+                style={{ borderRadius: "24px", marginTop: "80px" }}
               >
                 <h1
                   className="fw-medium text-center fs-3"
-                  style={{
-                    fontFamily: "Plus Jakarta Sans",
-                    fontWeight: 600,
-                    fontSize: "28px",
-                  }}
+                  style={{ fontFamily: "Plus Jakarta Sans", fontWeight: 600 }}
                 >
                   Sign in
                 </h1>
 
                 {/* Email */}
-                <div className="d-grid gap-2 mb-2 mt-4">
-                  <label
-                    style={{
-                      fontFamily: "Urbanist",
-                      color: "#A6A6A6",
-                      fontSize: "15px",
-                    }}
-                  >
-                    Email
-                  </label>
-                </div>
+                <label
+                  className="mt-4"
+                  style={{
+                    fontFamily: "Urbanist",
+                    color: "#A6A6A6",
+                    fontSize: "15px",
+                  }}
+                >
+                  Email
+                </label>
 
-                <div className="d-grid gap-2 mb-2">
-                  <input
-                    type="text"
-                    autoComplete="new-password"
-                    className={`p-2 rounded-2 border ${
-                      errors.email ? "border-danger" : ""
-                    }`}
-                    value={email}
-                    onChange={handleEmailChange}
-                  />
-                  {submitted && errors.email && (
-                    <span
-                      className="text-danger"
-                      style={{ fontFamily: "Urbanist", fontSize: "13px" }}
-                    >
-                      {errors.email}
-                    </span>
-                  )}
-                </div>
+                <input
+                  type="text"
+                  autoComplete="new-password"
+                  className={`p-2 rounded-2 border ${
+                    errors.email ? "border-danger" : ""
+                  }`}
+                  value={email}
+                  onChange={handleEmailChange}
+                />
+                {submitted && errors.email && (
+                  <span
+                    className="text-danger"
+                    style={{ fontFamily: "Urbanist", fontSize: "13px" }}
+                  >
+                    {errors.email}
+                  </span>
+                )}
 
                 {/* Password */}
-                <div className="d-grid gap-2 mb-2">
-                  <label
-                    style={{
-                      fontFamily: "Urbanist",
-                      color: "#A6A6A6",
-                      fontSize: "15px",
-                    }}
-                  >
-                    Password
-                  </label>
-                </div>
-
-                <div
-                  className="d-grid gap-2 mb-2"
-                  style={{ position: "relative" }}
+                <label
+                  className="mt-3"
+                  style={{
+                    fontFamily: "Urbanist",
+                    color: "#A6A6A6",
+                    fontSize: "15px",
+                  }}
                 >
+                  Password
+                </label>
+
+                <div style={{ position: "relative" }}>
                   <input
                     type={showPassword ? "text" : "password"}
                     autoComplete="new-password"
@@ -276,24 +260,22 @@ const Login: React.FC = () => {
                 )}
 
                 {/* Submit */}
-                <div className="d-grid gap-2">
-                  <button
-                    className="rounded-3 p-2 border-0"
-                    type="submit"
-                    disabled={isLoading}
-                    style={{
-                      backgroundColor: "#18575A",
-                      fontFamily: "Urbanist",
-                      fontSize: "15px",
-                      color: "#FFFFFF",
-                      fontWeight: 800,
-                      opacity: isLoading ? 0.7 : 1,
-                      cursor: isLoading ? "not-allowed" : "pointer",
-                    }}
-                  >
-                    {isLoading ? "Logging in..." : "Log in"}
-                  </button>
-                </div>
+                <button
+                  className="rounded-3 p-2 border-0 mt-3"
+                  type="submit"
+                  disabled={isLoading}
+                  style={{
+                    backgroundColor: "#18575A",
+                    fontFamily: "Urbanist",
+                    fontSize: "15px",
+                    color: "#FFFFFF",
+                    fontWeight: 800,
+                    opacity: isLoading ? 0.7 : 1,
+                    cursor: isLoading ? "not-allowed" : "pointer",
+                  }}
+                >
+                  {isLoading ? "Logging in..." : "Log in"}
+                </button>
 
                 {/* Terms */}
                 <p
