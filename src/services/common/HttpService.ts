@@ -1,4 +1,4 @@
-//HttpService.ts
+// src/services/HttpService.ts
 export class HttpService {
   static async callApi<T>(
     endpoint: string,
@@ -38,13 +38,14 @@ export class HttpService {
 
     return response.json();
   }
-  //new added
+
+  // new added
   static async downloadFile(url: string, fileName: string): Promise<void> {
     const response = await fetch(url);
     if (!response.ok) throw new Error(`Download error: ${response.status}`);
 
     const blob = await response.blob();
-    const link = document.createElement("a");
+    const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
     link.download = fileName;
     link.click();

@@ -1,3 +1,4 @@
+// src/pages/Login.tsx
 import React, { useState, type ChangeEvent, type FormEvent } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
@@ -5,274 +6,343 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import AuthService from "../services/common/Auth.services";
+import KiduValidation from "../components/KiduValidation";
 
 interface Errors {
-    email: string;
-    password: string;
+  email: string;
+  password: string;
 }
 
 const Login: React.FC = () => {
-    const [email, setEmail] = useState<string>("");
-    const [password, setPassword] = useState<string>("");
-    const [errors, setErrors] = useState<Errors>({ email: "", password: "" });
-    const [submitted, setSubmitted] = useState<boolean>(false);
-    const [showPassword, setShowPassword] = useState<boolean>(false);
-    const [isLoading, setIsLoading] = useState<boolean>(false);
-    const navigate = useNavigate();
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [errors, setErrors] = useState<Errors>({ email: "", password: "" });
+  const [submitted, setSubmitted] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const navigate = useNavigate();
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    const passwordRegex =
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).{8,}$/;
+const validateEmail = (value: string): string => {
+  const val = value?.trim() ?? "";
 
-    const validateEmail = (value: string): string => {
-        if (!value) return "* Email is required";
-        if (!emailRegex.test(value)) return "* Please enter a valid email address";
-        return "";
-    };
+  if (!val) return "* Email is required";
+  if (!emailRegex.test(val)) return "* Please enter a valid email address";
 
-    const validatePassword = (value: string): string => {
-        if (!value) return "* Password is required";
-        if (!passwordRegex.test(value))
-            return "* Password must be at least 8 characters, include uppercase, lowercase, number, and special character";
-        return "";
-    };
+  try {
+    const kv = KiduValidation.validate(val, {
+      type: "email",
+      required: true,
+      label: "Email",
+    });
 
-    const handleEmailChange = (e: ChangeEvent<HTMLInputElement>): void => {
-        const value = e.target.value;
-        setEmail(value);
+    if (!kv.isValid && kv.message) {
+      return `* ${kv.message}`;
+    }
+  } catch (err) {
+    void err; // reference to avoid "unused variable" errors
+  }
 
-        if (submitted) {
-            setErrors((prev) => ({
-                ...prev,
-                email: validateEmail(value),
-            }));
+  return "";
+};
+
+const validatePassword = (value: string): string => {
+  if (!value) return "* Password is required";
+
+  try {
+    const kv = KiduValidation.validate(value, {
+      type: "password",
+      required: true,
+      label: "Password",
+    });
+
+    // Only take "required" message — ignore complexity (since login)
+    if (!kv.isValid && kv.message?.toLowerCase().includes("required")) {
+      return "* Password is required";
+    }
+  } catch (err) {
+    void err; // reference to avoid "unused variable" errors
+  }
+
+  return "";
+};
+
+
+
+  const handleEmailChange = (e: ChangeEvent<HTMLInputElement>): void => {
+    const value = e.target.value;
+    setEmail(value);
+
+    if (submitted) {
+      setErrors((prev) => ({
+        ...prev,
+        email: validateEmail(value),
+      }));
+    }
+  };
+
+  const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>): void => {
+    const value = e.target.value;
+    setPassword(value);
+
+    if (submitted) {
+      setErrors((prev) => ({
+        ...prev,
+        password: validatePassword(value),
+      }));
+    }
+  };
+
+  const handleSubmit = async (e: FormEvent): Promise<void> => {
+    e.preventDefault();
+    setSubmitted(true);
+
+    const emailError = validateEmail(email);
+    const passwordError = validatePassword(password);
+
+    setErrors({ email: emailError, password: passwordError });
+
+    if (!emailError && !passwordError) {
+      setIsLoading(true);
+
+      try {
+        const response = await AuthService.login({ email, password });
+
+        if (response.isSucess && response.value) {
+          const token = localStorage.getItem("jwt_token");
+          const user = localStorage.getItem("user");
+
+          if (token && user) {
+            toast.success(response.customMessage || "Login successful!", {
+              autoClose: 3000,
+            });
+
+            setSubmitted(false);
+            setEmail("");
+            setPassword("");
+
+            setTimeout(() => navigate("/admin-dashboard"), 1000);
+          } else {
+            toast.error("Login successful but data storage failed.", {
+              autoClose: 3000,
+            });
+          }
+        } else {
+          toast.error(
+            response.error ||
+              response.customMessage ||
+              "Login failed. Please check your credentials.",
+            { autoClose: 3000 }
+          );
         }
-    };
-
-    const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>): void => {
-        const value = e.target.value;
-        setPassword(value);
-
-        if (submitted) {
-            setErrors((prev) => ({
-                ...prev,
-                password: validatePassword(value),
-            }));
+      } catch (error: any) {
+        if (error?.message?.includes("401")) {
+          toast.error("Invalid email or password.", { autoClose: 3000 });
+        } else if (error?.message?.includes("Network")) {
+          toast.error("Network error. Please check your connection.", {
+            autoClose: 3000,
+          });
+        } else {
+          toast.error("An error occurred during login. Please try again.", {
+            autoClose: 3000,
+          });
         }
-    };
+      } finally {
+        setIsLoading(false);
+      }
+    }
+  };
 
-    const handleSubmit = async (e: FormEvent): Promise<void> => {
-        e.preventDefault();
-        setSubmitted(true);
+  const togglePassword = (): void => setShowPassword(!showPassword);
 
-        const emailError = validateEmail(email);
-        const passwordError = validatePassword(password);
+  return (
+    <>
+      <Container fluid className="background">
+        <Row>
+          <Col></Col>
+          <Col className="justify-content-center align-items-center mt-3">
+            {/* AUTO-FILL FULLY DISABLED */}
+            <form
+              className="form"
+              onSubmit={handleSubmit}
+              autoComplete="off"
+            >
+              {/* Hidden fake username + password fields (Chrome autofill bypass) */}
+              <input
+                type="text"
+                name="fakeusernameremembered"
+                style={{ display: "none" }}
+                autoComplete="off"
+              />
+              <input
+                type="password"
+                name="fakepasswordremembered"
+                style={{ display: "none" }}
+                autoComplete="off"
+              />
 
-        setErrors({ email: emailError, password: passwordError });
+              <div
+                className="container bg-white shadow border px-5 py-4"
+                style={{
+                  borderRadius: "24px",
+                  marginTop: "80px",
+                }}
+              >
+                <h1
+                  className="fw-medium text-center fs-3"
+                  style={{
+                    fontFamily: "Plus Jakarta Sans",
+                    fontWeight: 600,
+                    fontSize: "28px",
+                  }}
+                >
+                  Sign in
+                </h1>
 
-        if (!emailError && !passwordError) {
-            setIsLoading(true);
+                {/* Email */}
+                <div className="d-grid gap-2 mb-2 mt-4">
+                  <label
+                    style={{
+                      fontFamily: "Urbanist",
+                      color: "#A6A6A6",
+                      fontSize: "15px",
+                    }}
+                  >
+                    Email
+                  </label>
+                </div>
 
-            try {
-                const response = await AuthService.login({
-                    email,
-                    password
-                });
+                <div className="d-grid gap-2 mb-2">
+                  <input
+                    type="text"
+                    autoComplete="new-password"
+                    className={`p-2 rounded-2 border ${
+                      errors.email ? "border-danger" : ""
+                    }`}
+                    value={email}
+                    onChange={handleEmailChange}
+                  />
+                  {submitted && errors.email && (
+                    <span
+                      className="text-danger"
+                      style={{ fontFamily: "Urbanist", fontSize: "13px" }}
+                    >
+                      {errors.email}
+                    </span>
+                  )}
+                </div>
 
-                if (response.isSucess && response.value) {
-                    const storedToken = localStorage.getItem('jwt_token');
-                    const storedUser = localStorage.getItem('user');
+                {/* Password */}
+                <div className="d-grid gap-2 mb-2">
+                  <label
+                    style={{
+                      fontFamily: "Urbanist",
+                      color: "#A6A6A6",
+                      fontSize: "15px",
+                    }}
+                  >
+                    Password
+                  </label>
+                </div>
 
-                    if (storedToken && storedUser) {
-                        toast.success(response.customMessage || "Login successful!", {
-                            autoClose: 3000,
-                        });
+                <div
+                  className="d-grid gap-2 mb-2"
+                  style={{ position: "relative" }}
+                >
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    autoComplete="new-password"
+                    className={`p-2 rounded-2 border ${
+                      errors.password ? "border-danger" : ""
+                    }`}
+                    value={password}
+                    onChange={handlePasswordChange}
+                  />
 
-                        setErrors({ email: "", password: "" });
-                        setSubmitted(false);
-                        setEmail("");
-                        setPassword("");
+                  <span
+                    onClick={togglePassword}
+                    style={{
+                      position: "absolute",
+                      right: "10px",
+                      top: "50%",
+                      transform: "translateY(-50%)",
+                      cursor: "pointer",
+                      fontSize: "20px",
+                      color: "#555",
+                    }}
+                  >
+                    {showPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
+                  </span>
+                </div>
 
-                        setTimeout(() => {
-                            navigate("/admin-dashboard");
-                        }, 1000);
-                    } else {
-                        toast.error("Login successful but data storage failed. Please try again.", {
-                            autoClose: 3000,
-                        });
-                    }
-                } else {
-                    toast.error(response.error || response.customMessage || "Login failed. Please check your credentials.", {
-                        autoClose: 3000,
-                    });
-                }
-            } catch (error: any) {
-                if (error.message.includes('401') || error.message.includes('Unauthorized')) {
-                    toast.error("Invalid email or password.", { autoClose: 3000 });
-                } else if (error.message.includes('Network') || error.message.includes('fetch')) {
-                    toast.error("Network error. Please check your connection.", { autoClose: 3000 });
-                } else {
-                    toast.error("An error occurred during login. Please try again.", { autoClose: 3000 });
-                }
-            } finally {
-                setIsLoading(false);
-            }
-        }
-    };
+                {submitted && errors.password && (
+                  <span
+                    className="text-danger"
+                    style={{ fontFamily: "Urbanist", fontSize: "13px" }}
+                  >
+                    {errors.password}
+                  </span>
+                )}
 
-    const togglePassword = (): void => setShowPassword(!showPassword);
+                {/* Submit */}
+                <div className="d-grid gap-2">
+                  <button
+                    className="rounded-3 p-2 border-0"
+                    type="submit"
+                    disabled={isLoading}
+                    style={{
+                      backgroundColor: "#18575A",
+                      fontFamily: "Urbanist",
+                      fontSize: "15px",
+                      color: "#FFFFFF",
+                      fontWeight: 800,
+                      opacity: isLoading ? 0.7 : 1,
+                      cursor: isLoading ? "not-allowed" : "pointer",
+                    }}
+                  >
+                    {isLoading ? "Logging in..." : "Log in"}
+                  </button>
+                </div>
 
-    return (
-        <>
-            <Container fluid className="background">
-                <Row>
-                    <Col></Col>
-                    <Col className="justify-content-center align-items-center mt-3">
+                {/* Terms */}
+                <p
+                  className="text-dark fw-medium mt-2"
+                  style={{ fontFamily: "Urbanist", fontSize: "9px" }}
+                >
+                  By continuing you agree to the{" "}
+                  <span className="text-decoration-underline">Terms of use</span>{" "}
+                  and{" "}
+                  <span className="text-decoration-underline">
+                    Privacy Policy
+                  </span>
+                  .
+                </p>
 
-                        {/* Autofill enabled */}
-                        <form className="form" onSubmit={handleSubmit} autoComplete="on">
-                            <div
-                                className="container bg-white shadow border px-5 py-4"
-                                style={{
-                                    borderRadius: "24px",
-                                    marginTop: "80px"
-                                }}
-                            >
-                                <h1
-                                    className="fw-medium text-center fs-3"
-                                    style={{
-                                        fontFamily: "Plus Jakarta Sans",
-                                        fontWeight: 600,
-                                        fontSize: "28px",
-                                    }}
-                                >
-                                    Sign in
-                                </h1>
+                {/* Forgot password */}
+                <p className="text-end">
+                  <span
+                    onClick={() => navigate("/forgot-password")}
+                    className="text-dark fw-bold text-decoration-underline"
+                    style={{
+                      fontFamily: "Urbanist",
+                      fontSize: "12px",
+                      cursor: "pointer",
+                    }}
+                  >
+                    Forgot your password?
+                  </span>
+                </p>
+              </div>
+            </form>
+          </Col>
+          <Col></Col>
+        </Row>
 
-                                {/* Email */}
-                                <div className="d-grid gap-2 mb-2 mt-4">
-                                    <label
-                                        style={{
-                                            fontFamily: "Urbanist",
-                                            color: "#A6A6A6",
-                                            fontSize: "15px",
-                                        }}
-                                    >
-                                        Email
-                                    </label>
-                                </div>
-
-                                <div className="d-grid gap-2 mb-2">
-                                    <input
-                                        type="text"
-                                        autoComplete="email"
-                                        className={`p-2 rounded-2 border ${errors.email ? "border-danger" : ""}`}
-                                        value={email}
-                                        onChange={handleEmailChange}
-                                    />
-                                    {submitted && errors.email && (
-                                        <span className="text-danger" style={{ fontFamily: "Urbanist", fontSize: "13px" }}>
-                                            {errors.email}
-                                        </span>
-                                    )}
-                                </div>
-
-                                {/* Password */}
-                                <div className="d-grid gap-2 mb-2">
-                                    <label
-                                        style={{
-                                            fontFamily: "Urbanist",
-                                            color: "#A6A6A6",
-                                            fontSize: "15px",
-                                        }}
-                                    >
-                                        Password
-                                    </label>
-                                </div>
-
-                                <div className="d-grid gap-2 mb-2" style={{ position: "relative" }}>
-                                    <input
-                                        type={showPassword ? "text" : "password"}
-                                        autoComplete="current-password"
-                                        className={`p-2 rounded-2 border ${errors.password ? "border-danger" : ""}`}
-                                        value={password}
-                                        onChange={handlePasswordChange}
-                                    />
-
-                                    <span
-                                        onClick={togglePassword}
-                                        style={{
-                                            position: "absolute",
-                                            right: "10px",
-                                            top: "50%",
-                                            transform: "translateY(-50%)",
-                                            cursor: "pointer",
-                                            fontSize: "20px",
-                                            color: "#555",
-                                        }}
-                                    >
-                                        {showPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
-                                    </span>
-                                </div>
-
-                                {submitted && errors.password && (
-                                    <span className="text-danger" style={{ fontFamily: "Urbanist", fontSize: "13px" }}>
-                                        {errors.password}
-                                    </span>
-                                )}
-
-                                {/* Submit */}
-                                <div className="d-grid gap-2">
-                                    <button
-                                        className="rounded-3 p-2 border-0"
-                                        type="submit"
-                                        disabled={isLoading}
-                                        style={{
-                                            backgroundColor: "#18575A",
-                                            fontFamily: "Urbanist",
-                                            fontSize: "15px",
-                                            color: "#FFFFFF",
-                                            fontWeight: 800,
-                                            opacity: isLoading ? 0.7 : 1,
-                                            cursor: isLoading ? "not-allowed" : "pointer",
-                                        }}
-                                    >
-                                        {isLoading ? "Logging in..." : "Log in"}
-                                    </button>
-                                </div>
-
-                                {/* Terms */}
-                                <p
-                                    className="text-dark fw-medium mt-2"
-                                    style={{ fontFamily: "Urbanist", fontSize: "9px" }}
-                                >
-                                    By continuing you agree to the{" "}
-                                    <span className="text-decoration-underline">Terms of use</span> and{" "}
-                                    <span className="text-decoration-underline">Privacy Policy</span>.
-                                </p>
-
-                                {/* Forgot password */}
-                                <p className="text-end">
-                                    <span
-                                        onClick={() => navigate("/forgot-password")}
-                                        className="text-dark fw-bold text-decoration-underline"
-                                        style={{ fontFamily: "Urbanist", fontSize: "12px", cursor: "pointer" }}
-                                    >
-                                        Forgot your password?
-                                    </span>
-                                </p>
-                            </div>
-                        </form>
-                    </Col>
-                    <Col></Col>
-                </Row>
-
-                {/* Toastify */}
-                <ToastContainer position="top-right" autoClose={3000} />
-            </Container>
-        </>
-    );
+        <ToastContainer position="top-right" autoClose={3000} />
+      </Container>
+    </>
+  );
 };
 
 export default Login;

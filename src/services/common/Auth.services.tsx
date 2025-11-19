@@ -13,19 +13,19 @@ class AuthService {
         credentials,
         true // isPublic - no token needed for login
       );
-      
+
       console.log('API Response:', response);
-      
+
       // Store token in localStorage if login successful
       if (response.isSucess && response.value) {
         console.log('Login successful, storing data...');
-        
+
         // Store token
         if (response.value.token) {
           localStorage.setItem('jwt_token', response.value.token);
           console.log('Token stored:', localStorage.getItem('jwt_token') !== null);
         }
-        
+
         // Store user data
         if (response.value.user) {
           const userString = JSON.stringify(response.value.user);
@@ -33,13 +33,13 @@ class AuthService {
           console.log('User stored:', localStorage.getItem('user') !== null);
           console.log('Stored user data:', localStorage.getItem('user'));
         }
-        
+
         // Store token expiry
         if (response.value.expiresAt) {
           localStorage.setItem('token_expires_at', response.value.expiresAt);
           console.log('Expiry stored:', localStorage.getItem('token_expires_at') !== null);
         }
-        
+
         // Verify storage
         console.log('Storage verification:');
         console.log('- jwt_token exists:', !!localStorage.getItem('jwt_token'));
@@ -48,7 +48,7 @@ class AuthService {
       } else {
         console.error('Login failed - response not successful or no value');
       }
-      
+
       return response;
     } catch (error) {
       console.error('Login error in AuthService:', error);
@@ -60,11 +60,11 @@ class AuthService {
     console.log('Logging out...');
     console.log('Before logout - jwt_token:', localStorage.getItem('jwt_token') !== null);
     console.log('Before logout - user:', localStorage.getItem('user') !== null);
-    
+
     localStorage.removeItem('jwt_token');
     localStorage.removeItem('user');
     localStorage.removeItem('token_expires_at');
-    
+
     console.log('After logout - jwt_token:', localStorage.getItem('jwt_token') !== null);
     console.log('After logout - user:', localStorage.getItem('user') !== null);
     console.log('Logout complete');
@@ -74,12 +74,12 @@ class AuthService {
     try {
       const userStr = localStorage.getItem('user');
       console.log('Getting current user, raw string:', userStr);
-      
+
       if (!userStr) {
         console.log('No user found in localStorage');
         return null;
       }
-      
+
       const user = JSON.parse(userStr);
       console.log('Parsed user:', user);
       return user;
@@ -98,31 +98,31 @@ class AuthService {
   static isAuthenticated(): boolean {
     const token = localStorage.getItem('jwt_token');
     console.log('Checking authentication, token exists:', token !== null);
-    
+
     if (!token) {
       console.log('Not authenticated - no token');
       return false;
     }
-    
+
     // Check if token is expired
     const expiresAt = localStorage.getItem('token_expires_at');
     if (expiresAt) {
       const expiryDate = new Date(expiresAt);
       const now = new Date();
       console.log('Token expiry check:', { expiryDate, now, expired: now >= expiryDate });
-      
+
       if (now >= expiryDate) {
         console.log('Token expired, logging out');
         this.logout();
         return false;
       }
     }
-    
+
     console.log('User is authenticated');
     return true;
   }
 
-  //chnage-password
+  // change-password
   static async changePassword(currentPassword: string, newPassword: string): Promise<CustomResponse<any>> {
     try {
       const payload = { currentPassword, newPassword };
