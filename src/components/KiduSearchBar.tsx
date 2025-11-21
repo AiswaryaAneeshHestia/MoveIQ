@@ -1,21 +1,17 @@
 import React, { useState } from "react";
-import { Form, InputGroup, Button } from "react-bootstrap";
-import { FaSearch } from "react-icons/fa";
+import { Form, Button } from "react-bootstrap";
+import { BsSearch } from "react-icons/bs";
 
 interface KiduSearchBarProps {
   placeholder?: string;
   onSearch: (value: string) => void;
-  width?: string;
-  initial?: string;
 }
 
 const KiduSearchBar: React.FC<KiduSearchBarProps> = ({
-  placeholder = "Search...",
+  placeholder = "Search here.....",
   onSearch,
-  width = "100%",
-  initial = "",
 }) => {
-  const [value, setValue] = useState(initial);
+  const [value, setValue] = useState("");
 
   const handleSearch = () => {
     onSearch(value.trim());
@@ -26,37 +22,33 @@ const KiduSearchBar: React.FC<KiduSearchBarProps> = ({
   };
 
   return (
-    <div style={{ width, maxWidth: "100%" }}>
-      <InputGroup>
-        <Form.Control
-          type="text"
-          placeholder={placeholder}
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          onKeyPress={handleKeyPress}
-          style={{
-            borderRight: "none",
-            borderColor: "#dee2e6",
-            boxShadow: "none",
-            fontFamily: "Urbanist, system-ui, -apple-system",
-            height: 45,
-            padding: "0.75rem 1rem",
-          }}
-        />
-        <Button
-          onClick={handleSearch}
-          style={{
-            backgroundColor: "#ffffff",
-            border: "1px solid #c0d5d6ff",
-            color: "#18575A",
-            paddingLeft: "0.9rem",
-            paddingRight: "0.9rem",
-            height: 45,
-          }}
-        >
-          <FaSearch />
-        </Button>
-      </InputGroup>
+    <div className="d-flex flex-column flex-md-row align-items-stretch w-100 gap-1">
+      <Form.Control
+        type="text"
+        placeholder={placeholder}
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        onKeyPress={handleKeyPress}
+        className="form-control custom-search-input p-3 text-dark"
+        style={{
+          minWidth: "250px",
+          flex: 1,
+          height: "45px",
+          fontSize: "1rem",
+        }}
+      />
+
+      <Button
+        className="fw-bold d-flex justify-content-center align-items-center"
+        style={{
+          backgroundColor: "#ffffffff",
+          border: "1px solid #c0d5d6ff",
+          width: "50px",
+        }}
+        onClick={handleSearch}
+      >
+        <BsSearch style={{ color: "#18575A", width: "50px" }} />
+      </Button>
     </div>
   );
 };

@@ -6,7 +6,7 @@ interface LoaderProps {
     type?: string; // to show what is being loaded ,e.g., "customers", "drivers", "trips"
 }
 
-const Loader: React.FC<LoaderProps> = ({ type }) => {
+const KiduLoader: React.FC<LoaderProps> = ({ type }) => {
     const getMessage = () => {
         if (type) {
             return `Loading ${type.toLowerCase()}... Please wait`;
@@ -60,4 +60,4 @@ const Loader: React.FC<LoaderProps> = ({ type }) => {
     );
 };
 
-export default Loader;
+export default KiduLoader;
