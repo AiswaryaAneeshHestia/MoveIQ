@@ -1,6 +1,6 @@
 import React from "react";
 import { Col, Container, Row, Spinner } from "react-bootstrap";
-import carGif from "../../assets/Gifs/car.gif";
+import carGif from "../assets/Gifs/car.gif";
 
 interface LoaderProps {
     type?: string; // to show what is being loaded ,e.g., "customers", "drivers", "trips"
