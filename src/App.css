@@ -72,11 +72,13 @@
   border-color: #b1c1c1 !important; /* green border on hover/focus */
   box-shadow: none !important; /* remove default bootstrap shadow */
 }
+.custom-search-input {
+  color: #000 !important;
+}
+
 .custom-search-input::placeholder {
-  color: rgb(247, 247, 247);
-  font-style:'Plus Jakarata', sans-serif ;
-  font-size: 12px;
-  opacity: 0.8;
+  color: #000 !important;
+  opacity: 0.6;
 }
 
 /* DashBoard.css */

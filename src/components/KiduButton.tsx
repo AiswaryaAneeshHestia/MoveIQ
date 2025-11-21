@@ -3,14 +3,20 @@ import { Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
 interface KiduButtonProps {
-  label: string;
+  label: React.ReactNode;
   to?: string;
   onClick?: () => void;
   className?: string;
   style?: React.CSSProperties;
 }
 
-const KiduButton: React.FC<KiduButtonProps> = ({ label, to, onClick, className = "", style }) => {
+const KiduButton: React.FC<KiduButtonProps> = ({
+  label,
+  to,
+  onClick,
+  className = "",
+  style,
+}) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -20,13 +26,14 @@ const KiduButton: React.FC<KiduButtonProps> = ({ label, to, onClick, className =
 
   return (
     <Button
-      className={`fw-bold text-white ${className}`}
+      className={`fw-bold text-white d-flex justify-content-center align-items-center ${className}`}
       style={{
         backgroundColor: "#18575A",
         border: "none",
         borderRadius: 6,
         height: 45,
         padding: "0 16px",
+        textDecoration: "none", // 💯 FIX: Prevent underline everywhere
         ...style,
       }}
       onClick={handleClick}
