@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import TripService from "../../services/Trip.services";
 import KiduTable from "../../components/KiduTable";
-import Loader from "../../components/KiduLoader";
+import KiduLoader from "../../components/KiduLoader";
 
 const TripList: React.FC = () => {
   const [trips, setTrips] = useState<any[]>([]);
@@ -31,6 +31,7 @@ const TripList: React.FC = () => {
       } else {
         setError("Failed to fetch trips");
       }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) {
       setError("An error occurred while fetching trips");
     } finally {
@@ -42,7 +43,7 @@ const TripList: React.FC = () => {
     loadData();
   }, []);
 
-  if (loading) return <Loader type="Loading trips..." />;
+  if (loading) return <KiduLoader type="Loading trips..." />;
 
   return (
     <KiduTable

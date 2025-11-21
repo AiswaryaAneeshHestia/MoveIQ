@@ -142,3 +142,20 @@
   color: #333333 !important;             /* body text color */
 }
 
+/* Pagination Theme Override */
+.page-item .page-link {
+  color: #18575A !important;
+  border-color: #18575A !important;
+}
+
+.page-item .page-link:hover {
+  background-color: #18575A !important;
+  color: #ffffff !important;
+  border-color: #18575A !important;
+}
+
+.page-item.active .page-link {
+  background-color: #18575A !important;
+  border-color: #18575A !important;
+  color: #ffffff !important;
+}
