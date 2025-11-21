@@ -21,7 +21,7 @@ interface CardData {
   route: string;
 }
 
-const DashBoard: React.FC = () => {
+const HomePage: React.FC = () => {
   const navigate = useNavigate();
 
   const [cards, setCards] = useState<CardData[]>([]);
@@ -228,4 +228,4 @@ const DashBoard: React.FC = () => {
   );
 };
 
-export default DashBoard;
+export default HomePage;

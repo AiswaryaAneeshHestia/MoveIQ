@@ -4,7 +4,7 @@ import { Col, Container, Row } from "react-bootstrap";
 import { Outlet } from "react-router-dom";
 import Sidebar from "../../layout/Sidebar";
 
-const AdminMainDashBoard: React.FC = () => {
+const DashBoard: React.FC = () => {
   return (
     <Container fluid className="min-vh-100">
       <Row className="flex-nowrap">
@@ -29,4 +29,4 @@ const AdminMainDashBoard: React.FC = () => {
   );
 };
 
-export default AdminMainDashBoard;
+export default DashBoard;

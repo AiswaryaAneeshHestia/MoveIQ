@@ -4,6 +4,7 @@ import './App.css'
 import Login from './Auth/Login';
 import Preloader from './pages/dashboard/PreLoader';
 import PageNotFound from './pages/PageNotFound';
+import DashBoard from './pages/dashboard/DashBoard';
 import HomePage from './layout/HomePage';
 
 
@@ -19,8 +20,8 @@ function App() {
 
 
         {/* Homepage */}
-        <Route path="/dashboard" element={<HomePage />}>
-
+        <Route path="/dashboard" element={<DashBoard />}>
+             <Route index element={<HomePage />} />
 
 
         </Route>
