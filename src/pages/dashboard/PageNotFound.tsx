@@ -2,7 +2,7 @@
 import React from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import notFoundGif from "../assets/Gifs/not-found.gif"; // You can also use the external URL instead
+import notFoundGif from "../../assets/Gifs/not-found.gif"; // You can also use the external URL instead
 
 const PageNotFound: React.FC = () => {
   const navigate = useNavigate();

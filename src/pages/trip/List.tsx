@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import TripService from "../../services/Trip.services";
 import KiduTable from "../../components/KiduTable";
 import KiduLoader from "../../components/KiduLoader";
@@ -20,7 +20,7 @@ const TripList: React.FC = () => {
     }));
   };
 
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     try {
       setLoading(true);
       const res = await TripService.getAll();
@@ -37,11 +37,11 @@ const TripList: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [loadData]);
 
   if (loading) return <KiduLoader type="Loading trips..." />;
 
@@ -59,7 +59,7 @@ const TripList: React.FC = () => {
       ]}
       data={trips}
       addButtonLabel="Add New Trip"
-      addRoute="/admin-dashboard/new-trip-form"
+      addRoute="/dashboard/trip-create"
       editRoute="/admin-dashboard/edit-trip-form"
       viewRoute="/admin-dashboard/view-trip"
       idKey="id"

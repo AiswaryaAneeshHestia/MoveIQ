@@ -25,6 +25,7 @@ interface KiduTableProps {
   loading?: boolean;
   error?: string | null;
   onRetry?: () => void;
+  onRowClick?: (item: any) => void;
 }
 
 const KiduTable: React.FC<KiduTableProps> = ({
@@ -41,7 +42,9 @@ const KiduTable: React.FC<KiduTableProps> = ({
   showExport = true,
   loading = false,
   error = null,
+  onRowClick,
   onRetry
+
 }) => {
   if (loading) return <div className="text-center py-5">Loading...</div>;
 
@@ -147,28 +150,25 @@ const KiduTable: React.FC<KiduTableProps> = ({
 
                 <tbody className="text-center" style={{ fontFamily: "Urbanist", fontSize: 15 }}>
                   {currentData.map((item, idx) => (
-                    <tr key={item[idKey]}>
+                    <tr key={item[idKey]} onClick={() => onRowClick?.(item)} style={{ cursor: onRowClick ? "pointer" : "default" }}>
                       <td>{startIndex + idx + 1}</td>
-
                       {columns.map(col => <td key={col.key}>{item[col.key]}</td>)}
-
                       <td className="text-center">
                         <div className="d-flex justify-content-center gap-2">
                           {editRoute && (
                             <Button
                               size="sm"
                               style={{ backgroundColor: "transparent", border: "1px solid #18575A", color: "#18575A" }}
-                              onClick={() => window.location.assign(`${editRoute}/${item[idKey]}`)}
+                              onClick={(e) => { e.stopPropagation(); window.location.assign(`${editRoute}/${item[idKey]}`); }}
                             >
                               <FaEdit className="me-1" /> Edit
                             </Button>
                           )}
-
                           {viewRoute && (
                             <Button
                               size="sm"
                               style={{ backgroundColor: "#18575A", border: "none", color: "white" }}
-                              onClick={() => window.location.assign(`${viewRoute}/${item[idKey]}`)}
+                              onClick={(e) => { e.stopPropagation(); window.location.assign(`${viewRoute}/${item[idKey]}`); }}
                             >
                               <FaEye className="me-1" /> View
                             </Button>
