@@ -15,16 +15,22 @@ const NavbarComponent: React.FC = () => {
 
   // Fetch username from localStorage
   useEffect(() => {
-    try {
-      const storedUser = localStorage.getItem("user");
-      if (storedUser) {
-        const parsedUser = JSON.parse(storedUser);
-        if (parsedUser?.userName) setUsername(parsedUser.userName);
+  try {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      const parsedUser = JSON.parse(storedUser);
+
+      if (parsedUser?.userName) {
+        queueMicrotask(() => {
+          setUsername(parsedUser.userName);
+        });
       }
-    } catch (error) {
-      console.error("Error parsing user from localStorage:", error);
     }
-  }, []);
+  } catch (error) {
+    console.error("Error parsing user from localStorage:", error);
+  }
+}, []);
+
 
   const toggleSettings = () => setShowSettings((prev) => !prev);
   const handleClose = () => setShowNotifications(false);
