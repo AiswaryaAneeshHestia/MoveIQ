@@ -13,7 +13,7 @@ const Sidebar: React.FC = () => {
 
     const menuItems = [
         { icon: <BsGridFill />, label: "Dashboard", path: "/dashboard", exact: true },
-        { icon: <BsChatDots />, label: "My Trips", path: "/dashboard/total-trips" },
+        { icon: <BsChatDots />, label: "My Trips", path: "/dashboard/trip-list" },
         { icon: <BsPeople />, label: "Customers", path: "/dashboard/customers" },
         { icon: <BsPersonFill />, label: "Drivers", path: "/dashboard/drivers" },
         { icon: <FaFileInvoice />, label: "Invoices", path: "/dashboard/invoices" },
