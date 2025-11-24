@@ -78,6 +78,7 @@ export const API_ENDPOINTS = {
     CREATE: `${API_BASE_URL}/User`,
     UPDATE: (id: number) => `${API_BASE_URL}/User/${id}`,
     DELETE: (id: number) => `${API_BASE_URL}/User/${id}`,
+    CHANGE_PASSWORD: `${API_BASE_URL}/User/ChangePassWord`
   },
 
   COMPANY: {

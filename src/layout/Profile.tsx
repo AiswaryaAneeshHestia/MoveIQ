@@ -3,13 +3,18 @@ import type { ChangeEvent } from "react";
 import { Card, Button, Form, Row, Col } from "react-bootstrap";
 import toast from "react-hot-toast";
 import { BsUpload } from "react-icons/bs";
+import UserService from "../services/settings/User.services";
 
 const Profile: React.FC = () => {
   const [username, setUsername] = useState("User");
-  const [password] = useState("********"); // cannot be edited
+ // const [password] = useState("********"); // cannot be edited
   const [preview, setPreview] = useState<string>(
     "http://www.pngall.com/wp-content/uploads/2018/04/Businessman-Transparent.png"
   );
+    // NEW password fields
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   // Load username from localStorage (same as Navbar)
   useEffect(() => {
@@ -39,27 +44,59 @@ const Profile: React.FC = () => {
     }
   };
 
-  // Save handler
-  const handleSave = () => {
-    toast.success("Profile updated successfully!");
+  // Save handler now also calls Change Password API
+   const handleSave = async () => {
+    const storedUser = localStorage.getItem("user");
+    if (!storedUser) return toast.error("User not found!");
+
+    const { userId } = JSON.parse(storedUser);
+
+    if (!oldPassword || !newPassword || !confirmPassword) {
+      return toast.error("All password fields are required.");
+    }
+
+    if (newPassword !== confirmPassword) {
+      return toast.error("New password and confirm password do not match!");
+    }
+
+    try {
+      const payload = {
+        userId: Number(userId),
+        oldPassword,
+        newPassword,
+      };
+
+      const response = await UserService.changePassword(payload);
+
+      if (response.isSucess) {
+        toast.success("Password changed successfully!");
+        setOldPassword("");
+        setNewPassword("");
+        setConfirmPassword("");
+      } else {
+        toast.error(response.error || "Failed to change password");
+      }
+    } catch (err: any) {
+      toast.error(`Error: ${err.message}`);
+    }
   };
 
   return (
     <div
-      className="d-flex  p-3 px-md-4 head-font"
+      className="d-flex p-3 px-md-4 head-font"
       style={{ minHeight: "100vh" }}
     >
       <Card
         className="shadow-sm border-0 w-100"
         style={{
           borderRadius: "10px",
-          maxWidth: "700px",
+          maxWidth: "500px",
           backgroundColor: "#f8f9fa",
         }}
       >
         <Card.Body>
           {/* Profile Picture */}
-          <div className="d-flex flex-column align-items-center mb-2">
+          <div className="d-flex flex-column align-items-center mb-1">
             <div
               className="position-relative"
               style={{ width: "80px", height: "80px" }}
@@ -96,16 +133,15 @@ const Profile: React.FC = () => {
 
           {/* Form Fields */}
           <Form>
-            <Row className="mb-2">
+            <Row className="mb-1">
               <Form.Group as={Col} md={12} controlId="username">
                 <Form.Label className="fw-semibold" style={{fontSize:"15px"}}>Username</Form.Label>
                 <Form.Control
                   type="text"
                   value={username}
-                  onChange={(e) => setUsername(e.target.value)}
                   placeholder="Enter username"
                   disabled
-                  style={{ borderRadius: "6px" ,height:"28px" , fontSize:"15px"}}
+                  style={{ borderRadius: "6px" ,height:"28px"}}
                 />
                 <Form.Text className="text-muted" style={{fontSize:"11px"}}>
                   User Name cannot be changed here.
@@ -113,13 +149,13 @@ const Profile: React.FC = () => {
               </Form.Group>
             </Row>
 
-            <Row className="mb-2">
+            <Row className="mb-1">
               <Form.Group as={Col} md={12} controlId="oldpassword">
-                <Form.Label className="fw-semibold" style={{fontSize:"15px"}}>OldPassword</Form.Label>
+                <Form.Label className="fw-semibold" style={{fontSize:"15px"}}>Old Password</Form.Label>
                 <Form.Control
                   type="password"
-                  value={password}
-
+                   value={oldPassword}
+                  onChange={(e) => setOldPassword(e.target.value)}
                   style={{
                     borderRadius: "6px",
                     backgroundColor: "#ffffff",
@@ -130,36 +166,35 @@ const Profile: React.FC = () => {
               </Form.Group>
             </Row>
 
-            <Row className="mb-2">
+            <Row className="mb-1">
               <Form.Group as={Col} md={12} controlId="newpassword">
                 <Form.Label className="fw-semibold" style={{fontSize:"15px"}}>New Password</Form.Label>
                 <Form.Control
                   type="password"
-                  value={password}
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
 
                   style={{
                     borderRadius: "6px",
                     backgroundColor: "#ffffff",
                     height:"28px"
-                   // cursor: "not-allowed",
                   }}
                 />
 
               </Form.Group>
             </Row>
 
-            <Row className="mb-2">
+            <Row className="mb-1">
               <Form.Group as={Col} md={12} controlId="confirmPassword">
                 <Form.Label className="fw-semibold" style={{fontSize:"15px"}}>Confirm Password</Form.Label>
                 <Form.Control
                   type="password"
-                  value={password}
-
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
                   style={{
                     borderRadius: "6px",
-                    backgroundColor: "#e9ecef",
+                    backgroundColor: "white",
                     height:"28px"
-                   // cursor: "not-allowed",
                   }}
                 />
 

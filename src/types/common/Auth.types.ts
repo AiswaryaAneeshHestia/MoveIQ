@@ -1,3 +1,5 @@
+import type { AuditTrails } from "./AuditLog.types";
+
 // src/types/Auth.types.ts
 export interface LoginRequest {
   email: string;
@@ -5,19 +7,23 @@ export interface LoginRequest {
 }
 
 export interface User {
-  userId: number;
-  userName: string;
-  userEmail: string;
-  phoneNumber: string;
-  address: string;
-  passwordHash: string;
-  isActive: boolean;
-  islocked: boolean;
-  createAt: string;
-  lastlogin: string;
-  lastloginString: string;
-  createAtSyring: string;
-  auditLogs: any[];
+   userId: number;
+      userName: string;
+      userEmail: string;
+      phoneNumber: string;
+      address: string;
+      passwordHash: string;
+      oldPassword?: string;
+      newPassword?: string;
+      isActive: boolean;
+      islocked: boolean;
+      createAt: string;
+      lastlogin: string;
+      lastloginString: string;
+      createAtSyring: string;
+      companyId?: number;
+      companyName?: string
+      auditLogs?: AuditTrails[];
 }
 
 export interface LoginResponse {

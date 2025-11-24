@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from "react";
-import type { User } from "../../../types/common/Auth.types";
 import UserService from "../../../services/settings/User.services";
 import KiduLoader from "../../../components/KiduLoader";
 import KiduTable from "../../../components/KiduTable";
+import type { User } from "../../../types/settings/User.types";
 
 const columns = [
     { label: "User ID", key: "userId" },

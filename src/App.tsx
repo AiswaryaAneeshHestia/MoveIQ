@@ -40,6 +40,7 @@ import UserList from './pages/settings/users/List';
 
 //Company
 import CompanyList from './pages/settings/company/List';
+import CreateCompany from './pages/settings/company/Create';
 
 //Expense-Type
 import ExpenseTypeList from './pages/settings/expenseType/List';
@@ -87,6 +88,7 @@ function App() {
 
           {/* Company */}
           <Route path="settings/company-list" element={<CompanyList />} />
+          <Route path="settings/create-company" element={<CreateCompany />} />
 
           {/* Expense Type */}
           <Route path="settings/expense-type-list" element={<ExpenseTypeList />} />

@@ -25,6 +25,14 @@ class UserService {
   static async delete(id: number): Promise<CustomResponse<null>> {
     return HttpService.callApi(API_ENDPOINTS.USER.DELETE(id), "DELETE");
   }
+
+   static async changePassword(data: {
+    userId: number;
+    oldPassword: string;
+    newPassword: string;
+  }): Promise<CustomResponse<string>> {
+    return HttpService.callApi(API_ENDPOINTS.USER.CHANGE_PASSWORD, "POST", data);
+  }
 }
 
 export default UserService;
