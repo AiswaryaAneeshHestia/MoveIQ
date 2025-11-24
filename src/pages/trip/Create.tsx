@@ -14,7 +14,7 @@ interface MainTripFormProps {
 }
 
 const alphaRegex = /^[A-Za-z\s]+$/;
-const MainTripForm: React.FC<MainTripFormProps> = ({ onClose }) => {
+const TripCreate: React.FC<MainTripFormProps> = ({ onClose }) => {
   const navigate = useNavigate();
   const [tripId, setTripId] = useState("");
   console.log(tripId);
@@ -570,4 +570,4 @@ const MainTripForm: React.FC<MainTripFormProps> = ({ onClose }) => {
   );
 };
 
-export default MainTripForm;
+export default TripCreate;

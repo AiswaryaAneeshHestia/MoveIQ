@@ -10,7 +10,9 @@ import DashBoard from './pages/dashboard/DashBoard';
 import HomePage from './layout/HomePage';
 // Trip page
 import TripList from './pages/trip/List';
-// import TripCreate from './pages/trip/Create';
+import TripCreate from './pages/trip/Create';
+//Customer
+import CustomerList from './pages/customer/List';
 
 
 function App() {
