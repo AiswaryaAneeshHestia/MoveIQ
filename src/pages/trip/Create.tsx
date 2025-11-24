@@ -7,7 +7,7 @@ import { FaArrowLeft } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import TripService from "../../services/Trip.services";
 import toast, { Toaster } from "react-hot-toast";
-// import CustomerSearchPopup from "../Customer/CustomerSearchPopup";
+import CustomerSearchPopup from "../customer/CustomerPopup";
 
 interface MainTripFormProps {
   onClose?: () => void;
@@ -346,7 +346,7 @@ const TripCreate: React.FC<MainTripFormProps> = ({ onClose }) => {
               </Col>
             </Row>
 
-            {/* <CustomerSearchPopup
+            <CustomerSearchPopup
               show={showPopup}
               handleClose={() => setShowPopup(false)}
               onSelect={(customer) => {
@@ -356,7 +356,7 @@ const TripCreate: React.FC<MainTripFormProps> = ({ onClose }) => {
               }}
             />
 
-            <DriverSearchPopup
+            {/* <DriverSearchPopup
               show={showDriverPopup}
               handleClose={() => setShowDriverPopup(false)}
               onSelect={(driver) => {

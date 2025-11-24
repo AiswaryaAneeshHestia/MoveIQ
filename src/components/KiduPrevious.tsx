@@ -10,7 +10,7 @@ const KiduPrevious: React.FC = () => {
     <button
       className="btn d-flex align-items-center justify-content-center shadow-sm"
       style={{
-        backgroundColor: "#18575A", // primary dark teal
+        backgroundColor: "#16494bff", // primary dark teal
         color: "#ffffff",
         border: "none",
         borderRadius: "6px",
