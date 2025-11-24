@@ -16,17 +16,17 @@ const Sidebar: React.FC = () => {
         { icon: <BsChatDots />, label: "My Trips", path: "/dashboard/trip-list" },
         { icon: <BsPeople />, label: "Customers", path: "/dashboard/customer-list" },
         { icon: <BsPersonFill />, label: "Drivers", path: "/dashboard/driver-list" },
-        { icon: <FaFileInvoice />, label: "Invoices", path: "/dashboard/invoices" },
-        { icon: <BsCashStack />, label: "Expenses", path: "/dashboard/expenses" },
+        { icon: <FaFileInvoice />, label: "Invoices", path: "/dashboard/invoice-list" },
+        { icon: <BsCashStack />, label: "Expenses", path: "/dashboard/expense-list" },
     ];
     const vehiclesSubMenu = [
-        { label: "Vehicles", path: "/dashboard/vehicles" },
-        { label: "Maintenance", path: "/dashboard/vehicles/maintenance" },
+        { label: "Vehicles", path: "/dashboard/vehicle/vehicle-list" },
+        { label: "Maintenance", path: "/dashboard/vehicle/maintenance-list" },
     ]
     const settingsSubMenu = [
         { label: "Users", path: "/dashboard/settings/user-list" },
         { label: "Company", path: "/dashboard/settings/company-list" },
-        { label: "Expense Types", path: "/dashboard/settings/expenseTypes" },
+        { label: "Expense Types", path: "/dashboard/settings/expense-type-list" },
     ];
 
     const navigate = useNavigate();

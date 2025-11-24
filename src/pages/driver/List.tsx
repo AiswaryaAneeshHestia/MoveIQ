@@ -52,7 +52,7 @@ const DriverList: React.FC = () => {
         setShowAvailability(true);
     };
 
-    if (loading) return <KiduLoader type="driver details..." />;
+    if (loading) return <KiduLoader type="driver..." />;
 
     return (
         <>

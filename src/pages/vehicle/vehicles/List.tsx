@@ -9,7 +9,7 @@ const columns = [
     { label: "Vehicle ID", key: "vehicleId" },
     { label: "Registration Number", key: "registrationNumber" },
     { label: "Vehicle Type", key: "vehicleType" },
-    { label: "Registration Expiry", key: "registrationExpiry" },
+    { label: "Registration Expiry", key: "registrationExpiryString" },
     { label: "Current Status", key: "currentStatus" },
     { label: "Location", key: "location" },
 ]
@@ -19,11 +19,11 @@ const VehicleList: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-
     const loadData = useCallback(async () => {
         try {
             setLoading(true);
             const response = await VehicleService.getAll();
+            console.log(response);
             if (response.isSucess && response.value) {
                 setVehicles(response.value);
                 setError(null);
@@ -41,7 +41,6 @@ const VehicleList: React.FC = () => {
         loadData();
     }, [loadData]);
 
-
     if (loading) return <KiduLoader type="vehicles..." />;
     return (
         <>
@@ -53,8 +52,8 @@ const VehicleList: React.FC = () => {
                 columns={columns}
                 addButtonLabel="Add New Vehicle"
                 addRoute="/dashboard/vehicle/create-vehicle"
-                editRoute="/dashboard/settings/edit-vehicle"
-                viewRoute="/dashboard/settings/view-vehicle"
+                editRoute="/dashboard/vehicle/edit-vehicle"
+                viewRoute="/dashboard/vehicle/view-vehicle"
                 idKey="vehicleId"
                 error={error}
                 onRetry={loadData}

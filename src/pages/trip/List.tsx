@@ -50,7 +50,7 @@ const TripList: React.FC = () => {
     loadData();
   }, [loadData]);
 
-  if (loading) return <KiduLoader type="Loading trips..." />;
+  if (loading) return <KiduLoader type="trips..." />;
 
   return (
     <KiduTable

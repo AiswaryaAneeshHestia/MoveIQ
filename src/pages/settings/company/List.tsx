@@ -22,7 +22,8 @@ const CompanyList: React.FC = () => {
         try {
             setLoading(true);
             const res = await CompanyService.getAll();
-
+            console.log(res);
+            
             if (res.isSucess && res.value) {
                 setCompanies(res.value);
                 setError(null);
@@ -40,7 +41,7 @@ const CompanyList: React.FC = () => {
         loadData();
     }, [loadData]);
 
-    if (loading) return <KiduLoader type="Companys..." />;
+    if (loading) return <KiduLoader type="Companies..." />;
 
     return (
         <KiduTable

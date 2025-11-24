@@ -7,6 +7,7 @@ import KiduTable from "../../../components/KiduTable";
 const columns = [
     { label: "User ID", key: "userId" },
     { label: "User Name", key: "userName" },
+    { label: "Company", key: "companyName" },
     { label: "Email", key: "userEmail" },
     { label: "Phone", key: "phoneNumber" },
 ];
@@ -20,6 +21,8 @@ const UserList: React.FC = () => {
         try {
             setLoading(true);
             const response = await UserService.getAll();
+            console.log(response);
+
             if (response.isSucess && response.value) {
                 setUsers(response.value);
                 setError(null);
@@ -37,7 +40,7 @@ const UserList: React.FC = () => {
         loadData();
     }, [loadData]);
 
-    if (loading) return <KiduLoader type="user details..." />;
+    if (loading) return <KiduLoader type="users..." />;
 
     return (
         <KiduTable
@@ -47,7 +50,7 @@ const UserList: React.FC = () => {
             columns={columns}
             addButtonLabel="Add New User"
             idKey="userId"
-            addRoute="/dashboard/settings/create-users"
+            addRoute="/dashboard/settings/create-user"
             editRoute="/dashboard/settings/edit-user"
             viewRoute="/dashboard/settings/view-user"
             error={error}
