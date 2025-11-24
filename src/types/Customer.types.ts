@@ -9,8 +9,8 @@ export interface Customer {
     dob: string | null;
     dobString: string;
     gender: string;
-    nationalilty: string;
-    nationality: string; // matches API spelling
+    nationalilty?: string; // matches API spelling
+    nationality?: string; // correct spelling
     createdAt: string;
     isActive: boolean;
     auditTrails?: AuditTrails[];
