@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import type { ChangeEvent } from "react";
 import { Card, Button, Form, Row, Col } from "react-bootstrap";
+import toast from "react-hot-toast";
 import { BsUpload } from "react-icons/bs";
-import { toast } from "react-toastify";
 
 const Profile: React.FC = () => {
   const [username, setUsername] = useState("User");
@@ -10,6 +10,7 @@ const Profile: React.FC = () => {
   const [preview, setPreview] = useState<string>(
     "http://www.pngall.com/wp-content/uploads/2018/04/Businessman-Transparent.png"
   );
+
   // Load username from localStorage (same as Navbar)
   useEffect(() => {
     try {
@@ -25,6 +26,7 @@ const Profile: React.FC = () => {
       console.error("Error parsing user from localStorage:", error);
     }
   }, []);
+
   // Handle new image selection
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -36,6 +38,7 @@ const Profile: React.FC = () => {
       reader.readAsDataURL(file);
     }
   };
+
   // Save handler
   const handleSave = () => {
     toast.success("Profile updated successfully!");
@@ -56,18 +59,18 @@ const Profile: React.FC = () => {
       >
         <Card.Body>
           {/* Profile Picture */}
-          <div className="d-flex flex-column align-items-center mb-4">
+          <div className="d-flex flex-column align-items-center mb-2">
             <div
               className="position-relative"
-              style={{ width: "120px", height: "120px" }}
+              style={{ width: "80px", height: "80px" }}
             >
               <img
                 src={preview}
                 alt="Profile"
                 className="rounded-circle border border-2"
                 style={{
-                  width: "120px",
-                  height: "120px",
+                  width: "80px",
+                  height: "80px",
                   objectFit: "cover",
                   borderColor: "#18575A",
                 }}
@@ -87,48 +90,90 @@ const Profile: React.FC = () => {
                 onChange={handleImageChange}
               />
             </div>
-            <p className="mt-2 mb-0 fw-medium">{username}</p>
+            <p className="mt-2 mb-0 fw-medium" style={{fontSize:"15px"}}>{username}</p>
             <small className="text-muted">User</small>
           </div>
+
           {/* Form Fields */}
           <Form>
-            <Row className="mb-3">
+            <Row className="mb-2">
               <Form.Group as={Col} md={12} controlId="username">
-                <Form.Label className="fw-semibold">Username</Form.Label>
+                <Form.Label className="fw-semibold" style={{fontSize:"15px"}}>Username</Form.Label>
                 <Form.Control
                   type="text"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   placeholder="Enter username"
-                  style={{ borderRadius: "6px" }}
-                />
-              </Form.Group>
-            </Row>
-            <Row className="mb-3">
-              <Form.Group as={Col} md={12} controlId="password">
-                <Form.Label className="fw-semibold">Password</Form.Label>
-                <Form.Control
-                  type="password"
-                  value={password}
                   disabled
-                  style={{
-                    borderRadius: "6px",
-                    backgroundColor: "#e9ecef",
-                    cursor: "not-allowed",
-                  }}
+                  style={{ borderRadius: "6px" ,height:"28px" , fontSize:"15px"}}
                 />
-                <Form.Text className="text-muted">
-                  Password cannot be changed here.
+                <Form.Text className="text-muted" style={{fontSize:"11px"}}>
+                  User Name cannot be changed here.
                 </Form.Text>
               </Form.Group>
             </Row>
+
+            <Row className="mb-2">
+              <Form.Group as={Col} md={12} controlId="oldpassword">
+                <Form.Label className="fw-semibold" style={{fontSize:"15px"}}>OldPassword</Form.Label>
+                <Form.Control
+                  type="password"
+                  value={password}
+
+                  style={{
+                    borderRadius: "6px",
+                    backgroundColor: "#ffffff",
+                    height:"28px"
+                  }}
+                />
+
+              </Form.Group>
+            </Row>
+
+            <Row className="mb-2">
+              <Form.Group as={Col} md={12} controlId="newpassword">
+                <Form.Label className="fw-semibold" style={{fontSize:"15px"}}>New Password</Form.Label>
+                <Form.Control
+                  type="password"
+                  value={password}
+
+                  style={{
+                    borderRadius: "6px",
+                    backgroundColor: "#ffffff",
+                    height:"28px"
+                   // cursor: "not-allowed",
+                  }}
+                />
+
+              </Form.Group>
+            </Row>
+
+            <Row className="mb-2">
+              <Form.Group as={Col} md={12} controlId="confirmPassword">
+                <Form.Label className="fw-semibold" style={{fontSize:"15px"}}>Confirm Password</Form.Label>
+                <Form.Control
+                  type="password"
+                  value={password}
+
+                  style={{
+                    borderRadius: "6px",
+                    backgroundColor: "#e9ecef",
+                    height:"28px"
+                   // cursor: "not-allowed",
+                  }}
+                />
+
+              </Form.Group>
+            </Row>
+
             {/* Save Button */}
-            <div className="text-center mt-4">
+            <div className="text-center mt-3">
               <Button
                 onClick={handleSave}
                 className="fw-semibold px-4"
                 style={{
                   backgroundColor: "#18575A",
+                   color: "white",
                   border: "none",
                   borderRadius: "6px",
                 }}
