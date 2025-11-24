@@ -63,9 +63,9 @@ const DriverList: React.FC = () => {
                 data={drivers}
                 addButtonLabel="Add New Driver"
                 idKey="driverId"
-                addRoute="/admin-dashboard/create-driver"
-                editRoute="/admin-dashboard/edit-driver"
-                viewRoute="/admin-dashboard/view-driver"
+                addRoute="/dashboard/create-driver"
+                editRoute="/dashboard/edit-driver"
+                viewRoute="/dashboard/view-driver"
                 // showAvailabilityButton={true}
                 // onAvailabilityClick={handleAvailabilityClick}
                 error={error}

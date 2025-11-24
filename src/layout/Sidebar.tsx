@@ -24,8 +24,8 @@ const Sidebar: React.FC = () => {
         { label: "Maintenance", path: "/dashboard/vehicles/maintenance" },
     ]
     const settingsSubMenu = [
-        { label: "Users", path: "/dashboard/settings/users" },
-        { label: "Company", path: "/dashboard/settings/companys" },
+        { label: "Users", path: "/dashboard/settings/user-list" },
+        { label: "Company", path: "/dashboard/settings/company-list" },
         { label: "Expense Types", path: "/dashboard/settings/expenseTypes" },
     ];
 

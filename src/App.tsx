@@ -14,6 +14,8 @@ import TripCreate from './pages/trip/Create';
 //Customer
 import CustomerList from './pages/customer/List';
 import DriverList from './pages/driver/List';
+import UserList from './pages/settings/users/List';
+import CompanyList from './pages/settings/company/List';
 
 
 function App() {
@@ -40,6 +42,12 @@ function App() {
 
           {/* Driver*/}
           <Route path="driver-list" element={<DriverList />} />
+
+          {/* User */}
+          <Route path="settings/user-list" element={<UserList />} />
+
+          {/* Company */}
+          <Route path="settings/company-list" element={<CompanyList />} />
 
         </Route>
         {/* Catch-All Route for 404 */}
