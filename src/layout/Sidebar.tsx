@@ -15,7 +15,7 @@ const Sidebar: React.FC = () => {
         { icon: <BsGridFill />, label: "Dashboard", path: "/dashboard", exact: true },
         { icon: <BsChatDots />, label: "My Trips", path: "/dashboard/trip-list" },
         { icon: <BsPeople />, label: "Customers", path: "/dashboard/customer-list" },
-        { icon: <BsPersonFill />, label: "Drivers", path: "/dashboard/drivers" },
+        { icon: <BsPersonFill />, label: "Drivers", path: "/dashboard/driver-list" },
         { icon: <FaFileInvoice />, label: "Invoices", path: "/dashboard/invoices" },
         { icon: <BsCashStack />, label: "Expenses", path: "/dashboard/expenses" },
     ];

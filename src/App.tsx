@@ -13,6 +13,7 @@ import TripList from './pages/trip/List';
 import TripCreate from './pages/trip/Create';
 //Customer
 import CustomerList from './pages/customer/List';
+import DriverList from './pages/driver/List';
 
 
 function App() {
@@ -28,19 +29,22 @@ function App() {
 
         {/* Homepage */}
         <Route path="/dashboard" element={<DashBoard />}>
-             <Route index element={<HomePage />} />
-             
-             {/* Trip */}
-               <Route path="trip-list" element={<TripList />} />
-               <Route path="trip-create" element={<TripCreate />} />
+          <Route index element={<HomePage />} />
 
-               {/* Customer */}
-                 <Route path="customer-list" element={<CustomerList />} />
+          {/* Trip */}
+          <Route path="trip-list" element={<TripList />} />
+          <Route path="trip-create" element={<TripCreate />} />
+
+          {/* Customer */}
+          <Route path="customer-list" element={<CustomerList />} />
+
+          {/* Driver*/}
+          <Route path="driver-list" element={<DriverList />} />
 
         </Route>
         {/* Catch-All Route for 404 */}
         <Route path='*' element={<PageNotFound />} />
-        
+
 
       </Routes>
     </>
