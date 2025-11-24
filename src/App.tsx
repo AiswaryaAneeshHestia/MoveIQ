@@ -10,6 +10,8 @@ import DashBoard from './pages/dashboard/DashBoard';
 import HomePage from './layout/HomePage';
 // Trip page
 import TripList from './pages/trip/List';
+//Customer
+import CustomerList from './pages/customer/List';
 // import TripCreate from './pages/trip/Create';
 
 
@@ -31,6 +33,9 @@ function App() {
              {/* Trip */}
                <Route path="trip-list" element={<TripList />} />
                {/* <Route path="trip-create" element={<TripCreate />} /> */}
+
+               {/* Customer */}
+                 <Route path="customer-list" element={<CustomerList />} />
 
         </Route>
         {/* Catch-All Route for 404 */}
