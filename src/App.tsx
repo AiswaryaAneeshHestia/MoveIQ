@@ -2,7 +2,7 @@ import { Route, Routes } from 'react-router-dom'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css'
 import Preloader from './pages/dashboard/PreLoader';
-import PageNotFound from './pages/PageNotFound';
+import PageNotFound from './pages/dashboard/PageNotFound';
 //Auth
 import Login from './Auth/Login';
 //Dashboard
@@ -10,6 +10,7 @@ import DashBoard from './pages/dashboard/DashBoard';
 import HomePage from './layout/HomePage';
 // Trip page
 import TripList from './pages/trip/List';
+// import TripCreate from './pages/trip/Create';
 
 
 function App() {
@@ -29,10 +30,12 @@ function App() {
              
              {/* Trip */}
                <Route path="trip-list" element={<TripList />} />
+               {/* <Route path="trip-create" element={<TripCreate />} /> */}
 
         </Route>
         {/* Catch-All Route for 404 */}
         <Route path='*' element={<PageNotFound />} />
+        
 
       </Routes>
     </>

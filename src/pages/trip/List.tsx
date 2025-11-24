@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import TripService from "../../services/Trip.services";
 import KiduTable from "../../components/KiduTable";
-import Loader from "../../components/KiduLoader";
+import KiduLoader from "../../components/KiduLoader";
 
 const TripList: React.FC = () => {
   const [trips, setTrips] = useState<any[]>([]);
@@ -20,7 +20,7 @@ const TripList: React.FC = () => {
     }));
   };
 
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     try {
       setLoading(true);
       const res = await TripService.getAll();
@@ -31,18 +31,19 @@ const TripList: React.FC = () => {
       } else {
         setError("Failed to fetch trips");
       }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) {
       setError("An error occurred while fetching trips");
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [loadData]);
 
-  if (loading) return <Loader type="Loading trips..." />;
+  if (loading) return <KiduLoader type="Loading trips..." />;
 
   return (
     <KiduTable
@@ -58,7 +59,7 @@ const TripList: React.FC = () => {
       ]}
       data={trips}
       addButtonLabel="Add New Trip"
-      addRoute="/admin-dashboard/new-trip-form"
+      addRoute="/dashboard/trip-create"
       editRoute="/admin-dashboard/edit-trip-form"
       viewRoute="/admin-dashboard/view-trip"
       idKey="id"
