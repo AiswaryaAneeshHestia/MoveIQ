@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
 import type { Customer } from "../../types/Customer.types";
 import CustomerService from "../../services/Customer.services";
 import KiduLoader from "../../components/KiduLoader";
