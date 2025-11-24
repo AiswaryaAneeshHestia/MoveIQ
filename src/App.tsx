@@ -11,10 +11,19 @@ import HomePage from './layout/HomePage';
 // Trip page
 import TripList from './pages/trip/List';
 import TripCreate from './pages/trip/Create';
+
 //Customer
 import CustomerList from './pages/customer/List';
+import CustomerCreate from './pages/customer/Create';
+import CustomerEdit from './pages/customer/Edit';
+
+//Driver
 import DriverList from './pages/driver/List';
+
+//User
 import UserList from './pages/settings/users/List';
+
+//Company
 import CompanyList from './pages/settings/company/List';
 
 
@@ -39,6 +48,8 @@ function App() {
 
           {/* Customer */}
           <Route path="customer-list" element={<CustomerList />} />
+          <Route path="customer-create" element={<CustomerCreate />} />
+          <Route path="customer-edit/:customerId" element={<CustomerEdit />} />
 
           {/* Driver*/}
           <Route path="driver-list" element={<DriverList />} />
