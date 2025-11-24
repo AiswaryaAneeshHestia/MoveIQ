@@ -1,7 +1,7 @@
 import { API_ENDPOINTS } from "../../constants/API_ENDPOINTS";
-import type { CustomResponse } from "../../types/common/ApiTypes";
-import type { Attachment } from "../../types/common/Attachment.types";
 import HttpService from "./HttpService";
+import type { Attachment } from "../../types/common/Attachment.types";
+import type { CustomResponse } from "../../types/common/ApiTypes";
  
 class AttachmentService {
  
