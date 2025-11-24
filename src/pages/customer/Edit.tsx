@@ -36,7 +36,7 @@ const CustomerEdit: React.FC = () => {
             customerName: d.customerName || "",
             dob: d.dob ? d.dob.split("T")[0] : "",
             customerPhone: d.customerPhone || "",
-            nationality: d.nationality || "",
+            nationalilty: d.nationality || "",
             customerEmail: d.customerEmail || "",
             customerAddress: d.customerAddress || ""
           };
