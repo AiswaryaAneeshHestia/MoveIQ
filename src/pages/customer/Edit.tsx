@@ -9,6 +9,7 @@ import { KiduValidation } from "../../components/KiduValidation";
 import KiduReset from "../../components/ReuseButtons/KiduReset";
 import Attachments from "../../components/KiduAttachments";
 import AuditTrailsComponent from "../../components/KiduAuditLogs";
+import type { Customer } from "../../types/Customer.types";
 
 const CustomerEdit: React.FC = () => {
   const navigate = useNavigate();
@@ -23,12 +24,12 @@ const CustomerEdit: React.FC = () => {
   const recordId = Number(customerId);
 
   const fields = [
-    { name: "customerName", rules: { required: true, type: "text" } },
+    { name: "customerName", rules: { required: true, type: "text", label: "Customer Name" } },
     { name: "dob", rules: { required: true, type: "date", label: "Registered Date" } },
-    { name: "customerPhone", rules: { required: true, type: "number", minLength: 10, maxLength: 10 } },
-    { name: "nationality", rules: { required: true, type: "text" } },
-    { name: "customerEmail", rules: { required: true, type: "email" } },
-    { name: "customerAddress", rules: { required: true, type: "text" } }
+    { name: "customerPhone", rules: { required: true, type: "number", minLength: 10, maxLength: 10, label: "Phone Number" } },
+    { name: "nationality", rules: { required: true, type: "text", label: "Nationality" } },
+    { name: "customerEmail", rules: { required: true, type: "email", label: "Email ID" } },
+    { name: "customerAddress", rules: { required: true, type: "text", label: "Address" } }
   ];
 
   useEffect(() => {
@@ -39,7 +40,7 @@ const CustomerEdit: React.FC = () => {
           const d = res.value;
           const loadedValues = {
             customerName: d.customerName || "",
-            dob: d.dob ? d.dob.split("T")[0] : "",
+            dob: d.dob || "",
             customerPhone: d.customerPhone || "",
             nationality: d.nationality || "",
             customerEmail: d.customerEmail || "",
@@ -90,21 +91,22 @@ const CustomerEdit: React.FC = () => {
     if (!validateForm()) return;
 
     try {
-      const payload: any = {
+      const customerData: Customer = {
         customerId: Number(customerId),
         customerName: formData.customerName,
-        dob: formData.dob,
         customerPhone: formData.customerPhone,
-        nationalilty: formData.nationality, // map to API expected field
         customerEmail: formData.customerEmail,
         customerAddress: formData.customerAddress,
+        dob: formData.dob || null,
+        dobString: formData.dob,
         gender: "",
+        nationalilty: formData.nationality,
+        nationality: formData.nationality,
         createdAt: new Date().toISOString(),
         isActive: true
       };
 
-      const res = await CustomerService.update(Number(customerId), payload);
-
+      const res = await CustomerService.update(Number(customerId), customerData);
       if (res.isSucess) {
         toast.success("Customer updated successfully!");
         setTimeout(() => navigate("/dashboard/customer-list"), 1500);
@@ -130,21 +132,41 @@ const CustomerEdit: React.FC = () => {
 
         <Form onSubmit={handleSubmit} className="p-4">
           <Row>
-            {fields.map(f => (
-              <Col md={6} className="mb-3" key={f.name}>
-                <Form.Label className="fw-semibold">{f.rules.label || f.name}</Form.Label>
-                <Form.Control
-                  type={f.rules.type === "number" ? "tel" : f.rules.type}
-                  name={f.name}
-                  value={formData[f.name]}
-                  onChange={handleChange}
-                  onBlur={() => validateField(f.name, formData[f.name])}
-                  as={f.rules.type === "text" && f.name === "customerAddress" ? "textarea" : undefined}
-                  rows={f.name === "customerAddress" ? 3 : undefined}
-                />
-                {errors[f.name] && <small className="text-danger">{errors[f.name]}</small>}
-              </Col>
-            ))}
+            <Col md={6} className="mb-3">
+              <Form.Label className="fw-semibold">{fields[0].rules.label}</Form.Label>
+              <Form.Control type="text" name={fields[0].name} placeholder="Enter customer name" value={formData[fields[0].name]} onChange={handleChange} onBlur={() => validateField(fields[0].name, formData[fields[0].name])} />
+              {errors[fields[0].name] && <span className="text-danger">{errors[fields[0].name]}</span>}
+            </Col>
+
+            <Col md={6} className="mb-3">
+              <Form.Label className="fw-semibold">{fields[1].rules.label}</Form.Label>
+              <Form.Control type="date" name={fields[1].name} value={formData[fields[1].name]} onChange={handleChange} onBlur={() => validateField(fields[1].name, formData[fields[1].name])} />
+              {errors[fields[1].name] && <small className="text-danger">{errors[fields[1].name]}</small>}
+            </Col>
+
+            <Col md={6} className="mb-3">
+              <Form.Label className="fw-semibold">{fields[2].rules.label}</Form.Label>
+              <Form.Control type="tel" name={fields[2].name} placeholder="Enter phone number" value={formData[fields[2].name]} onChange={handleChange} onBlur={() => validateField(fields[2].name, formData[fields[2].name])} />
+              {errors[fields[2].name] && <small className="text-danger">{errors[fields[2].name]}</small>}
+            </Col>
+
+            <Col md={6} className="mb-3">
+              <Form.Label className="fw-semibold">{fields[3].rules.label}</Form.Label>
+              <Form.Control type="text" name={fields[3].name} placeholder="Enter nationality" value={formData[fields[3].name]} onChange={handleChange} onBlur={() => validateField(fields[3].name, formData[fields[3].name])} />
+              {errors[fields[3].name] && <small className="text-danger">{errors[fields[3].name]}</small>}
+            </Col>
+
+            <Col md={6} className="mb-3">
+              <Form.Label className="fw-semibold">{fields[4].rules.label}</Form.Label>
+              <Form.Control type="email" name={fields[4].name} placeholder="Enter email" value={formData[fields[4].name]} onChange={handleChange} onBlur={() => validateField(fields[4].name, formData[fields[4].name])} />
+              {errors[fields[4].name] && <small className="text-danger">{errors[fields[4].name]}</small>}
+            </Col>
+
+            <Col md={6} className="mb-3">
+              <Form.Label className="fw-semibold">{fields[5].rules.label}</Form.Label>
+              <Form.Control as="textarea" rows={3} name={fields[5].name} placeholder="Enter address" value={formData[fields[5].name]} onChange={handleChange} onBlur={() => validateField(fields[5].name, formData[fields[5].name])} />
+              {errors[fields[5].name] && <small className="text-danger">{errors[fields[5].name]}</small>}
+            </Col>
           </Row>
 
           <div className="d-flex gap-2 justify-content-end mt-4">
