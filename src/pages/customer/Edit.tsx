@@ -10,7 +10,6 @@ import KiduReset from "../../components/ReuseButtons/KiduReset";
 import Attachments from "../../components/KiduAttachments";
 import AuditTrailsComponent from "../../components/KiduAuditLogs";
 
-
 const CustomerEdit: React.FC = () => {
   const navigate = useNavigate();
   const { customerId } = useParams();
@@ -20,8 +19,8 @@ const CustomerEdit: React.FC = () => {
   const [formData, setFormData] = useState<any>({});
   const [errors, setErrors] = useState<any>({});
 
-  const tableName = "Customer";  
-  const recordId = Number(customerId); 
+  const tableName = "Customer";
+  const recordId = Number(customerId);
 
   const fields = [
     { name: "customerName", rules: { required: true, type: "text" } },
@@ -42,12 +41,12 @@ const CustomerEdit: React.FC = () => {
             customerName: d.customerName || "",
             dob: d.dob ? d.dob.split("T")[0] : "",
             customerPhone: d.customerPhone || "",
-            nationality: d.nationality || "", // use correct key
+            nationality: d.nationality || "",
             customerEmail: d.customerEmail || "",
             customerAddress: d.customerAddress || ""
           };
           setFormData(loadedValues);
-          setInitialValues(loadedValues); // Set initial values after load
+          setInitialValues(loadedValues);
           const errValues: any = {};
           fields.forEach(f => { errValues[f.name] = ""; });
           setErrors(errValues);
@@ -91,19 +90,18 @@ const CustomerEdit: React.FC = () => {
     if (!validateForm()) return;
 
     try {
-      const payload = {
-  customerId: Number(customerId),
-  customerName: formData.customerName,
-  dobString: formData.dob,
-  customerPhone: formData.customerPhone,
-  nationalilty: formData.nationality, // map to API expected field
-  customerEmail: formData.customerEmail,
-  customerAddress: formData.customerAddress,
-  gender: "",
-  createdAt: new Date().toISOString(),
-  isActive: true
-};
-
+      const payload: any = {
+        customerId: Number(customerId),
+        customerName: formData.customerName,
+        dob: formData.dob,
+        customerPhone: formData.customerPhone,
+        nationalilty: formData.nationality, // map to API expected field
+        customerEmail: formData.customerEmail,
+        customerAddress: formData.customerAddress,
+        gender: "",
+        createdAt: new Date().toISOString(),
+        isActive: true
+      };
 
       const res = await CustomerService.update(Number(customerId), payload);
 
@@ -153,15 +151,16 @@ const CustomerEdit: React.FC = () => {
             <KiduReset initialValues={initialValues} setFormData={setFormData} />
             <Button type="submit" style={{ backgroundColor: "#18575A", border: "none" }}>Update</Button>
           </div>
-           <Row className="mb-2">
-              <Col xs={12}>
-                <Attachments tableName={tableName} recordId={recordId} />
-              </Col>
-            </Row>
- 
-            <div >
-          <AuditTrailsComponent tableName={tableName} recordId={recordId} />
-        </div>
+
+          <Row className="mb-2">
+            <Col xs={12}>
+              <Attachments tableName={tableName} recordId={recordId} />
+            </Col>
+          </Row>
+
+          <div>
+            <AuditTrailsComponent tableName={tableName} recordId={recordId} />
+          </div>
         </Form>
       </Container>
 
