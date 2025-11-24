@@ -10,8 +10,6 @@ const CustomerList: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
-    // const navigate = useNavigate();
-
     //  Same pattern as TripList (loadData with useCallback)
     const loadData = useCallback(async () => {
         try {
@@ -49,6 +47,7 @@ const CustomerList: React.FC = () => {
                 { key: "customerPhone" as keyof Customer, label: "Phone Number" },
             ]}
             data={customers}
+            addButtonLabel="Add New Customer"
             idKey="customerId"
             addRoute="/admin-dashboard/create-customer"
             editRoute="/admin-dashboard/edit-customer"
