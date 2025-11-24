@@ -7,7 +7,7 @@ export interface ValidationResult {
 }
 
 export interface ValidationRule {
-  type?: "text" | "number" | "email" | "url" | "textarea" | "popup" | "password" | "select" | "dropLocations";
+  type?: "text" | "number" | "email" | "url" | "textarea" | "popup" | "password" | "select" | "dropLocations" | "image";
   required?: boolean;
   minLength?: number;
   maxLength?: number;
@@ -31,6 +31,25 @@ export const KiduValidation = {
       }
       if (rules.maxLength && arr.length > rules.maxLength) {
         return { isValid: false, message: `${label} can have at most ${rules.maxLength} locations.` };
+      }
+      return { isValid: true };
+    }
+
+    // Image validation
+    if (rules.type === "image") {
+      const file = val as File | null;
+      if (rules.required && !file) {
+        return { isValid: false, message: `${label} is required.` };
+      }
+      if (file) {
+        const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+        if (!allowedTypes.includes(file.type)) {
+          return { isValid: false, message: `${label} must be a valid image (JPG, PNG, WEBP).` };
+        }
+        const maxSizeMB = 5;
+        if (file.size > maxSizeMB * 1024 * 1024) {
+          return { isValid: false, message: `${label} must be less than ${maxSizeMB}MB.` };
+        }
       }
       return { isValid: true };
     }
@@ -89,23 +108,13 @@ export const KiduValidation = {
     }
 
     return { isValid: true };
-  },
+  }
 };
 
 export const ValidationMessage: React.FC<{ message?: string }> = ({ message }) => {
   if (!message) return null;
-
   return (
-    <div
-      style={{
-        fontSize: "0.8rem",
-        color: "#EF4444",
-        marginTop: "4px",
-        fontFamily: "Urbanist",
-      }}
-    >
-      {message}
-    </div>
+    <div style={{ fontSize: "0.8rem", color: "#EF4444", marginTop: "4px", fontFamily: "Urbanist" }}>{message}</div>
   );
 };
 

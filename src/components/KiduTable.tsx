@@ -1,9 +1,10 @@
 import React, { useState, useMemo } from "react";
 import { Table, Button, Row, Col, Container, Pagination } from "react-bootstrap";
 import { FaEdit, FaEye } from "react-icons/fa";
-import ExportToExcelButton from "../components/KiduExcelButton";
+import KiduExcelButton from "../components/KiduExcelButton";
 import KiduButton from "../components/KiduButton";
 import KiduSearchBar from "../components/KiduSearchBar";
+import KiduPopupButton from "../components/KiduPopupButton";
 
 interface Column {
   key: string;
@@ -44,7 +45,6 @@ const KiduTable: React.FC<KiduTableProps> = ({
   error = null,
   onRowClick,
   onRetry
-
 }) => {
   if (loading) return <div className="text-center py-5">Loading...</div>;
 
@@ -52,7 +52,7 @@ const KiduTable: React.FC<KiduTableProps> = ({
     return (
       <Container fluid className="py-3 mt-5">
         <div className="alert alert-danger">{error}</div>
-        <Button onClick={onRetry} style={{ backgroundColor: "#18575A", border: "none" }}>Retry</Button>
+        <Button onClick={onRetry} style={{ backgroundColor:"#18575A", border:"none" }}>Retry</Button>
       </Container>
     );
   }
@@ -60,23 +60,19 @@ const KiduTable: React.FC<KiduTableProps> = ({
   const rowsPerPage = 10;
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const reversedData = useMemo(() => [...data].reverse(), [data]);
-
-  // eslint-disable-next-line react-hooks/rules-of-hooks
+    // eslint-disable-next-line react-hooks/rules-of-hooks
   const [searchTerm, setSearchTerm] = useState("");
-
-  // eslint-disable-next-line react-hooks/rules-of-hooks
+    // eslint-disable-next-line react-hooks/rules-of-hooks
   const filteredData = useMemo(() => {
     return reversedData.filter((item) =>
       columns.some((col) =>
-        String(item[col.key] || "")
-          .toLowerCase()
-          .includes(searchTerm.toLowerCase())
+        String(item[col.key] || "").toLowerCase().includes(searchTerm.toLowerCase())
       )
     );
   }, [reversedData, searchTerm, columns]);
 
   const totalPages = Math.ceil(filteredData.length / rowsPerPage);
-  // eslint-disable-next-line react-hooks/rules-of-hooks
+    // eslint-disable-next-line react-hooks/rules-of-hooks
   const [currentPage, setCurrentPage] = useState(1);
 
   const startIndex = (currentPage - 1) * rowsPerPage;
@@ -88,18 +84,15 @@ const KiduTable: React.FC<KiduTableProps> = ({
 
   return (
     <Container fluid className="py-3 mt-4">
-
-      {/* 🔹 TITLE + SUBTITLE */}
       {data.length > 0 && (
         <Row className="mb-2 align-items-center">
           <Col>
-            <h4 className="mb-0 fw-bold" style={{ fontFamily: "Urbanist" }}>{title}</h4>
-            {subtitle && <p className="text-muted" style={{ fontFamily: "Urbanist" }}>{subtitle}</p>}
+            <h4 className="mb-0 fw-bold" style={{ fontFamily:"Urbanist" }}>{title}</h4>
+            {subtitle && <p className="text-muted" style={{ fontFamily:"Urbanist" }}>{subtitle}</p>}
           </Col>
         </Row>
       )}
 
-      {/* 🔍 SEARCH + ADD BUTTON BELOW title */}
       {data.length > 0 && (
         <Row className="mb-3 align-items-center">
           <Col>
@@ -119,7 +112,7 @@ const KiduTable: React.FC<KiduTableProps> = ({
                 label={`+ ${addButtonLabel}`}
                 to={addRoute}
                 className="fw-bold d-flex align-items-center text-white"
-                style={{ backgroundColor: "#18575A", border: "none", height: 45, width: 200 }}
+                style={{ backgroundColor:"#18575A", border:"none", height:45, width:200 }}
               />
             </Col>
           )}
@@ -131,31 +124,48 @@ const KiduTable: React.FC<KiduTableProps> = ({
           {filteredData.length === 0 ? (
             <div className="text-center py-5">
               <p className="text-muted">No matching records found.</p>
+              {addRoute && (
+                <KiduPopupButton
+                  label={`+ ${addButtonLabel}`}
+                  onClick={() => window.location.assign(addRoute)}
+                />
+              )}
             </div>
           ) : (
             <div className="table-responsive">
               <Table striped bordered hover className="align-middle mb-0">
-                <thead className="table-light text-center" style={{ fontFamily: "Urbanist" }}>
+                <thead className="table-light text-center" style={{ fontFamily:"Urbanist" }}>
                   <tr>
                     <th>Sl No</th>
-
                     {columns.map(col => <th key={col.key}>{col.label}</th>)}
-
                     <th className="d-flex justify-content-between">
                       <div className="ms-5 mt-2">Action</div>
-                      {showExport && <div className="mt-1"><ExportToExcelButton data={data} title={title} /></div>}
+                      {showExport && (
+                        <div className="mt-1">
+                          <KiduExcelButton data={data} title={title} />
+                        </div>
+                      )}
                     </th>
                   </tr>
                 </thead>
 
-                <tbody className="text-center" style={{ fontFamily: "Urbanist", fontSize: 15 }}>
+                <tbody className="text-center" style={{ fontFamily:"Urbanist", fontSize:15 }}>
                   {currentData.map((item, idx) => (
-                    <tr key={item[idKey]} onClick={() => onRowClick?.(item)} style={{ cursor: onRowClick ? "pointer" : "default" }}>
+                    <tr
+                      key={item[idKey]}
+                      onClick={() => onRowClick?.(item)}
+                      style={{ cursor: onRowClick ? "pointer" : "default" }}
+                    >
                       <td>{startIndex + idx + 1}</td>
+
                       {columns.map(col => (
                         <td key={col.key}>
-                          {col.key === "profile" && item[col.key] ? (
-                            <img src={item[col.key]} alt="Profile" style={{ width: 40, height: 40, borderRadius: "50%" }} />
+                          {col.key === "profile" ? (
+                            <img
+                              src={item[col.key] || "/assets/Images/profile.jpeg"}
+                              alt={item.driverName || item.customerName || "Profile"}
+                              style={{ width:45, height:45, borderRadius:"50%" }}
+                            />
                           ) : (
                             item[col.key]
                           )}
@@ -167,7 +177,7 @@ const KiduTable: React.FC<KiduTableProps> = ({
                           {editRoute && (
                             <Button
                               size="sm"
-                              style={{ backgroundColor: "transparent", border: "1px solid #18575A", color: "#18575A" }}
+                              style={{ backgroundColor:"transparent", border:"1px solid #18575A", color:"#18575A" }}
                               onClick={(e) => { e.stopPropagation(); window.location.assign(`${editRoute}/${item[idKey]}`); }}
                             >
                               <FaEdit className="me-1" /> Edit
@@ -176,7 +186,7 @@ const KiduTable: React.FC<KiduTableProps> = ({
                           {viewRoute && (
                             <Button
                               size="sm"
-                              style={{ backgroundColor: "#18575A", border: "none", color: "white" }}
+                              style={{ backgroundColor:"#18575A", border:"none", color:"white" }}
                               onClick={(e) => { e.stopPropagation(); window.location.assign(`${viewRoute}/${item[idKey]}`); }}
                             >
                               <FaEye className="me-1" /> View
@@ -193,16 +203,15 @@ const KiduTable: React.FC<KiduTableProps> = ({
         </Col>
       </Row>
 
-      {/* PAGINATION */}
       {totalPages > 1 && (
         <div className="d-flex justify-content-between align-items-center mt-4 px-2">
-          <span style={{ fontFamily: "Urbanist", color: "#18575A", fontWeight: 600 }}>
+          <span style={{ fontFamily:"Urbanist", color:"#18575A", fontWeight:600 }}>
             Page {currentPage} of {totalPages}
           </span>
 
           <Pagination className="m-0">
-            <Pagination.First disabled={currentPage === 1} onClick={() => handlePageChange(1)} style={{ color: "#18575A" }} />
-            <Pagination.Prev disabled={currentPage === 1} onClick={() => handlePageChange(currentPage - 1)} style={{ color: "#18575A" }} />
+            <Pagination.First disabled={currentPage === 1} onClick={() => handlePageChange(1)} />
+            <Pagination.Prev disabled={currentPage === 1} onClick={() => handlePageChange(currentPage - 1)} />
 
             {Array.from({ length: totalPages }, (_, i) => (
               <Pagination.Item
@@ -219,8 +228,8 @@ const KiduTable: React.FC<KiduTableProps> = ({
               </Pagination.Item>
             ))}
 
-            <Pagination.Next disabled={currentPage === totalPages} onClick={() => handlePageChange(currentPage + 1)} style={{ color: "#18575A" }} />
-            <Pagination.Last disabled={currentPage === totalPages} onClick={() => handlePageChange(totalPages)} style={{ color: "#18575A" }} />
+            <Pagination.Next disabled={currentPage === totalPages} onClick={() => handlePageChange(currentPage + 1)} />
+            <Pagination.Last disabled={currentPage === totalPages} onClick={() => handlePageChange(totalPages)} />
           </Pagination>
         </div>
       )}

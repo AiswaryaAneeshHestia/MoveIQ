@@ -8,7 +8,7 @@ interface ExportToExcelButtonProps<T> {
   disabled?: boolean;
 }
 
-const ExportToExcelButton = <T extends Record<string, any>>({
+const KiduExcelButton = <T extends Record<string, any>>({
   data,
   title,
   filename,
@@ -64,4 +64,4 @@ const ExportToExcelButton = <T extends Record<string, any>>({
   );
 };
 
-export default ExportToExcelButton;
+export default KiduExcelButton;
