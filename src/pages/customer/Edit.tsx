@@ -36,7 +36,7 @@ const CustomerEdit: React.FC = () => {
             customerName: d.customerName || "",
             dob: d.dob ? d.dob.split("T")[0] : "",
             customerPhone: d.customerPhone || "",
-            nationalilty: d.nationality || "",
+            nationality: d.nationality || "", // use correct key
             customerEmail: d.customerEmail || "",
             customerAddress: d.customerAddress || ""
           };
@@ -85,14 +85,21 @@ const CustomerEdit: React.FC = () => {
     if (!validateForm()) return;
 
     try {
-      const res = await CustomerService.update(Number(customerId), {
-        ...formData,
-        customerId: Number(customerId),
-        dobString: formData.dob,
-        gender: "",
-        createdAt: new Date().toISOString(),
-        isActive: true
-      });
+      const payload = {
+  customerId: Number(customerId),
+  customerName: formData.customerName,
+  dobString: formData.dob,
+  customerPhone: formData.customerPhone,
+  nationalilty: formData.nationality, // map to API expected field
+  customerEmail: formData.customerEmail,
+  customerAddress: formData.customerAddress,
+  gender: "",
+  createdAt: new Date().toISOString(),
+  isActive: true
+};
+
+
+      const res = await CustomerService.update(Number(customerId), payload);
 
       if (res.isSucess) {
         toast.success("Customer updated successfully!");
