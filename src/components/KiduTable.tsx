@@ -152,7 +152,16 @@ const KiduTable: React.FC<KiduTableProps> = ({
                   {currentData.map((item, idx) => (
                     <tr key={item[idKey]} onClick={() => onRowClick?.(item)} style={{ cursor: onRowClick ? "pointer" : "default" }}>
                       <td>{startIndex + idx + 1}</td>
-                      {columns.map(col => <td key={col.key}>{item[col.key]}</td>)}
+                      {columns.map(col => (
+                        <td key={col.key}>
+                          {col.key === "profile" && item[col.key] ? (
+                            <img src={item[col.key]} alt="Profile" style={{ width: 40, height: 40, borderRadius: "50%" }} />
+                          ) : (
+                            item[col.key]
+                          )}
+                        </td>
+                      ))}
+
                       <td className="text-center">
                         <div className="d-flex justify-content-center gap-2">
                           {editRoute && (

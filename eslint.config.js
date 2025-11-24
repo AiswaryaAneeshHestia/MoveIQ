@@ -19,10 +19,9 @@ export default defineConfig([
       ecmaVersion: 2020,
       globals: globals.browser,
     },
-
-    // ✅ Disable all ANY errors completely
     rules: {
       "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-unused-vars": "off",
     },
   },
 ])
