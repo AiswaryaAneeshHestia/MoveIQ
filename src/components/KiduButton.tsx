@@ -33,8 +33,7 @@ const KiduButton: React.FC<KiduButtonProps> = ({
         borderRadius: 6,
         height: 45,
         padding: "0 16px",
-        textDecoration: "none", // 💯 FIX: Prevent underline everywhere
-        ...style,
+        textDecoration: "none", 
       }}
       onClick={handleClick}
     >
