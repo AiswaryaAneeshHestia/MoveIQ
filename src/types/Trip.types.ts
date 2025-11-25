@@ -3,6 +3,7 @@ import type { AuditTrails } from "./common/AuditLog.types";
 export interface Trip {
     tripOrderId: number;
     tripOrder?: string;
+    tripCode?:string;
     tripBookingModeId: number;
     recivedVia?: string;
     customerId: number;

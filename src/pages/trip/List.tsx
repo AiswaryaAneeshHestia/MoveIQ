@@ -4,11 +4,11 @@ import KiduTable from "../../components/KiduTable";
 import KiduLoader from "../../components/KiduLoader";
 
 const columns = [
-  { key: "tripId", label: "Trip ID" },
-  { key: "fromDate", label: "Departure Date" },
+  { key: "tripCode", label: "Trip ID" },
+  { key: "fromDateString", label: "Departure Date" },
   { key: "customerName", label: "Customer Name" },
   { key: "recivedVia", label: "Received Via" },
-  { key: "driver", label: "Driver" },
+  { key: "driverName", label: "Driver" },
   { key: "pickUpFrom", label: "Pickup From" }
 ];
 
@@ -17,24 +17,24 @@ const TripList: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const formatTrips = (rawTrips: any[]) => {
-    return rawTrips.map((trip) => ({
-      id: trip.tripOrderId,
-      tripId: `T${trip.tripOrderId.toString().padStart(3, "0")}`,
-      fromDate: trip.fromDateString,
-      customerName: trip.customerName,
-      recivedVia: trip.recivedVia || "Website",
-      driver: trip.driverName,
-      pickUpFrom: trip.pickUpFrom || trip.fromLocation
-    }));
-  };
+  // const formatTrips = (rawTrips: any[]) => {
+  //   return rawTrips.map((trip) => ({
+  //     id: trip.tripOrderId,
+  //     //tripId: `T${trip.tripOrderId.toString().padStart(3, "0")}`,
+  //     fromDate: trip.fromDateString,
+  //     customerName: trip.customerName,
+  //     recivedVia: trip.recivedVia || "Website",
+  //     driver: trip.driverName,
+  //     pickUpFrom: trip.pickUpFrom || trip.fromLocation
+  //   }));
+  // };
 
   const loadData = useCallback(async () => {
     try {
       setLoading(true);
       const res = await TripService.getAll();
       if (res.isSucess && res.value) {
-        setTrips(formatTrips(res.value));
+        setTrips(res.value);
         setError(null);
       } else {
         setError("Failed to fetch trips");
