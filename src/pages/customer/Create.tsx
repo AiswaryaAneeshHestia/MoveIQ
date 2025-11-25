@@ -152,4 +152,4 @@ const CreateCustomer: React.FC = () => {
     );
 };
 
-export default CreateCustomer;
+export default CreateCustomer;  
