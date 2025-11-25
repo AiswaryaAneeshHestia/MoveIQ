@@ -40,7 +40,7 @@ const CustomerEdit: React.FC = () => {
           const d = res.value;
           const loadedValues = {
             customerName: d.customerName || "",
-            dob: d.dob || "",
+            dob: d.dob ? d.dob.split("T")[0] : "",
             customerPhone: d.customerPhone || "",
             nationality: d.nationality || "",
             customerEmail: d.customerEmail || "",
