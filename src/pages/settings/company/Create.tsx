@@ -12,19 +12,19 @@ const CreateCompany: React.FC = () => {
 
     // ------------------ FIELD RULES --------------------
     const fields = [
-        { name: "comapanyName", rules: { required: true, type: "text" } },
-        { name: "website", rules: { required: true, type: "text" } },
-        { name: "contactNumber", rules: { required: true, type: "number", minLength: 10, maxLength: 10 } },
-        { name: "email", rules: { required: true, type: "email" } },
-        { name: "taxNumber", rules: { required: true, type: "text" } },
-        { name: "addressLine1", rules: { required: true, type: "text" } },
-        { name: "addressLine2", rules: { required: false, type: "text" } },
-        { name: "city", rules: { required: true, type: "text" } },
-        { name: "state", rules: { required: true, type: "text" } },
-        { name: "country", rules: { required: true, type: "text" } },
-        { name: "zipCode", rules: { required: true, type: "number" } },
-        { name: "invoicePrefix", rules: { required: false, type: "text" } },
-        { name: "companyLogo", rules: { required: false, type: "text" } }
+        { name: "comapanyName", rules: { required: true, type: "text",label: "Company Name" } },
+        { name: "website", rules: { required: true, type: "text",label: "Website" } },
+        { name: "contactNumber", rules: { required: true, type: "number",label: "Contact Number", minLength: 10, maxLength: 10 } },
+        { name: "email", rules: { required: true, type: "email" , label: "Email" } },
+        { name: "taxNumber", rules: { required: true, type: "text", label: "Tax Number" } },
+        { name: "addressLine1", rules: { required: true, type: "text", label: "Address Line 1" } },
+        { name: "addressLine2", rules: { required: false, type: "text",label: "Address Line 2" } },
+        { name: "city", rules: { required: true, type: "text", label: "City" } },
+        { name: "state", rules: { required: true, type: "text", label: "State" } },
+        { name: "country", rules: { required: true, type: "text",label: "Country" } },
+        { name: "zipCode", rules: { required: true, type: "number", label: "Zip Code" } },
+        { name: "invoicePrefix", rules: { required: false, type: "text" , label: "Invoice Prefix" } },
+        { name: "companyLogo", rules: { required: false, type: "text" , label: "Company Logo URL" } }
     ];
 
     // ---------------- INITIAL STATES -------------------
@@ -46,61 +46,48 @@ const CreateCompany: React.FC = () => {
             type === "tel" || type === "number"
                 ? value.replace(/[^0-9]/g, "") // allow only numbers
                 : value;
-
         setFormData((prev: any) => ({ ...prev, [name]: updated }));
-
         if (errors[name]) {
             setErrors((prev: any) => ({ ...prev, [name]: "" }));
         }
     };
-
     // ---------------- VALIDATE FIELD -------------------
     const validateField = (name: string, value: any) => {
         const rule = fields.find(f => f.name === name)?.rules;
         if (!rule) return true;
-
         const result = KiduValidation.validate(value, rule as any);
-
         setErrors((prev: any) => ({
             ...prev,
             [name]: result.isValid ? "" : result.message
         }));
-
         return result.isValid;
     };
-
     // ---------------- VALIDATE FULL FORM ----------------
     const validateForm = () => {
         let ok = true;
-
         fields.forEach(field => {
             if (!validateField(field.name, formData[field.name])) {
                 ok = false;
             }
         });
-
         return ok;
     };
-
     // ---------------- HANDLE SUBMIT ---------------------
     const handleSubmit = async (e: any) => {
         e.preventDefault();
-
         if (!validateForm()) return;
 
-        const companyData = {
+        try {
+
+            const companyData = {
             ...formData,
             companyId: 0,
             isActive: true,
             isDeleted: false
         };
-
-        try {
             const res = await CompanyService.create(companyData);
-
             if (res.isSucess) {
                 toast.success("Company created successfully!");
-
                 setTimeout(() => {
                     navigate("/dashboard/settings/company-list");
                 }, 1500);
@@ -111,8 +98,6 @@ const CreateCompany: React.FC = () => {
             toast.error(err.message || "Something went wrong");
         }
     };
-
-    // ----------------------------------------------------
 
     return (
         <>
@@ -135,10 +120,10 @@ const CreateCompany: React.FC = () => {
                     <Row>
                         {/* Company Name */}
                         <Col md={6} className="mb-3">
-                            <Form.Label className="fw-semibold">Company Name</Form.Label>
+                            <Form.Label className="fw-semibold">{fields[0].rules.label || "Company Name"}</Form.Label>
                             <Form.Control
                                 type="text"
-                                name="comapanyName"
+                                name={fields[0].name}
                                 value={formData.comapanyName}
                                 placeholder="Enter company name"
                                 onChange={handleChange}
@@ -151,10 +136,10 @@ const CreateCompany: React.FC = () => {
 
                         {/* Website */}
                         <Col md={6} className="mb-3">
-                            <Form.Label className="fw-semibold">Website</Form.Label>
+                            <Form.Label className="fw-semibold">{fields[1].rules.label || "Website"}</Form.Label>
                             <Form.Control
                                 type="text"
-                                name="website"
+                                name={fields[1].name}
                                 value={formData.website}
                                 placeholder="Enter website link"
                                 onChange={handleChange}
@@ -167,10 +152,10 @@ const CreateCompany: React.FC = () => {
 
                         {/* Contact Number */}
                         <Col md={6} className="mb-3">
-                            <Form.Label className="fw-semibold">Contact Number</Form.Label>
+                            <Form.Label className="fw-semibold">{fields[2].rules.label || "Contact Number"}</Form.Label>
                             <Form.Control
                                 type="tel"
-                                name="contactNumber"
+                                name={fields[2].name}
                                 value={formData.contactNumber}
                                 placeholder="Enter contact number"
                                 onChange={handleChange}
@@ -185,10 +170,10 @@ const CreateCompany: React.FC = () => {
 
                         {/* Email */}
                         <Col md={6} className="mb-3">
-                            <Form.Label className="fw-semibold">Email</Form.Label>
+                            <Form.Label className="fw-semibold">{fields[3].rules.label || "Email"}</Form.Label>
                             <Form.Control
                                 type="email"
-                                name="email"
+                                name={fields[3].name}
                                 value={formData.email}
                                 placeholder="Enter email"
                                 onChange={handleChange}
@@ -199,10 +184,10 @@ const CreateCompany: React.FC = () => {
 
                         {/* Tax Number */}
                         <Col md={6} className="mb-3">
-                            <Form.Label className="fw-semibold">Tax Number</Form.Label>
+                            <Form.Label className="fw-semibold">{fields[4].rules.label || "Tax Number"}</Form.Label>
                             <Form.Control
                                 type="text"
-                                name="taxNumber"
+                                name={fields[4].name}
                                 value={formData.taxNumber}
                                 placeholder="Enter tax number"
                                 onChange={handleChange}
@@ -215,10 +200,10 @@ const CreateCompany: React.FC = () => {
 
                         {/* Address Line 1 */}
                         <Col md={6} className="mb-3">
-                            <Form.Label className="fw-semibold">Address Line 1</Form.Label>
+                            <Form.Label className="fw-semibold">{fields[5].rules.label || "Address Line 1"}</Form.Label>
                             <Form.Control
                                 type="text"
-                                name="addressLine1"
+                                name={fields[5].name}
                                 value={formData.addressLine1}
                                 placeholder="Enter address line 1"
                                 onChange={handleChange}
@@ -233,10 +218,10 @@ const CreateCompany: React.FC = () => {
 
                         {/* Address Line 2 */}
                         <Col md={6} className="mb-3">
-                            <Form.Label className="fw-semibold">Address Line 2</Form.Label>
+                            <Form.Label className="fw-semibold">{fields[6].rules.label || "Address Line 2"}</Form.Label>
                             <Form.Control
                                 type="text"
-                                name="addressLine2"
+                                name={fields[6].name}
                                 value={formData.addressLine2}
                                 placeholder="Enter address line 2"
                                 onChange={handleChange}
@@ -251,10 +236,10 @@ const CreateCompany: React.FC = () => {
 
                         {/* City */}
                         <Col md={6} className="mb-3">
-                            <Form.Label className="fw-semibold">City</Form.Label>
+                            <Form.Label className="fw-semibold">{fields[7].rules.label || "City"}</Form.Label>
                             <Form.Control
                                 type="text"
-                                name="city"
+                                name={fields[7].name}
                                 value={formData.city}
                                 placeholder="Enter city"
                                 onChange={handleChange}
@@ -265,10 +250,10 @@ const CreateCompany: React.FC = () => {
 
                         {/* State */}
                         <Col md={6} className="mb-3">
-                            <Form.Label className="fw-semibold">State</Form.Label>
+                            <Form.Label className="fw-semibold">{fields[8].rules.label || "State"}</Form.Label>
                             <Form.Control
                                 type="text"
-                                name="state"
+                                name={fields[8].name}
                                 value={formData.state}
                                 placeholder="Enter state"
                                 onChange={handleChange}
@@ -279,10 +264,10 @@ const CreateCompany: React.FC = () => {
 
                         {/* Country */}
                         <Col md={6} className="mb-3">
-                            <Form.Label className="fw-semibold">Country</Form.Label>
+                            <Form.Label className="fw-semibold">{fields[9].rules.label || "Country"}</Form.Label>
                             <Form.Control
                                 type="text"
-                                name="country"
+                                name={fields[9].name}
                                 value={formData.country}
                                 placeholder="Enter country"
                                 onChange={handleChange}
@@ -295,10 +280,10 @@ const CreateCompany: React.FC = () => {
 
                         {/* Zip Code */}
                         <Col md={6} className="mb-3">
-                            <Form.Label className="fw-semibold">Zip Code</Form.Label>
+                            <Form.Label className="fw-semibold">{fields[10].rules.label || "Zip Code"}</Form.Label>
                             <Form.Control
                                 type="tel"
-                                name="zipCode"
+                                name={fields[10].name}
                                 value={formData.zipCode}
                                 placeholder="Enter zip code"
                                 onChange={handleChange}
@@ -311,10 +296,10 @@ const CreateCompany: React.FC = () => {
 
                         {/* Invoice Prefix */}
                         <Col md={6} className="mb-3">
-                            <Form.Label className="fw-semibold">Invoice Prefix</Form.Label>
+                            <Form.Label className="fw-semibold">{fields[11].rules.label || "Invoice Prefix"}</Form.Label>
                             <Form.Control
                                 type="text"
-                                name="invoicePrefix"
+                                name={fields[11].name}
                                 value={formData.invoicePrefix}
                                 placeholder="Enter invoice prefix"
                                 onChange={handleChange}
@@ -326,10 +311,10 @@ const CreateCompany: React.FC = () => {
 
                         {/* Company Logo */}
                         <Col md={6} className="mb-3">
-                            <Form.Label className="fw-semibold">Company Logo URL</Form.Label>
+                            <Form.Label className="fw-semibold">{fields[12].rules.label || "Company Logo URL"}</Form.Label>
                             <Form.Control
                                 type="text"
-                                name="companyLogo"
+                                name={fields[12].name}
                                 value={formData.companyLogo}
                                 placeholder="Enter logo URL"
                                 onChange={handleChange}

@@ -19,16 +19,16 @@ const CreateVehicle: React.FC = () => {
     );
     // FIELD DEFINITIONS
     const fields = [
-        { name: "registrationNumber", rules: { required: true, type: "text" } },
-        { name: "make", rules: { required: true, type: "text" } },
-        { name: "model", rules: { required: true, type: "text" } },
-        { name: "year", rules: { required: true, type: "select" } },
-        { name: "chassisNumber", rules: { required: true, type: "text" } },
-        { name: "engineNumber", rules: { required: true, type: "text" } },
-        { name: "vehicleType", rules: { required: true, type: "text" } },
-        { name: "registrationExpiry", rules: { required: true, type: "date" } },
-        { name: "currentStatus", rules: { required: true, type: "select" } },
-        { name: "location", rules: { required: true, type: "text" } },
+        { name: "registrationNumber", rules: { required: true, type: "text", label: "Registration Number" } },
+        { name: "make", rules: { required: true, type: "text", label: "Make" } },
+        { name: "model", rules: { required: true, type: "text", label: "Model" } },
+        { name: "year", rules: { required: true, type: "select", label: "Year" } },
+        { name: "chassisNumber", rules: { required: true, type: "text", label: "Chassis Number" } },
+        { name: "engineNumber", rules: { required: true, type: "text", label: "Engine Number" } },
+        { name: "vehicleType", rules: { required: true, type: "text", label: "Vehicle Type" } },
+        { name: "registrationExpiry", rules: { required: true, type: "date", label: "Registration Expiry" } },
+        { name: "currentStatus", rules: { required: true, type: "select", label: "Current Status" } },
+        { name: "location", rules: { required: true, type: "text", label: "Location" } },
     ];
     // Form Initial Values & Errors
     const initialValues: any = {};
@@ -119,10 +119,10 @@ const CreateVehicle: React.FC = () => {
                     <Row>
                         {/* Registration Number */}
                         <Col md={6} className="mb-3">
-                            <Form.Label className="fw-semibold">Registration Number</Form.Label>
+                            <Form.Label className="fw-semibold">{fields[0].rules.label || "Registration Number"} {fields[0].rules.required ? <span className="text-danger">*</span> : ""}</Form.Label>
                             <Form.Control
                                 type="text"
-                                name="registrationNumber"
+                                name={fields[0].name}
                                 placeholder="Enter registration number"
                                 value={formData.registrationNumber}
                                 onChange={handleChange}
@@ -137,10 +137,10 @@ const CreateVehicle: React.FC = () => {
 
                         {/* Make */}
                         <Col md={6} className="mb-3">
-                            <Form.Label className="fw-semibold">Make</Form.Label>
+                            <Form.Label className="fw-semibold">{fields[1].rules.label || "Make"} {fields[1].rules.required ? <span className="text-danger">*</span> : ""}</Form.Label>
                             <Form.Control
                                 type="text"
-                                name="make"
+                                name={fields[1].name}
                                 placeholder="Enter make"
                                 value={formData.make}
                                 onChange={handleChange}
@@ -153,10 +153,10 @@ const CreateVehicle: React.FC = () => {
 
                         {/* Model */}
                         <Col md={6} className="mb-3">
-                            <Form.Label className="fw-semibold">Model</Form.Label>
+                            <Form.Label className="fw-semibold">{fields[2].rules.label || "Model"} {fields[2].rules.required ? <span className="text-danger">*</span> : ""}</Form.Label>
                             <Form.Control
                                 type="text"
-                                name="model"
+                                name={fields[2].name}
                                 placeholder="Enter model"
                                 value={formData.model}
                                 onChange={handleChange}
@@ -169,9 +169,9 @@ const CreateVehicle: React.FC = () => {
 
                         {/* Year (Dropdown) */}
                         <Col md={6} className="mb-3">
-                            <Form.Label className="fw-semibold">Year</Form.Label>
+                            <Form.Label className="fw-semibold">{fields[3].rules.label || "Year"} {fields[3].rules.required ? <span className="text-danger">*</span> : ""}</Form.Label>
                             <Form.Select
-                                name="year"
+                                name={fields[3].name}
                                 value={formData.year}
                                 onChange={handleChange}
                                 onBlur={() => validateField("year", formData.year)}
@@ -188,10 +188,10 @@ const CreateVehicle: React.FC = () => {
 
                         {/* Chassis Number */}
                         <Col md={6} className="mb-3">
-                            <Form.Label className="fw-semibold">Chassis Number</Form.Label>
+                            <Form.Label className="fw-semibold">{fields[4].rules.label || "Chassis Number"} {fields[4].rules.required ? <span className="text-danger">*</span> : ""}</Form.Label>
                             <Form.Control
                                 type="text"
-                                name="chassisNumber"
+                                name={fields[4].name}
                                 placeholder="Enter chassis number"
                                 value={formData.chassisNumber}
                                 onChange={handleChange}
@@ -206,10 +206,10 @@ const CreateVehicle: React.FC = () => {
 
                         {/* Engine Number */}
                         <Col md={6} className="mb-3">
-                            <Form.Label className="fw-semibold">Engine Number</Form.Label>
+                            <Form.Label className="fw-semibold">{fields[5].rules.label || "Engine Number"} {fields[5].rules.required ? <span className="text-danger">*</span> : ""}</Form.Label>
                             <Form.Control
                                 type="text"
-                                name="engineNumber"
+                                name={fields[5].name}
                                 placeholder="Enter engine number"
                                 value={formData.engineNumber}
                                 onChange={handleChange}
@@ -224,10 +224,10 @@ const CreateVehicle: React.FC = () => {
 
                         {/* Vehicle Type */}
                         <Col md={6} className="mb-3">
-                            <Form.Label className="fw-semibold">Vehicle Type</Form.Label>
+                            <Form.Label className="fw-semibold">{fields[6].rules.label || "Vehicle Type"} {fields[6].rules.required ? <span className="text-danger">*</span> : ""}</Form.Label>
                             <Form.Control
                                 type="text"
-                                name="vehicleType"
+                                name={fields[6].name}
                                 placeholder="Enter vehicle type"
                                 value={formData.vehicleType}
                                 onChange={handleChange}
@@ -242,10 +242,10 @@ const CreateVehicle: React.FC = () => {
 
                         {/* Registration Expiry */}
                         <Col md={6} className="mb-3">
-                            <Form.Label className="fw-semibold">Registration Expiry</Form.Label>
+                            <Form.Label className="fw-semibold">{fields[7].rules.label || "Registration Expiry"} {fields[7].rules.required ? <span className="text-danger">*</span> : ""}</Form.Label>
                             <Form.Control
                                 type="date"
-                                name="registrationExpiry"
+                                name={fields[7].name}
                                 value={formData.registrationExpiry}
                                 onChange={handleChange}
                                 onBlur={() =>
@@ -264,16 +264,16 @@ const CreateVehicle: React.FC = () => {
 
                         {/* Status Dropdown */}
                         <Col md={6} className="mb-3">
-                            <Form.Label className="fw-semibold">Current Status</Form.Label>
+                            <Form.Label className="fw-semibold">{fields[8].rules.label || "Current Status"} {fields[8].rules.required ? <span className="text-danger">*</span> : ""}</Form.Label>
                             <Form.Select
-                                name="currentStatus"
+                                name={fields[8].name}
                                 value={formData.currentStatus}
                                 onChange={handleChange}
                                 onBlur={() =>
                                     validateField("currentStatus", formData.currentStatus)
                                 }
                             >
-                                <option value="">Select Status</option>
+                                <option value="" disabled >Select Status</option>
                                 {statusOptions.map((s, i) => (
                                     <option key={i} value={s.value}>
                                         {s.label}
@@ -287,10 +287,10 @@ const CreateVehicle: React.FC = () => {
 
                         {/* Location */}
                         <Col md={6} className="mb-3">
-                            <Form.Label className="fw-semibold">Location</Form.Label>
+                            <Form.Label className="fw-semibold">{fields[9].rules.label || "Location"} {fields[9].rules.required ? <span className="text-danger">*</span> : ""}</Form.Label>
                             <Form.Control
                                 type="text"
-                                name="location"
+                                name={fields[9].name}
                                 placeholder="Enter location"
                                 value={formData.location}
                                 onChange={handleChange}
