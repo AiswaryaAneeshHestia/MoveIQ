@@ -23,6 +23,7 @@ import CustomerView from './pages/customer/View';
 
 //Driver
 import DriverList from './pages/driver/List';
+import DriverCreate from './pages/driver/Create';
 
 //Expense
 import ExpenseList from './pages/expense/List';
@@ -74,6 +75,7 @@ function App() {
 
           {/* Driver*/}
           <Route path="driver-list" element={<DriverList />} />
+          <Route path="driver-create" element={<DriverCreate />} />
 
           {/* Invoice */}
           <Route path="invoice-list" element={<InvoiceMasterList />} />

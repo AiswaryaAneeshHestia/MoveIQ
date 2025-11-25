@@ -63,7 +63,7 @@ const DriverList: React.FC = () => {
                 data={drivers}
                 addButtonLabel="Add New Driver"
                 idKey="driverId"
-                addRoute="/dashboard/create-driver"
+                addRoute="/dashboard/driver-create"
                 editRoute="/dashboard/edit-driver"
                 viewRoute="/dashboard/view-driver"
                 // showAvailabilityButton={true}
