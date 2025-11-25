@@ -72,7 +72,7 @@ const ViewInvoice: React.FC = () => {
   ];
 
   const handleEdit = () =>
-    navigate(`/admin-dashboard/invoice-edit/${data.invoicemasterId}`);
+    navigate(`/dashboard/edit-invoice/${data.invoicemasterId}`);
 
   const handleDelete = async () => {
     setLoadingDelete(true);
@@ -80,7 +80,7 @@ const ViewInvoice: React.FC = () => {
       await InvoiceMasterService.delete(data.invoicemasterId);
       toast.success("Invoice deleted successfully");
 
-      setTimeout(() => navigate("/admin-dashboard/invoices"), 800);
+      setTimeout(() => navigate("/dashboard/invoice-list"), 800);
     } catch {
       toast.error("Failed to delete invoice.");
     } finally {

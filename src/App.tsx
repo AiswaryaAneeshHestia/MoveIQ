@@ -58,6 +58,7 @@ import ViewCompany from './pages/settings/company/View';
 
 //Expense-Type
 import ExpenseTypeList from './pages/settings/expenseType/List';
+import ViewExpenseType from './pages/settings/expenseType/View';
 
 
 function App() {
@@ -121,6 +122,7 @@ function App() {
 
           {/* Expense Type */}
           <Route path="settings/expense-type-list" element={<ExpenseTypeList />} />
+          <Route path="settings/view-expenses-type/:expenseTypeId" element={<ViewExpenseType />} />
 
         </Route>
         {/* Catch-All Route for 404 */}

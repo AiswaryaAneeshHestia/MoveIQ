@@ -54,7 +54,7 @@ const InvoiceMasterList: React.FC = () => {
                 addRoute="/dashboard/create-invoice"
                 editRoute="/dashboard/edit-invoice"
                 viewRoute="/dashboard/view-invoice"
-                idKey="id"
+                idKey="invoicemasterId"
                 error={error}
                 onRetry={loadData}
             />
