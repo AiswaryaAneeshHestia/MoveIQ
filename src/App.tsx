@@ -24,6 +24,7 @@ import CustomerView from './pages/customer/View';
 //Driver
 import DriverList from './pages/driver/List';
 import DriverCreate from './pages/driver/Create';
+import DriverEdit from './pages/driver/Edit';
 
 //Expense
 import ExpenseList from './pages/expense/List';
@@ -35,6 +36,7 @@ import InvoiceMasterList from './pages/invoice/List';
 import VehicleList from './pages/vehicle/vehicles/List';
 import CreateVehicle from './pages/vehicle/vehicles/Create';
 import VehicleEdit from './pages/vehicle/vehicles/Edit';
+
 
 //Vehicle-Maintenance
 import VehicleMaintenanceList from './pages/vehicle/maintenance/List';
@@ -77,6 +79,7 @@ function App() {
           {/* Driver*/}
           <Route path="driver-list" element={<DriverList />} />
           <Route path="driver-create" element={<DriverCreate />} />
+          <Route path="Driver-edit/:DriverId" element={<CustomerEdit />} />
 
           {/* Invoice */}
           <Route path="invoice-list" element={<InvoiceMasterList />} />

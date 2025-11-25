@@ -87,37 +87,49 @@ const CreateCustomer: React.FC = () => {
                     <Row>
 
                         <Col md={6} className="mb-3">
-                            <Form.Label className="fw-semibold">{fields[0].rules.label || "Customer Name"}</Form.Label>
+                            <Form.Label className="fw-semibold">
+                                {fields[0].rules.label} {fields[0].rules.required && <span className="text-danger">*</span>}
+                            </Form.Label>
                             <Form.Control type="text" name="customerName" placeholder="Enter customer name" value={formData.customerName} onChange={handleChange} onBlur={() => validateField("customerName", formData.customerName)} />
                             {errors.customerName && <span className="text-danger">{errors.customerName}</span>}
                         </Col>
 
                         <Col md={6} className="mb-3">
-                            <Form.Label className="fw-semibold">{fields[1].rules.label || "Registered Date"}</Form.Label>
+                            <Form.Label className="fw-semibold">
+                                {fields[1].rules.label} {fields[1].rules.required && <span className="text-danger">*</span>}
+                            </Form.Label>
                             <Form.Control type="date" name="dob" value={formData.dob} onChange={handleChange} onBlur={() => validateField("dob", formData.dob)} />
                             {errors.dob && <small className="text-danger">{errors.dob}</small>}
                         </Col>
 
                         <Col md={6} className="mb-3">
-                            <Form.Label className="fw-semibold">{fields[2].rules.label || "Phone Number"}</Form.Label>
+                            <Form.Label className="fw-semibold">
+                                {fields[2].rules.label} {fields[2].rules.required && <span className="text-danger">*</span>}
+                            </Form.Label>
                             <Form.Control type="tel" name="customerPhone" placeholder="Enter phone number" value={formData.customerPhone} onChange={handleChange} onBlur={() => validateField("customerPhone", formData.customerPhone)} />
                             {errors.customerPhone && <small className="text-danger">{errors.customerPhone}</small>}
                         </Col>
 
                         <Col md={6} className="mb-3">
-                            <Form.Label className="fw-semibold">{fields[3].rules.label || "nationalilty"}</Form.Label>
+                            <Form.Label className="fw-semibold">
+                                {fields[3].rules.label} {fields[3].rules.required && <span className="text-danger">*</span>}
+                            </Form.Label>
                             <Form.Control type="text" name="nationalilty" placeholder="Enter nationalilty" value={formData.nationalilty} onChange={handleChange} onBlur={() => validateField("nationalilty", formData.nationalilty)} />
                             {errors.nationalilty && <small className="text-danger">{errors.nationalilty}</small>}
                         </Col>
 
                         <Col md={6} className="mb-3">
-                            <Form.Label className="fw-semibold">{fields[4].rules.label || "Email ID"}</Form.Label>
+                            <Form.Label className="fw-semibold">
+                                {fields[4].rules.label} {fields[4].rules.required && <span className="text-danger">*</span>}
+                            </Form.Label>
                             <Form.Control type="email" name="customerEmail" placeholder="Enter email" value={formData.customerEmail} onChange={handleChange} onBlur={() => validateField("customerEmail", formData.customerEmail)} />
                             {errors.customerEmail && <small className="text-danger">{errors.customerEmail}</small>}
                         </Col>
 
                         <Col md={6} className="mb-3">
-                            <Form.Label className="fw-semibold">{fields[5].rules.label || "Address"}</Form.Label>
+                            <Form.Label className="fw-semibold">
+                                {fields[5].rules.label} {fields[5].rules.required && <span className="text-danger">*</span>}
+                            </Form.Label>
                             <Form.Control as="textarea" rows={3} name="customerAddress" placeholder="Enter address" value={formData.customerAddress} onChange={handleChange} onBlur={() => validateField("customerAddress", formData.customerAddress)} />
                             {errors.customerAddress && <small className="text-danger">{errors.customerAddress}</small>}
                         </Col>
@@ -140,4 +152,4 @@ const CreateCustomer: React.FC = () => {
     );
 };
 
-export default CreateCustomer;
+export default CreateCustomer;  
