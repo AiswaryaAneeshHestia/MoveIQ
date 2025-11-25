@@ -68,7 +68,7 @@ const ViewCustomer: React.FC = () => {
     try {
       await CustomerService.delete(data.customerId);
       toast.success("Customer deleted successfully");
-      setTimeout(() => navigate("/admin-dashboard/customers"), 800);
+      setTimeout(() => navigate("/dashboard/customer-list"), 800);
     } catch {
       toast.error("Failed to delete customer.");
     } finally {
