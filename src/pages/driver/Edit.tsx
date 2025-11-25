@@ -9,6 +9,7 @@ import KiduPrevious from "../../components/KiduPrevious";
 import KiduLoader from "../../components/KiduLoader";
 import Attachments from "../../components/KiduAttachments";
 import AuditTrailsComponent from "../../components/KiduAuditLogs";
+import KiduReset from "../../components/ReuseButtons/KiduReset";
 import type {Driver} from "../../types/Driver.types";
 
 const DriverEdit:React.FC=()=>{
@@ -76,7 +77,7 @@ const DriverEdit:React.FC=()=>{
  const handleChange=(e:any)=>{
   const{name,value,type,files}=e.target;
 
-  if(type==="file" && files && files.length>0){
+  if(type==="file"&&files&&files.length>0){
    const file=files[0];
    setFormData((prev:any)=>({...prev,photo:file}));
 
@@ -85,7 +86,7 @@ const DriverEdit:React.FC=()=>{
    return;
   }
 
-  const updated=type==="tel" ? value.replace(/[^0-9]/g,"") : value;
+  const updated = type==="tel" ? value.replace(/[^0-9]/g,"") : value;
   setFormData((prev:any)=>({...prev,[name]:updated}));
 
   if(errors[name]) setErrors((prev:any)=>({...prev,[name]:""}));
@@ -95,7 +96,7 @@ const DriverEdit:React.FC=()=>{
   const rule=fields.find(f=>f.name===name)?.rules;
   if(!rule) return true;
 
-  const result=KiduValidation.validate(value,rule);
+  const result=KiduValidation.validate(value, rule as any);
   setErrors((prev:any)=>({...prev,[name]:result.isValid ? "" : result.message}));
   return result.isValid;
  };
@@ -103,7 +104,7 @@ const DriverEdit:React.FC=()=>{
  const validateForm=()=>{
   let ok=true;
   fields.forEach(f=>{
-    if(!validateField(f.name,formData[f.name])) ok=false;
+   if(!validateField(f.name,formData[f.name])) ok=false;
   });
   return ok;
  };
@@ -161,8 +162,7 @@ const DriverEdit:React.FC=()=>{
       {/* IMAGE SECTION */}
       <Col xs={12} md={4} className="d-flex flex-column align-items-center mb-4">
        <div style={{position:"relative",width:"160px",height:"160px"}}>
-        <Image 
-          src={imagePreview || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWzfZX4ha78BX5OP6gm6PA_Q91tW9jC7KVTg&s"}
+        <Image src={imagePreview || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWzfZX4ha78BX5OP6gm6PA_Q91tW9jC7KVTg&s"}
           roundedCircle width={160} height={160}
           style={{objectFit:"cover",border:"1px solid #ccc"}}
         />
@@ -181,95 +181,95 @@ const DriverEdit:React.FC=()=>{
        </div>
       </Col>
 
-      {/* FORM FIELDS - NO MAP, EXACT LIKE CUSTOMER */}
+      {/* FORM FIELDS — EXACTLY LIKE CUSTOMER EDIT (NO MAP) */}
       <Col xs={12} md={8}>
        <Row>
 
         <Col md={6} className="mb-3">
          <Form.Label className="fw-semibold">
-           {fields[0].label} {fields[0].rules.required && <span className="text-danger">*</span>}
+          {fields[0].label} {fields[0].rules.required && <span className="text-danger">*</span>}
          </Form.Label>
          <Form.Control
-           type="text"
-           name="driverName"
-           value={formData.driverName}
-           placeholder="Enter driver name"
-           onChange={handleChange}
-           onBlur={()=>validateField("driverName",formData.driverName)}
+          type="text"
+          name="driverName"
+          value={formData.driverName}
+          placeholder="Enter driver name"
+          onChange={handleChange}
+          onBlur={()=>validateField("driverName",formData.driverName)}
          />
          {errors.driverName && <small className="text-danger">{errors.driverName}</small>}
         </Col>
 
         <Col md={6} className="mb-3">
          <Form.Label className="fw-semibold">
-           {fields[1].label} {fields[1].rules.required && <span className="text-danger">*</span>}
+          {fields[1].label} {fields[1].rules.required && <span className="text-danger">*</span>}
          </Form.Label>
          <Form.Control
-           type="date"
-           name="dob"
-           value={formData.dob}
-           onChange={handleChange}
-           onBlur={()=>validateField("dob",formData.dob)}
+          type="date"
+          name="dob"
+          value={formData.dob}
+          onChange={handleChange}
+          onBlur={()=>validateField("dob",formData.dob)}
          />
          {errors.dob && <small className="text-danger">{errors.dob}</small>}
         </Col>
 
         <Col md={6} className="mb-3">
          <Form.Label className="fw-semibold">
-           {fields[2].label} {fields[2].rules.required && <span className="text-danger">*</span>}
+          {fields[2].label} {fields[2].rules.required && <span className="text-danger">*</span>}
          </Form.Label>
          <Form.Control
-           type="tel"
-           name="contactNumber"
-           placeholder="Enter phone number"
-           value={formData.contactNumber}
-           onChange={handleChange}
-           onBlur={()=>validateField("contactNumber",formData.contactNumber)}
+          type="tel"
+          name="contactNumber"
+          placeholder="Enter phone number"
+          value={formData.contactNumber}
+          onChange={handleChange}
+          onBlur={()=>validateField("contactNumber",formData.contactNumber)}
          />
          {errors.contactNumber && <small className="text-danger">{errors.contactNumber}</small>}
         </Col>
 
         <Col md={6} className="mb-3">
          <Form.Label className="fw-semibold">
-           {fields[3].label} {fields[3].rules.required && <span className="text-danger">*</span>}
+          {fields[3].label} {fields[3].rules.required && <span className="text-danger">*</span>}
          </Form.Label>
          <Form.Control
-           type="text"
-           name="nationality"
-           placeholder="Enter nationality"
-           value={formData.nationality}
-           onChange={handleChange}
-           onBlur={()=>validateField("nationality",formData.nationality)}
+          type="text"
+          name="nationality"
+          placeholder="Enter nationality"
+          value={formData.nationality}
+          onChange={handleChange}
+          onBlur={()=>validateField("nationality",formData.nationality)}
          />
          {errors.nationality && <small className="text-danger">{errors.nationality}</small>}
         </Col>
 
         <Col md={6} className="mb-3">
          <Form.Label className="fw-semibold">
-           {fields[4].label} {fields[4].rules.required && <span className="text-danger">*</span>}
+          {fields[4].label} {fields[4].rules.required && <span className="text-danger">*</span>}
          </Form.Label>
          <Form.Control
-           type="text"
-           name="license"
-           placeholder="Enter license number"
-           value={formData.license}
-           onChange={handleChange}
-           onBlur={()=>validateField("license",formData.license)}
+          type="text"
+          name="license"
+          placeholder="Enter license number"
+          value={formData.license}
+          onChange={handleChange}
+          onBlur={()=>validateField("license",formData.license)}
          />
          {errors.license && <small className="text-danger">{errors.license}</small>}
         </Col>
 
         <Col md={6} className="mb-3">
          <Form.Label className="fw-semibold">
-           {fields[5].label} {fields[5].rules.required && <span className="text-danger">*</span>}
+          {fields[5].label} {fields[5].rules.required && <span className="text-danger">*</span>}
          </Form.Label>
          <Form.Control
-           type="text"
-           name="nationalId"
-           placeholder="Enter iqama number"
-           value={formData.nationalId}
-           onChange={handleChange}
-           onBlur={()=>validateField("nationalId",formData.nationalId)}
+          type="text"
+          name="nationalId"
+          placeholder="Enter iqama number"
+          value={formData.nationalId}
+          onChange={handleChange}
+          onBlur={()=>validateField("nationalId",formData.nationalId)}
          />
          {errors.nationalId && <small className="text-danger">{errors.nationalId}</small>}
         </Col>
@@ -279,17 +279,21 @@ const DriverEdit:React.FC=()=>{
 
      </Row>
 
+     {/* Attachments */}
      <Row className="mb-2">
       <Col xs={12}>
        <Attachments tableName={tableName} recordId={recordId}/>
       </Col>
      </Row>
 
+     {/* Audit Logs */}
      <div>
       <AuditTrailsComponent tableName={tableName} recordId={recordId}/>
      </div>
 
+     {/* BUTTONS */}
      <div className="d-flex gap-2 justify-content-end mt-4">
+      <KiduReset initialValues={initialValues} setFormData={setFormData} />
       <Button type="submit" style={{backgroundColor:"#18575A",border:"none"}}>Update</Button>
      </div>
 
