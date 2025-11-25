@@ -3,7 +3,7 @@ import { Form, Button, Container, Row, Col } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import CustomerService from "../../services/Customer.services";
-import Loader from "../../components/KiduLoader";
+import KiduLoader from "../../components/KiduLoader";
 import KiduPrevious from "../../components/KiduPrevious";
 import { KiduValidation } from "../../components/KiduValidation";
 import KiduReset from "../../components/ReuseButtons/KiduReset";
@@ -118,7 +118,7 @@ const CustomerEdit: React.FC = () => {
     }
   };
 
-  if (loading) return <Loader type="customer details..." />;
+  if (loading) return <KiduLoader type="customer details..." />;
 
   return (
     <>
