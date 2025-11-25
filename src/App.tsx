@@ -25,6 +25,7 @@ import CustomerView from './pages/customer/View';
 import DriverList from './pages/driver/List';
 import DriverCreate from './pages/driver/Create';
 import DriverEdit from './pages/driver/Edit';
+import DriverView from './pages/driver/View';
 
 
 //Expense
@@ -87,6 +88,8 @@ function App() {
           <Route path="driver-list" element={<DriverList />} />
           <Route path="driver-create" element={<DriverCreate />} />
           <Route path="driver-edit/:driverId" element={<DriverEdit />} />
+          <Route path="driver-view/:driverId" element={<DriverView />} />
+          
 
           {/* Invoice */}
           <Route path="invoice-list" element={<InvoiceMasterList />} />
