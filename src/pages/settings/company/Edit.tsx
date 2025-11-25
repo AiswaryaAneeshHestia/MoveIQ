@@ -9,8 +9,6 @@ import KiduValidation from "../../../components/KiduValidation";
 import KiduLoader from "../../../components/KiduLoader";
 import KiduPrevious from "../../../components/KiduPrevious";
 import KiduReset from "../../../components/ReuseButtons/KiduReset";
-import Attachments from "../../../components/KiduAttachments";
-import AuditTrailsComponent from "../../../components/KiduAuditLogs";
 
 const CompanyEdit: React.FC = () => {
   const navigate = useNavigate();
@@ -20,9 +18,6 @@ const CompanyEdit: React.FC = () => {
   const [initialValues, setInitialValues] = useState<any>({});
   const [formData, setFormData] = useState<any>({});
   const [errors, setErrors] = useState<any>({});
-
-  const tableName = "company";
-  const recordId = Number(companyId);
 
   const fields = [
     { name: "comapanyName", rules: { required: true, type: "text", label: "Company Name" } },
@@ -83,12 +78,12 @@ const CompanyEdit: React.FC = () => {
           setErrors(errValues);
         } else {
           toast.error(res?.customMessage || "Company not found");
-          navigate("/admin-dashboard/settings/companys");
+          navigate("/dashboard/settings/company-list");
         }
       } catch (err: any) {
         console.error("Error fetching company:", err);
         toast.error(err?.message || "Failed to fetch company details");
-        navigate("/admin-dashboard/settings/companys");
+        navigate("/dashboard/settings/company-list");
       } finally {
         setLoading(false);
       }
@@ -163,7 +158,7 @@ const CompanyEdit: React.FC = () => {
       if (res && res.isSucess) {
         toast.success("Company updated successfully!");
         setTimeout(() => {
-          navigate("/admin-dashboard/settings/companys");
+          navigate("/dashboard/settings/company-list");
         }, 1500);
       } else {
         toast.error(res?.customMessage || res?.error || "Failed to update company");
@@ -373,16 +368,6 @@ const CompanyEdit: React.FC = () => {
             <Button type="submit" style={{ backgroundColor: "#18575A", border: "none" }}>
               Update
             </Button>
-          </div>
-
-          <Row className="mb-2 mt-4">
-            <Col xs={12}>
-              <Attachments tableName={tableName} recordId={recordId} />
-            </Col>
-          </Row>
-
-          <div className="mt-3">
-            <AuditTrailsComponent tableName={tableName} recordId={recordId} />
           </div>
         </Form>
       </Container>

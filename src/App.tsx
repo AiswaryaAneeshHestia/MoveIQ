@@ -24,33 +24,39 @@ import CustomerView from './pages/customer/View';
 //Driver
 import DriverList from './pages/driver/List';
 import DriverCreate from './pages/driver/Create';
+import DriverEdit from './pages/driver/Edit';
+
 
 //Expense
 import ExpenseList from './pages/expense/List';
+import ViewExpense from './pages/expense/View';
 
 //Invoice
 import InvoiceMasterList from './pages/invoice/List';
+import ViewInvoice from './pages/invoice/View';
 
 //Vehicle
 import VehicleList from './pages/vehicle/vehicles/List';
 import CreateVehicle from './pages/vehicle/vehicles/Create';
 import VehicleEdit from './pages/vehicle/vehicles/Edit';
-
+import VehicleView from './pages/vehicle/vehicles/View';
 
 //Vehicle-Maintenance
 import VehicleMaintenanceList from './pages/vehicle/maintenance/List';
+import ViewMaintenance from './pages/vehicle/maintenance/View';
 
 //User
 import UserList from './pages/settings/users/List';
+import ViewUser from './pages/settings/users/View';
 
 //Company
 import CompanyList from './pages/settings/company/List';
 import CreateCompany from './pages/settings/company/Create';
+import CompanyEdit from './pages/settings/company/Edit';
+import ViewCompany from './pages/settings/company/View';
 
 //Expense-Type
 import ExpenseTypeList from './pages/settings/expenseType/List';
-import DriverEdit from './pages/driver/Edit';
-import CompanyEdit from './pages/settings/company/Edit';
 
 
 function App() {
@@ -84,25 +90,31 @@ function App() {
 
           {/* Invoice */}
           <Route path="invoice-list" element={<InvoiceMasterList />} />
+          <Route path="view-invoice/:invoiceId" element={<ViewInvoice />} />
 
           {/* Expense */}
           <Route path="expense-list" element={<ExpenseList />} />
+          <Route path="view-expense/:expenseId" element={<ViewExpense />} />
 
           {/* Vehicles */}
           <Route path="vehicle/vehicle-list" element={<VehicleList />} />
           <Route path="vehicle/create-vehicle" element={<CreateVehicle />} />
           <Route path="vehicle/edit-vehicle/:vehicleId" element={<VehicleEdit />} />
+          <Route path="vehicle/view-vehicle/:vehicleId" element={<VehicleView />} />
 
           {/* Vehicles-Maintenance */}
           <Route path="vehicle/maintenance-list" element={<VehicleMaintenanceList />} />
+          <Route path="vehicles/view-maintenance/:maintenanceId" element={<ViewMaintenance />} />
 
           {/* User */}
           <Route path="settings/user-list" element={<UserList />} />
+          <Route path="settings/view-user/:userId" element={<ViewUser />} />
 
           {/* Company */}
           <Route path="settings/company-list" element={<CompanyList />} />
           <Route path="settings/create-company" element={<CreateCompany />} />
           <Route path="settings/edit-company/:companyId" element={<CompanyEdit />} />
+          <Route path="settings/view-company/:companyId" element={<ViewCompany />} />
 
           {/* Expense Type */}
           <Route path="settings/expense-type-list" element={<ExpenseTypeList />} />
