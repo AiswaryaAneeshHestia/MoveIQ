@@ -120,7 +120,7 @@ const CreateCompany: React.FC = () => {
                     <Row>
                         {/* Company Name */}
                         <Col md={6} className="mb-3">
-                            <Form.Label className="fw-semibold">{fields[0].rules.label || "Company Name"}</Form.Label>
+                            <Form.Label className="fw-semibold">{fields[0].rules.label || "Company Name"} {fields[0].rules.required ? <span className="text-danger">*</span> : ""}</Form.Label>
                             <Form.Control
                                 type="text"
                                 name={fields[0].name}
@@ -136,7 +136,7 @@ const CreateCompany: React.FC = () => {
 
                         {/* Website */}
                         <Col md={6} className="mb-3">
-                            <Form.Label className="fw-semibold">{fields[1].rules.label || "Website"}</Form.Label>
+                            <Form.Label className="fw-semibold">{fields[1].rules.label || "Website"} {fields[1].rules.required ? <span className="text-danger">*</span> : ""}</Form.Label>
                             <Form.Control
                                 type="text"
                                 name={fields[1].name}
@@ -152,7 +152,7 @@ const CreateCompany: React.FC = () => {
 
                         {/* Contact Number */}
                         <Col md={6} className="mb-3">
-                            <Form.Label className="fw-semibold">{fields[2].rules.label || "Contact Number"}</Form.Label>
+                            <Form.Label className="fw-semibold">{fields[2].rules.label || "Contact Number"} {fields[2].rules.required ? <span className="text-danger">*</span> : ""}</Form.Label>
                             <Form.Control
                                 type="tel"
                                 name={fields[2].name}
@@ -170,7 +170,7 @@ const CreateCompany: React.FC = () => {
 
                         {/* Email */}
                         <Col md={6} className="mb-3">
-                            <Form.Label className="fw-semibold">{fields[3].rules.label || "Email"}</Form.Label>
+                            <Form.Label className="fw-semibold">{fields[3].rules.label || "Email"} {fields[3].rules.required ? <span className="text-danger">*</span> : ""}</Form.Label>
                             <Form.Control
                                 type="email"
                                 name={fields[3].name}
@@ -184,7 +184,7 @@ const CreateCompany: React.FC = () => {
 
                         {/* Tax Number */}
                         <Col md={6} className="mb-3">
-                            <Form.Label className="fw-semibold">{fields[4].rules.label || "Tax Number"}</Form.Label>
+                            <Form.Label className="fw-semibold">{fields[4].rules.label || "Tax Number"} {fields[4].rules.required ? <span className="text-danger">*</span> : ""}</Form.Label>
                             <Form.Control
                                 type="text"
                                 name={fields[4].name}
@@ -200,7 +200,7 @@ const CreateCompany: React.FC = () => {
 
                         {/* Address Line 1 */}
                         <Col md={6} className="mb-3">
-                            <Form.Label className="fw-semibold">{fields[5].rules.label || "Address Line 1"}</Form.Label>
+                            <Form.Label className="fw-semibold">{fields[5].rules.label || "Address Line 1"} {fields[5].rules.required ? <span className="text-danger">*</span> : ""}</Form.Label>
                             <Form.Control
                                 type="text"
                                 name={fields[5].name}
@@ -218,7 +218,7 @@ const CreateCompany: React.FC = () => {
 
                         {/* Address Line 2 */}
                         <Col md={6} className="mb-3">
-                            <Form.Label className="fw-semibold">{fields[6].rules.label || "Address Line 2"}</Form.Label>
+                            <Form.Label className="fw-semibold">{fields[6].rules.label || "Address Line 2"} {fields[6].rules.required ? <span className="text-danger">*</span> : ""}</Form.Label>
                             <Form.Control
                                 type="text"
                                 name={fields[6].name}
@@ -236,7 +236,7 @@ const CreateCompany: React.FC = () => {
 
                         {/* City */}
                         <Col md={6} className="mb-3">
-                            <Form.Label className="fw-semibold">{fields[7].rules.label || "City"}</Form.Label>
+                            <Form.Label className="fw-semibold">{fields[7].rules.label || "City"} {fields[7].rules.required ? <span className="text-danger">*</span> : ""}</Form.Label>
                             <Form.Control
                                 type="text"
                                 name={fields[7].name}
@@ -250,7 +250,7 @@ const CreateCompany: React.FC = () => {
 
                         {/* State */}
                         <Col md={6} className="mb-3">
-                            <Form.Label className="fw-semibold">{fields[8].rules.label || "State"}</Form.Label>
+                            <Form.Label className="fw-semibold">{fields[8].rules.label || "State"} {fields[8].rules.required ? <span className="text-danger">*</span> : ""}</Form.Label>
                             <Form.Control
                                 type="text"
                                 name={fields[8].name}
@@ -264,7 +264,7 @@ const CreateCompany: React.FC = () => {
 
                         {/* Country */}
                         <Col md={6} className="mb-3">
-                            <Form.Label className="fw-semibold">{fields[9].rules.label || "Country"}</Form.Label>
+                            <Form.Label className="fw-semibold">{fields[9].rules.label || "Country"} {fields[9].rules.required ? <span className="text-danger">*</span> : ""}</Form.Label>
                             <Form.Control
                                 type="text"
                                 name={fields[9].name}
@@ -280,7 +280,7 @@ const CreateCompany: React.FC = () => {
 
                         {/* Zip Code */}
                         <Col md={6} className="mb-3">
-                            <Form.Label className="fw-semibold">{fields[10].rules.label || "Zip Code"}</Form.Label>
+                            <Form.Label className="fw-semibold">{fields[10].rules.label || "Zip Code"} {fields[10].rules.required ? <span className="text-danger">*</span> : ""}</Form.Label>
                             <Form.Control
                                 type="tel"
                                 name={fields[10].name}
@@ -296,7 +296,7 @@ const CreateCompany: React.FC = () => {
 
                         {/* Invoice Prefix */}
                         <Col md={6} className="mb-3">
-                            <Form.Label className="fw-semibold">{fields[11].rules.label || "Invoice Prefix"}</Form.Label>
+                            <Form.Label className="fw-semibold">{fields[11].rules.label || "Invoice Prefix"} {fields[11].rules.required ? <span className="text-danger">*</span> : ""}</Form.Label>
                             <Form.Control
                                 type="text"
                                 name={fields[11].name}
@@ -311,7 +311,7 @@ const CreateCompany: React.FC = () => {
 
                         {/* Company Logo */}
                         <Col md={6} className="mb-3">
-                            <Form.Label className="fw-semibold">{fields[12].rules.label || "Company Logo URL"}</Form.Label>
+                            <Form.Label className="fw-semibold">{fields[12].rules.label || "Company Logo URL"} {fields[12].rules.required ? <span className="text-danger">*</span> : ""}</Form.Label>
                             <Form.Control
                                 type="text"
                                 name={fields[12].name}

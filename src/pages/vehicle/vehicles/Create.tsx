@@ -9,6 +9,8 @@ import KiduReset from "../../../components/ReuseButtons/KiduReset";
 
 const CreateVehicle: React.FC = () => {
     const navigate = useNavigate();
+    console.log(localStorage.getItem("user"));
+
     // Dropdown Options
     const yearOptions = Array.from({ length: 26 }, (_, i) => ({
         value: (2000 + i).toString(),
@@ -74,15 +76,16 @@ const CreateVehicle: React.FC = () => {
     const handleSubmit = async (e: any) => {
         e.preventDefault();
         if (!validateForm()) return;
+        const loggedUser = JSON.parse(localStorage.getItem("user") || "{}");
 
         try {
             const vehicleData = {
                 vehicleId: 0,
                 ...formData,
                 createdDate: new Date().toISOString(),
-                createdBy: "Admin",
+                createdBy: loggedUser.userEmail || "User",
                 updatedDate: new Date().toISOString(),
-                updatedBy: "Admin",
+                updatedBy: loggedUser.userEmail || "User",
             };
 
             const response = await VehicleService.create(vehicleData);
