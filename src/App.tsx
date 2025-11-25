@@ -24,7 +24,6 @@ import CustomerView from './pages/customer/View';
 //Driver
 import DriverList from './pages/driver/List';
 import DriverCreate from './pages/driver/Create';
-import DriverEdit from './pages/driver/Edit';
 
 //Expense
 import ExpenseList from './pages/expense/List';
@@ -50,6 +49,8 @@ import CreateCompany from './pages/settings/company/Create';
 
 //Expense-Type
 import ExpenseTypeList from './pages/settings/expenseType/List';
+import DriverEdit from './pages/driver/Edit';
+import CompanyEdit from './pages/settings/company/Edit';
 
 
 function App() {
@@ -79,7 +80,7 @@ function App() {
           {/* Driver*/}
           <Route path="driver-list" element={<DriverList />} />
           <Route path="driver-create" element={<DriverCreate />} />
-          <Route path="Driver-edit/:DriverId" element={<CustomerEdit />} />
+          <Route path="driver-edit/:driverId" element={<DriverEdit />} />
 
           {/* Invoice */}
           <Route path="invoice-list" element={<InvoiceMasterList />} />
@@ -101,6 +102,7 @@ function App() {
           {/* Company */}
           <Route path="settings/company-list" element={<CompanyList />} />
           <Route path="settings/create-company" element={<CreateCompany />} />
+          <Route path="settings/edit-company/:companyId" element={<CompanyEdit />} />
 
           {/* Expense Type */}
           <Route path="settings/expense-type-list" element={<ExpenseTypeList />} />

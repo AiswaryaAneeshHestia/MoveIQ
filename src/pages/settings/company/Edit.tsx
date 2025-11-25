@@ -46,7 +46,7 @@ const CompanyEdit: React.FC = () => {
         setLoading(true);
         if (!companyId) {
           toast.error("Invalid company id");
-          navigate("/admin-dashboard/settings/companys");
+          navigate("/dashboard/settings/company-list");
           return;
         }
         const res = await CompanyService.getById(Number(companyId));
@@ -95,11 +95,10 @@ const CompanyEdit: React.FC = () => {
     };
 
     loadCompany();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [companyId, navigate]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value, type, checked } = e.target as HTMLInputElement;
+  const handleChange = (e: any) => {
+    const { name, value, type, checked } = e.target;
     const newValue = type === "checkbox" ? checked : value;
     setFormData((prev: any) => ({ ...prev, [name]: newValue }));
     if (errors[name]) setErrors((prev: any) => ({ ...prev, [name]: "" }));
@@ -118,7 +117,6 @@ const CompanyEdit: React.FC = () => {
     fields.forEach((f) => {
       // skip optional fields
       if (!f.rules.required) {
-        // still validate format for email if present
         if (f.rules.type === "email" && formData[f.name]) {
           if (!validateField(f.name, formData[f.name])) ok = false;
         }
