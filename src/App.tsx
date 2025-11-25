@@ -19,6 +19,7 @@ import TripCreate from './pages/trip/Create';
 import CustomerList from './pages/customer/List';
 import CustomerCreate from './pages/customer/Create';
 import CustomerEdit from './pages/customer/Edit';
+import CustomerView from './pages/customer/View';
 
 //Driver
 import DriverList from './pages/driver/List';
@@ -69,6 +70,7 @@ function App() {
           <Route path="customer-list" element={<CustomerList />} />
           <Route path="customer-create" element={<CustomerCreate />} />
           <Route path="customer-edit/:customerId" element={<CustomerEdit />} />
+          <Route path="customer-view/:customerId" element={<CustomerView />} />
 
           {/* Driver*/}
           <Route path="driver-list" element={<DriverList />} />

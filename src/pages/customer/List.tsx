@@ -49,7 +49,7 @@ const CustomerList: React.FC = () => {
             idKey="customerId"
             addRoute="/dashboard/customer-create"
             editRoute="/dashboard/customer-edit"
-            viewRoute="/dashboard/view-customer"
+            viewRoute="/dashboard/customer-view"
             error={error}
             onRetry={loadData}
         />
