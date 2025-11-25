@@ -34,6 +34,7 @@ import InvoiceMasterList from './pages/invoice/List';
 //Vehicle
 import VehicleList from './pages/vehicle/vehicles/List';
 import CreateVehicle from './pages/vehicle/vehicles/Create';
+import VehicleEdit from './pages/vehicle/vehicles/Edit';
 
 //Vehicle-Maintenance
 import VehicleMaintenanceList from './pages/vehicle/maintenance/List';
@@ -86,6 +87,7 @@ function App() {
           {/* Vehicles */}
           <Route path="vehicle/vehicle-list" element={<VehicleList />} />
           <Route path="vehicle/create-vehicle" element={<CreateVehicle />} />
+          <Route path="vehicle/edit-vehicle/:vehicleId" element={<VehicleEdit />} />
 
           {/* Vehicles-Maintenance */}
           <Route path="vehicle/maintenance-list" element={<VehicleMaintenanceList />} />
