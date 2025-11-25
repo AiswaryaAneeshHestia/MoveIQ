@@ -1,4 +1,3 @@
-//DriverService.ts
 import type { Driver } from "../types/Driver.types";
 import { API_ENDPOINTS } from "../constants/API_ENDPOINTS";
 import type { CustomResponse } from "../types/common/ApiTypes";
@@ -25,20 +24,21 @@ class DriverService {
     return HttpService.callApi(API_ENDPOINTS.DRIVER.DELETE(id), "DELETE");
   }
 
-   //New: Upload driver profile picture
+  // ⭐ Correct image upload API
   static async uploadProfilePic(driverId: number, file: File): Promise<CustomResponse<string>> {
-    const formData = new FormData();
-    formData.append("id", driverId.toString());
-    formData.append("file", file);
+  const formData = new FormData();
+  formData.append("AppUserId", driverId.toString());       // IMPORTANT
+  formData.append("ProfilePic", file);                     // EXACT NAME
 
-    return HttpService.callApi(
-      API_ENDPOINTS.DRIVER.UPLOAD_PROFILE_PIC,
-      "POST",
-      formData,
-      false,
-      true // <- this marks the call as FormData
-    );
-  }
+  return HttpService.callApi(
+    API_ENDPOINTS.DRIVER.UPLOAD_PROFILE_PIC,
+    "POST",
+    formData,
+    false,
+    true
+  );
+}
+
 }
 
 export default DriverService;

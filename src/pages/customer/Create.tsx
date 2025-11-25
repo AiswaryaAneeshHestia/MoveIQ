@@ -11,12 +11,12 @@ const CreateCustomer: React.FC = () => {
     const navigate = useNavigate();
 
     const fields = [
-        { name: "customerName", rules: { required: true, type: "text" } },
+        { name: "customerName", rules: { required: true, type: "text", label: "Customer Name" } },
         { name: "dob", rules: { required: true, type: "date", label: "Registered Date" } },
-        { name: "customerPhone", rules: { required: true, type: "number", minLength: 10, maxLength: 10 } },
-        { name: "nationalilty", rules: { required: true, type: "text" } },
-        { name: "customerEmail", rules: { required: true, type: "email" } },
-        { name: "customerAddress", rules: { required: true, type: "text" } }
+        { name: "customerPhone", rules: { required: true, type: "number", minLength: 10, maxLength: 10, label: "Phone Number" } },
+        { name: "nationalilty", rules: { required: true, type: "text", label: "Nationality" } },
+        { name: "customerEmail", rules: { required: true, type: "email", label: "Email ID" } },
+        { name: "customerAddress", rules: { required: true, type: "text", label: "Address" } }
     ];
 
     const initialValues: any = {};
@@ -85,43 +85,56 @@ const CreateCustomer: React.FC = () => {
 
                 <Form onSubmit={handleSubmit} className="p-4">
                     <Row>
+
                         <Col md={6} className="mb-3">
-                            <Form.Label className="fw-semibold">{fields[0].rules.label || "Customer Name"} {fields[0].rules.required ? <span className="text-danger">*</span> : ""}</Form.Label>
+                            <Form.Label className="fw-semibold">
+                                {fields[0].rules.label} {fields[0].rules.required && <span className="text-danger">*</span>}
+                            </Form.Label>
                             <Form.Control type="text" name="customerName" placeholder="Enter customer name" value={formData.customerName} onChange={handleChange} onBlur={() => validateField("customerName", formData.customerName)} />
                             {errors.customerName && <span className="text-danger">{errors.customerName}</span>}
                         </Col>
 
                         <Col md={6} className="mb-3">
-                            <Form.Label className="fw-semibold">{fields[1].rules.label || "Registered Date"} {fields[1].rules.required ? <span className="text-danger">*</span> : ""}</Form.Label>
+                            <Form.Label className="fw-semibold">
+                                {fields[1].rules.label} {fields[1].rules.required && <span className="text-danger">*</span>}
+                            </Form.Label>
                             <Form.Control type="date" name="dob" value={formData.dob} onChange={handleChange} onBlur={() => validateField("dob", formData.dob)} />
                             {errors.dob && <small className="text-danger">{errors.dob}</small>}
                         </Col>
 
                         <Col md={6} className="mb-3">
-                            <Form.Label className="fw-semibold">{fields[2].rules.label || "Phone Number"} {fields[2].rules.required ? <span className="text-danger">*</span> : ""}</Form.Label>
+                            <Form.Label className="fw-semibold">
+                                {fields[2].rules.label} {fields[2].rules.required && <span className="text-danger">*</span>}
+                            </Form.Label>
                             <Form.Control type="tel" name="customerPhone" placeholder="Enter phone number" value={formData.customerPhone} onChange={handleChange} onBlur={() => validateField("customerPhone", formData.customerPhone)} />
                             {errors.customerPhone && <small className="text-danger">{errors.customerPhone}</small>}
                         </Col>
 
                         <Col md={6} className="mb-3">
-                            <Form.Label className="fw-semibold">{fields[3].rules.label || "nationalilty"} {fields[3].rules.required ? <span className="text-danger">*</span> : ""}</Form.Label>
+                            <Form.Label className="fw-semibold">
+                                {fields[3].rules.label} {fields[3].rules.required && <span className="text-danger">*</span>}
+                            </Form.Label>
                             <Form.Control type="text" name="nationalilty" placeholder="Enter nationalilty" value={formData.nationalilty} onChange={handleChange} onBlur={() => validateField("nationalilty", formData.nationalilty)} />
                             {errors.nationalilty && <small className="text-danger">{errors.nationalilty}</small>}
                         </Col>
 
                         <Col md={6} className="mb-3">
-                            <Form.Label className="fw-semibold">{fields[4].rules.label || "Email ID"} {fields[4].rules.required ? <span className="text-danger">*</span> : ""}</Form.Label>
+                            <Form.Label className="fw-semibold">
+                                {fields[4].rules.label} {fields[4].rules.required && <span className="text-danger">*</span>}
+                            </Form.Label>
                             <Form.Control type="email" name="customerEmail" placeholder="Enter email" value={formData.customerEmail} onChange={handleChange} onBlur={() => validateField("customerEmail", formData.customerEmail)} />
                             {errors.customerEmail && <small className="text-danger">{errors.customerEmail}</small>}
                         </Col>
 
                         <Col md={6} className="mb-3">
-                            <Form.Label className="fw-semibold">{fields[5].rules.label || "Address"} {fields[5].rules.required ? <span className="text-danger">*</span> : ""}</Form.Label>
+                            <Form.Label className="fw-semibold">
+                                {fields[5].rules.label} {fields[5].rules.required && <span className="text-danger">*</span>}
+                            </Form.Label>
                             <Form.Control as="textarea" rows={3} name="customerAddress" placeholder="Enter address" value={formData.customerAddress} onChange={handleChange} onBlur={() => validateField("customerAddress", formData.customerAddress)} />
                             {errors.customerAddress && <small className="text-danger">{errors.customerAddress}</small>}
                         </Col>
-                    </Row>
 
+                    </Row>
 
                     <Row className="mb-3">
                         <Col><div className="alert alert-info"><strong>Note:</strong> You can add attachments after creating the customer.</div></Col>
