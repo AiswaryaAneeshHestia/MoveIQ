@@ -5,7 +5,7 @@ import HttpService from "../services/common/HttpService";
 import { KiduValidation } from "../components/KiduValidation";
 import KiduReset from "../components/ReuseButtons/KiduReset";
 
-interface Field {
+export interface Field {
   name: string;
   label: string;
   type: "text" | "number" | "textarea" | "email" | "date";

@@ -15,6 +15,7 @@ import HomePage from './layout/HomePage';
 import TripList from './pages/trip/List';
 import TripCreate from './pages/trip/Create';
 //Trip-Status
+import AllTrips from './pages/trip/TripStatus/AllTrips';
 import ScheduledTrips from './pages/trip/TripStatus/Scheduled';
 import CompletedTrips from './pages/trip/TripStatus/CompletedTrips';
 import CancelledTrips from './pages/trip/TripStatus/CancelledTrips';
@@ -50,6 +51,7 @@ import VehicleView from './pages/vehicle/vehicles/View';
 
 //Vehicle-Maintenance
 import VehicleMaintenanceList from './pages/vehicle/maintenance/List';
+import CreateVehicleMaintenance from './pages/vehicle/maintenance/Create';
 import ViewMaintenance from './pages/vehicle/maintenance/View';
 
 //User
@@ -69,7 +71,6 @@ import ExpenseTypeList from './pages/settings/expenseType/List';
 import CreateExpenseType from './pages/settings/expenseType/Create';
 import EditExpenseType from './pages/settings/expenseType/Edit';
 import ViewExpenseType from './pages/settings/expenseType/View';
-import AllTrips from './pages/trip/TripStatus/AllTrips';
 
 
 function App() {
@@ -128,6 +129,7 @@ function App() {
 
           {/* Vehicles-Maintenance */}
           <Route path="vehicle/maintenance-list" element={<VehicleMaintenanceList />} />
+          <Route path="vehicles/create-maintenance" element={<CreateVehicleMaintenance />} />
           <Route path="vehicles/view-maintenance/:maintenanceId" element={<ViewMaintenance />} />
 
           {/* User */}
