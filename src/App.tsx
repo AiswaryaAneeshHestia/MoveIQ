@@ -14,6 +14,9 @@ import HomePage from './layout/HomePage';
 // Trip page
 import TripList from './pages/trip/List';
 import TripCreate from './pages/trip/Create';
+import TripEdit from './pages/trip/Edit';
+import TripView from './pages/trip/View';
+
 //Trip-Status
 import AllTrips from './pages/trip/TripStatus/AllTrips';
 import ScheduledTrips from './pages/trip/TripStatus/Scheduled';
@@ -91,6 +94,9 @@ function App() {
           {/* Trip */}
           <Route path="trip-list" element={<TripList />} />
           <Route path="trip-create" element={<TripCreate />} />
+          <Route path="trip-edit/:tripId" element={<TripEdit />} />
+          <Route path="trip-view/:tripId" element={<TripView />} />
+
           {/* Trip-Status */}
           <Route path="total-trips" element={<AllTrips />} />
           <Route path="scheduled" element={<ScheduledTrips />} />

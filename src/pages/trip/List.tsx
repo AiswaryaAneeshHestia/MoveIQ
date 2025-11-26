@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import TripService from "../../services/Trip.services";
 import KiduTable from "../../components/KiduTable";
 import KiduLoader from "../../components/KiduLoader";
@@ -18,38 +18,36 @@ const TripList: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // const formatTrips = (rawTrips: any[]) => {
-  //   return rawTrips.map((trip) => ({
-  //     id: trip.tripOrderId,
-  //     //tripId: `T${trip.tripOrderId.toString().padStart(3, "0")}`,
-  //     fromDate: trip.fromDateString,
-  //     customerName: trip.customerName,
-  //     recivedVia: trip.recivedVia || "Website",
-  //     driver: trip.driverName,
-  //     pickUpFrom: trip.pickUpFrom || trip.fromLocation
-  //   }));
-  // };
-
-  const loadData = useCallback(async () => {
+  const loadData = async () => {
     try {
       setLoading(true);
       const res = await TripService.getAll();
+      console.log("Trip API Response:", res);
+      
       if (res.isSucess && res.value) {
-        setTrips(res.value);
+        // Transform data to ensure consistent ID field
+        const transformedTrips = res.value.map(trip => ({
+          ...trip,
+          id: trip.tripOrderId
+        }));
+        console.log("Transformed trips:", transformedTrips);
+        setTrips(transformedTrips);
         setError(null);
       } else {
         setError("Failed to fetch trips");
       }
     } catch (err) {
+      console.error("Error fetching trips:", err);
       setError("An error occurred while fetching trips");
     } finally {
       setLoading(false);
     }
-  }, []);
+  };
 
+  // Load data only once when component mounts
   useEffect(() => {
     loadData();
-  }, [loadData]);
+  }, []); // Empty dependency array - runs only once
 
   if (loading) return <KiduLoader type="trips..." />;
 
@@ -60,9 +58,9 @@ const TripList: React.FC = () => {
       columns={columns}
       data={trips}
       addButtonLabel="Add New Trip"
-      addRoute="/dashboard/trip-create"
-      editRoute="/admin-dashboard/edit-trip-form"
-      viewRoute="/admin-dashboard/view-trip"
+      addRoute="trip-create"
+      editRoute="/dashboard/trip-edit"
+      viewRoute="/dashboard/trip-view"
       idKey="id"
       error={error}
       onRetry={loadData}

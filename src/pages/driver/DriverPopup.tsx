@@ -2,12 +2,13 @@ import React from "react";
 import KiduPopup from "../../components/KiduPopup";
 import { API_ENDPOINTS } from "../../constants/API_ENDPOINTS";
 import type { Driver } from "../../types/Driver.types";
+import DriverCreateModal from "../driver/DriverModal";
 
 const DriverPopup: React.FC<{
   show: boolean;
-  handleClose: () => void; 
+  handleClose: () => void;
   onSelect: (driver: Driver) => void;
-}> = props => {
+}> = (props) => {
   return (
     <KiduPopup<Driver>
       {...props}
@@ -16,10 +17,11 @@ const DriverPopup: React.FC<{
       columns={[
         { key: "driverId", label: "Driver ID" },
         { key: "driverName", label: "Driver Name" },
-        { key: "contactNumber", label: "Phone" },
+        { key: "contactNumber", label: "Contact Number" },
         { key: "license", label: "License" }
       ]}
-      searchKeys={["driverName", "contactNumber", "license", "nationality"]}
+      searchKeys={["driverId", "driverName", "contactNumber", "license"]}
+      AddModalComponent={DriverCreateModal}
     />
   );
 };

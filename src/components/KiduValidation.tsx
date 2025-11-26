@@ -20,7 +20,7 @@ export const KiduValidation = {
 
     // ⭐ Automatically append red "*" to required labels
     const rawLabel = rules.label || "This field";
-    const label = rules.required ? `${rawLabel} *` : rawLabel;
+    const label = rules.required ? `${rawLabel} ` : rawLabel;
 
     const val = value;
 

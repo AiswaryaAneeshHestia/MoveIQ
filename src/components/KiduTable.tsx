@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect, useRef } from "react";
 import { Table, Button, Row, Col, Container, Pagination } from "react-bootstrap";
 import { FaEdit, FaEye } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 import KiduExcelButton from "../components/KiduExcelButton";
 import KiduButton from "../components/KiduButton";
 import KiduSearchBar from "../components/KiduSearchBar";
@@ -36,7 +37,7 @@ interface KiduTableProps {
   onAddClick?: () => void;
   showSearch?: boolean;
   showActions?: boolean;
-  showTitle?: boolean; // New prop to control title visibility
+  showTitle?: boolean;
 }
 
 const KiduTable: React.FC<KiduTableProps> = ({
@@ -60,9 +61,10 @@ const KiduTable: React.FC<KiduTableProps> = ({
   onAddClick,
   showSearch = true,
   showActions = true,
-  showTitle = true // Default to true for normal usage
+  showTitle = true
 }) => {
   const tableRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
   const rowsPerPage = 10;
 
   if (loading) return <div className="text-center py-5">Loading...</div>;
@@ -76,7 +78,6 @@ const KiduTable: React.FC<KiduTableProps> = ({
     );
   }
 
- 
   const reversedData = useMemo(() => [...data].reverse(), [data]);
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -115,14 +116,13 @@ const KiduTable: React.FC<KiduTableProps> = ({
     <Container fluid className="py-3 mt-4">
       {/* Conditionally show title/subtitle row */}
       {showTitle !== false && data.length > 0 && (
-  <Row className="mb-2 align-items-center">
-    <Col>
-      <h4 className="mb-0 fw-bold" style={{ fontFamily:"Urbanist" }}>{title}</h4>
-      {subtitle && <p className="text-muted" style={{ fontFamily:"Urbanist" }}>{subtitle}</p>}
-    </Col>
-  </Row>
-)}
-
+        <Row className="mb-2 align-items-center">
+          <Col>
+            <h4 className="mb-0 fw-bold" style={{ fontFamily: "Urbanist" }}>{title}</h4>
+            {subtitle && <p className="text-muted" style={{ fontFamily: "Urbanist" }}>{subtitle}</p>}
+          </Col>
+        </Row>
+      )}
 
       {data.length > 0 && (
         <Row className="mb-3 align-items-center">
@@ -157,7 +157,6 @@ const KiduTable: React.FC<KiduTableProps> = ({
             <Table striped bordered hover className="align-middle mb-0">
               <thead className="table-light text-center" style={{ fontFamily: "Urbanist" }}>
                 <tr>
-                  {/* <th>Sl No</th> */}
                   {columns.map(col => <th key={col.key}>{col.label}</th>)}
                   {showActions && (
                     <th className="d-flex justify-content-between">
@@ -188,7 +187,7 @@ const KiduTable: React.FC<KiduTableProps> = ({
                             label={`Add ${fieldName}`}
                             onClick={() => {
                               if (onAddClick) onAddClick();
-                              else if (addRoute) window.location.assign(addRoute);
+                              else if (addRoute) navigate(addRoute);
                             }}
                           />
                         )}
@@ -196,16 +195,14 @@ const KiduTable: React.FC<KiduTableProps> = ({
                     </td>
                   </tr>
                 ) : (
-                  currentData.map((item) => (
+                  currentData.map((item, index) => (
                     <tr
-                      key={item[idKey]}
+                      key={`${item[idKey]}-${startIndex + index}`}
                       onClick={() => onRowClick?.(item)}
                       style={{ cursor: onRowClick ? "pointer" : "default" }}
                     >
-                      {/* <td>{startIndex + idx + 1}</td> */}
-
                       {columns.map((col) => (
-                        <td key={col.key}>
+                        <td key={`${item[idKey]}-${col.key}`}>
                           {col.key === "profile" ? (
                             <img
                               src={item[col.key] || "/assets/Images/profile.jpeg"}
@@ -229,7 +226,10 @@ const KiduTable: React.FC<KiduTableProps> = ({
                                   border: "1px solid #18575A",
                                   color: "#18575A",
                                 }}
-                                onClick={() => window.location.assign(`${editRoute}/${item[idKey]}`)}
+                                onClick={() => {
+                                  console.log("Edit clicked - Item ID:", item[idKey]);
+                                  navigate(`${editRoute}/${item[idKey]}`);
+                                }}
                               >
                                 <FaEdit className="me-1" /> Edit
                               </Button>
@@ -243,7 +243,10 @@ const KiduTable: React.FC<KiduTableProps> = ({
                                   border: "none",
                                   color: "white",
                                 }}
-                                onClick={() => window.location.assign(`${viewRoute}/${item[idKey]}`)}
+                                onClick={() => {
+                                  console.log("View clicked - Item ID:", item[idKey]);
+                                  navigate(`${viewRoute}/${item[idKey]}`);
+                                }}
                               >
                                 <FaEye className="me-1" /> View
                               </Button>

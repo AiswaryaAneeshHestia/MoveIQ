@@ -63,6 +63,7 @@ const CustomerEdit: React.FC = () => {
       }
     };
     loadCustomer();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [customerId, navigate]);
 
   const handleChange = (e: any) => {
