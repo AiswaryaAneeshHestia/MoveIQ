@@ -47,6 +47,8 @@ import ViewMaintenance from './pages/vehicle/maintenance/View';
 
 //User
 import UserList from './pages/settings/users/List';
+import CreateUser from './pages/settings/users/Create';
+import UserEdit from './pages/settings/users/Edit';
 import ViewUser from './pages/settings/users/View';
 
 //Company
@@ -112,6 +114,8 @@ function App() {
 
           {/* User */}
           <Route path="settings/user-list" element={<UserList />} />
+          <Route path="settings/create-user" element={<CreateUser />} />
+          <Route path="settings/edit-user/:userId" element={<UserEdit />} />
           <Route path="settings/view-user/:userId" element={<ViewUser />} />
 
           {/* Company */}

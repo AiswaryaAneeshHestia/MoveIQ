@@ -7,14 +7,14 @@ export interface User {
     userEmail: string;
     phoneNumber: string;
     address: string;
-    passwordHash: string;
+    passwordHash?: string;
     oldPassword?: string;
     newPassword?: string;
-    isActive: boolean;
-    islocked: boolean;
-    createAt: string;
-    lastlogin: string;
-    lastloginString: string;
+    isActive?: boolean;
+    islocked?: boolean;
+    createAt?: string;
+    lastlogin?: string;
+    lastloginString?: string;
     createAtSyring: string;
     companyId?: number;
     companyName?: string

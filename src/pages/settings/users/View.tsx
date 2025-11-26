@@ -6,7 +6,6 @@ import toast, { Toaster } from "react-hot-toast";
 import UserService from "../../../services/settings/User.services";
 import KiduLoader from "../../../components/KiduLoader";
 import KiduPrevious from "../../../components/KiduPrevious";
-import Attachments from "../../../components/KiduAttachments";
 import AuditTrailsComponent from "../../../components/KiduAuditLogs";
 
 const ViewUser: React.FC = () => {
@@ -156,8 +155,7 @@ const ViewUser: React.FC = () => {
                     </Table>
                 </div>
 
-                {/* Attachments & Audit Logs */}
-                <Attachments tableName="users" recordId={data.userId} />
+                {/*Audit Logs */}
                 <AuditTrailsComponent tableName="users" recordId={data.userId} />
             </Card>
 
@@ -166,9 +164,7 @@ const ViewUser: React.FC = () => {
                 <Modal.Header closeButton>
                     <Modal.Title>Confirm Delete</Modal.Title>
                 </Modal.Header>
-
                 <Modal.Body>Are you sure you want to delete this user?</Modal.Body>
-
                 <Modal.Footer>
                     <Button variant="secondary" onClick={() => setShowConfirm(false)}>
                         Cancel
