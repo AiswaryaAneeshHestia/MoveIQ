@@ -56,11 +56,9 @@ class TripService {
     return HttpService.callApi(API_ENDPOINTS.TRIP.GET_ALL_BY_STATUS(status), "GET");
   }
 
-  //  NEW METHOD: Get Trip Dashboard Data
-  static async getTripDashboard(): Promise<CustomResponse<TripDashboardCard[]>> {
-    return HttpService.callApi(API_ENDPOINTS.TRIP_DASHBOARD.GET_DASHBOARD, "GET");
+  static async getTripDashboard(year: number): Promise<CustomResponse<TripDashboardCard[]>> {
+    return HttpService.callApi(API_ENDPOINTS.TRIP_DASHBOARD.GET_DASHBOARD(year), "GET");
   }
-
   static async getTodaysTrip(): Promise<CustomResponse<Trip[]>> {
     return HttpService.callApi(API_ENDPOINTS.TRIP_DASHBOARD.GET_TODAYS_TRIP, "GET");
   }

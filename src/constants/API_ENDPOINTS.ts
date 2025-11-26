@@ -42,7 +42,7 @@ export const API_ENDPOINTS = {
 
   //Trip Dashboard
   TRIP_DASHBOARD: {
-    GET_DASHBOARD: `${API_BASE_URL}/TripDashboard/GetTripDashboard`,
+    GET_DASHBOARD: (year: number) => `${API_BASE_URL}/TripDashboard/GetTripDashboard?year=${year}`,
     GET_TODAYS_TRIP: `${API_BASE_URL}/TripDashboard/today`,
     GET_MONTHLY_SUMMARY: (year: number) => `${API_BASE_URL}/TripDashboard/monthly-summary?year=${year}`
   },

@@ -6,13 +6,15 @@ import { useNavigate } from "react-router-dom";
 import AuthService from "../services/common/Auth.services";
 import Profile from "./Profile";
 import ActivityPanel from "./ActivityPanel";
+import KiduYearSelector from "../components/KiduYearSelector";
+import { useYear } from "../context/YearContext";
 
 const NavbarComponent: React.FC = () => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [username, setUsername] = useState<string>("Username");
+   const { selectedYear, setSelectedYear } = useYear();
   const navigate = useNavigate();
-
   // Fetch username from localStorage
   useEffect(() => {
   try {
@@ -31,10 +33,14 @@ const NavbarComponent: React.FC = () => {
   }
 }, []);
 
-
   const toggleSettings = () => setShowSettings((prev) => !prev);
   const handleClose = () => setShowNotifications(false);
   const handleShow = () => setShowNotifications(true);
+
+  const handleYearSelect = (year: number) => {
+    setSelectedYear(year);
+    console.log("Selected Year Updated Globally:", year);
+  };
 
   const handleLogout = () => {
     AuthService.logout();
@@ -82,9 +88,11 @@ const NavbarComponent: React.FC = () => {
 
             {/* Year Dropdown */}
             <div className="me-3">
-              {/* <KiduYearSelector
+              <KiduYearSelector
                 startYear={2023}
-              /> */}
+                onYearSelect={handleYearSelect}
+                defaultYear={selectedYear}
+              />
             </div>
 
             {/* Notifications */}

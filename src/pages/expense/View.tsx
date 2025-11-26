@@ -38,7 +38,7 @@ const ViewExpense: React.FC = () => {
             expenseMasterId: expenseData.expenseMasterId,
             expenseVoucher: expenseData.expenseVoucher || "",
             expenseType: expenseTypeName,
-            createdOn: expenseData.createdOn || "",
+            createdOn: expenseData.createdOnString || "",
             amount: expenseData.amount || "0",
             paymentMode: expenseData.paymentMode || "",
             relatedEntityType: expenseData.relatedEntityType || "",

@@ -14,6 +14,11 @@ import HomePage from './layout/HomePage';
 // Trip page
 import TripList from './pages/trip/List';
 import TripCreate from './pages/trip/Create';
+//Trip-Status
+import ScheduledTrips from './pages/trip/TripStatus/Scheduled';
+import CompletedTrips from './pages/trip/TripStatus/CompletedTrips';
+import CancelledTrips from './pages/trip/TripStatus/CancelledTrips';
+import TodaysTrip from './pages/trip/TripStatus/TodayTrips';
 
 //Customer
 import CustomerList from './pages/customer/List';
@@ -29,6 +34,8 @@ import DriverView from './pages/driver/View';
 
 //Expense
 import ExpenseList from './pages/expense/List';
+import CreateExpense from './pages/expense/Create';
+import ExpenseEdit from './pages/expense/Edit';
 import ViewExpense from './pages/expense/View';
 
 //Invoice
@@ -63,6 +70,7 @@ import CreateExpenseType from './pages/settings/expenseType/Create';
 import EditExpenseType from './pages/settings/expenseType/Edit';
 import ViewExpenseType from './pages/settings/expenseType/View';
 
+
 function App() {
 
   return (
@@ -81,6 +89,12 @@ function App() {
           {/* Trip */}
           <Route path="trip-list" element={<TripList />} />
           <Route path="trip-create" element={<TripCreate />} />
+          {/* Trip-Status */}
+          <Route path="scheduled" element={<ScheduledTrips />} />
+          <Route path="completed" element={<CompletedTrips />} />
+          <Route path="Cancelled" element={<CancelledTrips />} />
+          <Route path="today-trips" element={<TodaysTrip />} />
+
 
           {/* Customer */}
           <Route path="customer-list" element={<CustomerList />} />
@@ -100,6 +114,8 @@ function App() {
 
           {/* Expense */}
           <Route path="expense-list" element={<ExpenseList />} />
+          <Route path="create-expense" element={<CreateExpense />} />
+          <Route path="edit-expense/:expenseId" element={<ExpenseEdit />} />
           <Route path="view-expense/:expenseId" element={<ViewExpense />} />
 
           {/* Vehicles */}
@@ -127,7 +143,7 @@ function App() {
           {/* Expense Type */}
           <Route path="settings/expense-type-list" element={<ExpenseTypeList />} />
           <Route path="settings/create-expenses-type" element={<CreateExpenseType />} />
-           <Route path="settings/edit-expenses-type/:expenseTypeId" element={<EditExpenseType />} />
+          <Route path="settings/edit-expenses-type/:expenseTypeId" element={<EditExpenseType />} />
           <Route path="settings/view-expenses-type/:expenseTypeId" element={<ViewExpenseType />} />
 
         </Route>

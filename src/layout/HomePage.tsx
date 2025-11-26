@@ -15,6 +15,7 @@ import KiduLoader from "../components/KiduLoader";
 import KiduCard from "../components/KiduCard";
 import KiduButton from "../components/KiduButton";
 import KiduSearchBar from "../components/KiduSearchBar";
+import { useYear } from "../context/YearContext";
 
 interface CardData {
   title: string;
@@ -29,13 +30,14 @@ const HomePage: React.FC = () => {
 
   const [cards, setCards] = useState<CardData[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-
+   //  USING CONTEXT YEAR
+  const { selectedYear } = useYear();
   // --------------------- FETCH DASHBOARD ---------------------
   useEffect(() => {
     const fetchCardData = async () => {
       try {
         setLoading(true);
-        const response = await TripService.getTripDashboard();
+        const response = await TripService.getTripDashboard(selectedYear);
 
         if (response?.isSuccess && response?.value) {
           setCards(response.value);
@@ -51,7 +53,7 @@ const HomePage: React.FC = () => {
     };
 
     fetchCardData();
-  }, []);
+  }, [selectedYear]);
 
   // --------------------- HANDLE SEARCH ---------------------
   const handleSearch = async (term: string) => {
@@ -69,7 +71,7 @@ const HomePage: React.FC = () => {
 
         switch (status) {
           case "Scheduled":
-            navigate(`/admin-dashboard/scheduled/${trip.tripOrderId}`);
+            navigate(`/dashboard/scheduled-trips/${trip.tripOrderId}`);
             break;
           case "Completed":
             navigate(`/admin-dashboard/completed/${trip.tripOrderId}`);
