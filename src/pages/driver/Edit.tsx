@@ -72,6 +72,7 @@ const DriverEdit:React.FC=()=>{
   };
 
   loadDriver();
+ // eslint-disable-next-line react-hooks/exhaustive-deps
  },[driverId,navigate]);
 
  const handleChange=(e:any)=>{
