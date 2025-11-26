@@ -1,13 +1,14 @@
 import { useState } from "react";
-import { Modal, Button, Spinner, Form } from "react-bootstrap";
+import { Modal, Button, Form } from "react-bootstrap";
 import toast from "react-hot-toast";
 import HttpService from "../services/common/HttpService";
 import { KiduValidation } from "../components/KiduValidation";
+import KiduReset from "../components/ReuseButtons/KiduReset";
 
 interface Field {
   name: string;
   label: string;
-  type: "text" | "number" | "textarea";
+  type: "text" | "number" | "textarea" | "email" | "date";
   required?: boolean;
   minLength?: number;
   maxLength?: number;
@@ -31,15 +32,23 @@ function KiduCreateModal<T>({
   endpoint,
   onCreated
 }: KiduCreateModalProps<T>) {
-  const [formData, setFormData] = useState<Record<string, string | number>>({});
+  const initialValues: Record<string, any> = {};
+  fields.forEach(f => (initialValues[f.name] = ""));
+
+  const [formData, setFormData] = useState<Record<string, any>>(initialValues);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
 
-  const handleChange = (name: string, value: string | number) => {
+  const handleChange = (name: string, value: any) => {
     setFormData(prev => ({ ...prev, [name]: value }));
+    if (errors[name]) setErrors(prev => ({ ...prev, [name]: "" }));
   };
 
   const validateForm = () => {
-    for (const field of fields) {
+    let valid = true;
+    const newErrors: Record<string, string> = {};
+
+    fields.forEach(field => {
       const rules = {
         type: field.type,
         required: field.required,
@@ -52,13 +61,13 @@ function KiduCreateModal<T>({
       const result = KiduValidation.validate(formData[field.name], rules);
 
       if (!result.isValid) {
-        toast.error(result.message || "Invalid input", {
-          style: { background: "#ffe5e5", color: "#b91c1c" }
-        });
-        return false;
+        newErrors[field.name] = result.message || "Invalid input";
+        valid = false;
       }
-    }
-    return true;
+    });
+
+    setErrors(newErrors);
+    return valid;
   };
 
   const handleSubmit = async () => {
@@ -67,78 +76,94 @@ function KiduCreateModal<T>({
     try {
       setLoading(true);
 
-      const res = await HttpService.callApi<T>(endpoint, "POST", formData);
-
-      toast.success("Created successfully!", {
-        style: { background: "#18575A", color: "white" }
+      const requestData: Record<string, any> = {};
+      fields.forEach(f => {
+        const value = formData[f.name];
+        requestData[f.name] = f.type === "number" ? Number(value) : value || null;
       });
 
-      onCreated(res as T);
+      const res = await HttpService.callApi<any>(endpoint, "POST", requestData);
+
+      toast.success("Created successfully!");
+
+      // ⭐ Generic extraction logic
+      const newItem = res?.value || res;
+
+      // ⭐ Send only the created object to popup
+      onCreated(newItem as T);
+
       handleClose();
-    } catch (err) {
-      toast.error(
-        err instanceof Error ? err.message : "Failed to add item",
-        { style: { background: "#ffe5e5", color: "#b91c1c" } }
-      );
+      setFormData(initialValues);
+      setErrors({});
+    } catch (err: any) {
+      toast.error(err.message || "Failed to create", {
+        style: { background: "#ffe5e5", color: "#b91c1c" }
+      });
     } finally {
       setLoading(false);
     }
   };
 
+  const handleModalClose = () => {
+    setFormData(initialValues);
+    setErrors({});
+    handleClose();
+  };
+
   return (
-    <Modal show={show} onHide={handleClose} centered>
+    <Modal show={show} onHide={handleModalClose} centered>
       <Modal.Header closeButton style={{ background: "#f8f9fa" }}>
         <Modal.Title className="fs-6 fw-semibold text-dark">{title}</Modal.Title>
       </Modal.Header>
 
       <Modal.Body>
         <Form>
-          {fields.map(field => {
-            const labelText = field.required ? `${field.label} *` : field.label;
+          {fields.map(field => (
+            <Form.Group key={field.name} className="mb-3">
+              <Form.Label className="fw-semibold">
+                {field.label} {field.required && <span className="text-danger">*</span>}
+              </Form.Label>
 
-            return (
-              <Form.Group key={field.name} className="mb-3">
-                <Form.Label>{labelText}</Form.Label>
+              {field.type === "textarea" ? (
+                <Form.Control
+                  as="textarea"
+                  rows={3}
+                  value={formData[field.name]}
+                  onChange={e => handleChange(field.name, e.target.value)}
+                  isInvalid={!!errors[field.name]}
+                />
+              ) : (
+                <Form.Control
+                  type={field.type}
+                  value={formData[field.name]}
+                  onChange={e => {
+                    const value =
+                      field.type === "number"
+                        ? e.target.value.replace(/[^0-9]/g, "")
+                        : e.target.value;
+                    handleChange(field.name, value);
+                  }}
+                  isInvalid={!!errors[field.name]}
+                />
+              )}
 
-                {field.type === "textarea" ? (
-                  <Form.Control
-                    as="textarea"
-                    rows={3}
-                    required={field.required}
-                    value={formData[field.name] || ""}
-                    onChange={e => handleChange(field.name, e.target.value)}
-                  />
-                ) : (
-                  <Form.Control
-                    type={field.type}
-                    required={field.required}
-                    value={formData[field.name] || ""}
-                    onChange={e => handleChange(field.name, e.target.value)}
-                  />
-                )}
-              </Form.Group>
-            );
-          })}
+              <Form.Control.Feedback type="invalid">
+                {errors[field.name]}
+              </Form.Control.Feedback>
+            </Form.Group>
+          ))}
         </Form>
       </Modal.Body>
 
       <Modal.Footer>
-        <Button variant="secondary" onClick={handleClose} disabled={loading}>
-          Cancel
-        </Button>
+        <KiduReset initialValues={initialValues} setFormData={setFormData} setErrors={setErrors} />
 
         <Button
           style={{ backgroundColor: "#18575A", border: "none" }}
           onClick={handleSubmit}
           disabled={loading}
         >
-          {loading ? (
-            <>
-              <Spinner size="sm" animation="border" className="me-2" /> Saving...
-            </>
-          ) : (
-            "Save"
-          )}
+          {loading ? "Saving..." : "Save"}
         </Button>
       </Modal.Footer>
     </Modal>

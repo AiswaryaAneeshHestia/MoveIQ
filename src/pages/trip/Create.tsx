@@ -91,8 +91,8 @@ const TripCreate: React.FC = () => {
  
   const handleChange = (e: any) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-    if (errors[name]) setErrors(prev => ({ ...prev, [name]: "" }));
+    setFormData((prev: any) => ({ ...prev, [name]: value }));
+    if (errors[name]) setErrors((prev: any) => ({ ...prev, [name]: "" }));
   };
  
   const overrideMessage = (name: string, ruleType: string) => {
@@ -110,11 +110,11 @@ const TripCreate: React.FC = () => {
  
     if (!result.isValid) {
       const msg = overrideMessage(name, field.rules.type);
-      setErrors(prev => ({ ...prev, [name]: msg }));
+      setErrors((prev: any) => ({ ...prev, [name]: msg }));
       return false;
     }
  
-    setErrors(prev => ({ ...prev, [name]: "" }));
+    setErrors((prev: any) => ({ ...prev, [name]: "" }));
     return true;
   };
  
