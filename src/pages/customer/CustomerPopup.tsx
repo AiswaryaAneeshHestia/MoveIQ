@@ -2,6 +2,7 @@ import React from "react";
 import KiduPopup from "../../components/KiduPopup";
 import { API_ENDPOINTS } from "../../constants/API_ENDPOINTS";
 import type { Customer } from "../../types/Customer.types";
+import CustomerCreateModal from "./CustomerModal";
 
 const CustomerPopup: React.FC<{
   show: boolean;
@@ -19,7 +20,8 @@ const CustomerPopup: React.FC<{
         { key: "customerPhone", label: "Phone" },
         { key: "customerEmail", label: "Email" }
       ]}
-      searchKeys={["customerName", "customerPhone", "customerEmail"]}
+      searchKeys={["customerName", "customerPhone", "customerEmail", "customerId"]}
+      AddModalComponent={CustomerCreateModal}
     />
   );
 };

@@ -18,16 +18,21 @@
     "lucide-react": "^0.553.0",
     "react": "^19.2.0",
     "react-bootstrap": "^2.10.10",
+    "react-bootstrap-time-picker": "^2.0.1",
+    "react-calendar": "^6.0.0",
+    "react-clock": "^6.0.0",
     "react-csv": "^2.2.2",
+    "react-datetime-picker": "^7.0.1",
     "react-dom": "^19.2.0",
     "react-dropzone": "^14.3.8",
     "react-hot-toast": "^2.6.0",
     "react-icons": "^5.5.0",
     "react-router-dom": "^7.9.6",
+    "react-time-picker": "^8.0.2",
     "react-to-print": "^3.2.0",
     "react-toastify": "^11.0.5",
     "recharts": "^3.4.1",
-    "sweetalert2": "^6.6.1"
+    "sweetalert2": "^6.11.5"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",

@@ -9,17 +9,20 @@ interface AddDropLocationProps {
 }
 
 const AddDropLocation: React.FC<AddDropLocationProps> = ({ values, onChange }) => {
+  // FIX: Guarantee values is always an array
+  const safeValues = Array.isArray(values) ? values : [""];
+
   const handleAddInput = () => {
-    if (values.length < 5) onChange([...values, ""]);
+    if (safeValues.length < 5) onChange([...safeValues, ""]);
   };
 
   const handleRemoveInput = (index: number) => {
-    const newInputs = values.filter((_, i) => i !== index);
+    const newInputs = safeValues.filter((_, i) => i !== index);
     onChange(newInputs.length ? newInputs : [""]);
   };
 
   const handleChange = (index: number, value: string) => {
-    const newInputs = [...values];
+    const newInputs = [...safeValues];
     newInputs[index] = value;
     onChange(newInputs);
   };
@@ -27,23 +30,26 @@ const AddDropLocation: React.FC<AddDropLocationProps> = ({ values, onChange }) =
   return (
     <>
       <Form.Label className="mb-2 fw-medium">Drop Locations</Form.Label>
-      {values.map((input, index) => (
+
+      {safeValues.map((input, index) => (
         <Row key={index} className="mb-2">
           <Col xs={12}>
             <InputGroup size="sm" className="custom-input rounded">
               <InputGroup.Text>{index + 1}</InputGroup.Text>
+
               <Form.Control
                 type="text"
                 placeholder={`Drop location ${index + 1}`}
                 className="p-2"
-                value={input}
+                value={input || ""}
                 onChange={(e) => handleChange(index, e.target.value)}
                 style={{ backgroundColor: "#ffffffff" }}
               />
+
               <Button
                 variant="light"
                 onClick={() => handleRemoveInput(index)}
-                disabled={values.length === 1}
+                disabled={safeValues.length === 1}
               >
                 <BsTrash color="red" />
               </Button>
@@ -51,7 +57,8 @@ const AddDropLocation: React.FC<AddDropLocationProps> = ({ values, onChange }) =
           </Col>
         </Row>
       ))}
-      {values.length < 4 && (
+
+      {safeValues.length < 4 && (
         <Button
           variant="outline-success"
           size="sm"
