@@ -17,9 +17,6 @@ const ViewExpenseType: React.FC = () => {
   const [showConfirm, setShowConfirm] = useState(false);
   const [loadingDelete, setLoadingDelete] = useState(false);
 
-  // -----------------------------------
-  // Fetch Expense Type by ID
-  // -----------------------------------
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -38,14 +35,8 @@ const ViewExpenseType: React.FC = () => {
     fetchData();
   }, [expenseTypeId]);
 
-  // -----------------------------------
-  // Loading State
-  // -----------------------------------
   if (loading) return <KiduLoader type="expense type details..." />;
 
-  // -----------------------------------
-  // Not Found State
-  // -----------------------------------
   if (!data)
     return (
       <div className="text-center mt-5">
@@ -54,29 +45,21 @@ const ViewExpenseType: React.FC = () => {
       </div>
     );
 
-  // -----------------------------------
-  // Table Fields
-  // -----------------------------------
   const fields = [
     { key: "expenseTypeName", label: "Expense Type Name" },
+    { key: "expenseTypeCode", label: "Expense Type Code" },
     { key: "description", label: "Description" }
   ];
 
-  // -----------------------------------
-  // Edit Handler
-  // -----------------------------------
   const handleEdit = () =>
-    navigate(`/admin-dashboard/settings/edit-expenses-types/${data.expenseTypeId}`);
+    navigate(`/dashboard/settings/edit-expenses-type/${data.expenseTypeId}`);
 
-  // -----------------------------------
-  // Delete Handler
-  // -----------------------------------
   const handleDelete = async () => {
     setLoadingDelete(true);
     try {
       await ExpenseTypeService.delete(data.expenseTypeId);
       toast.success("Expense Type deleted successfully");
-      setTimeout(() => navigate("/admin-dashboard/settings/expenseTypes"), 800);
+      setTimeout(() => navigate("/dashboard/settings/expense-type-list"), 800);
     } catch {
       toast.error("Failed to delete expense type.");
     } finally {
@@ -92,7 +75,7 @@ const ViewExpenseType: React.FC = () => {
     >
       <Card
         className="shadow-lg p-4 w-100"
-        style={{ maxWidth: "950px", borderRadius: "15px", border: "none" }}
+        style={{ maxWidth: "1150px", borderRadius: "15px", border: "none" }}
       >
         {/* Header */}
         <div className="d-flex justify-content-between align-items-center mb-4">

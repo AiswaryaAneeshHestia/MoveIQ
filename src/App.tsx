@@ -27,7 +27,6 @@ import DriverCreate from './pages/driver/Create';
 import DriverEdit from './pages/driver/Edit';
 import DriverView from './pages/driver/View';
 
-
 //Expense
 import ExpenseList from './pages/expense/List';
 import ViewExpense from './pages/expense/View';
@@ -58,8 +57,9 @@ import ViewCompany from './pages/settings/company/View';
 
 //Expense-Type
 import ExpenseTypeList from './pages/settings/expenseType/List';
+import CreateExpenseType from './pages/settings/expenseType/Create';
+import EditExpenseType from './pages/settings/expenseType/Edit';
 import ViewExpenseType from './pages/settings/expenseType/View';
-
 
 function App() {
 
@@ -71,8 +71,9 @@ function App() {
         <Route path="/login" element={<Login />} />
 
 
-        {/* Homepage */}
+        {/* DashBoard */}
         <Route path="/dashboard" element={<DashBoard />}>
+          {/* HomePage */}
           <Route index element={<HomePage />} />
 
           {/* Trip */}
@@ -90,7 +91,6 @@ function App() {
           <Route path="driver-create" element={<DriverCreate />} />
           <Route path="driver-edit/:driverId" element={<DriverEdit />} />
           <Route path="driver-view/:driverId" element={<DriverView />} />
-          
 
           {/* Invoice */}
           <Route path="invoice-list" element={<InvoiceMasterList />} />
@@ -122,6 +122,8 @@ function App() {
 
           {/* Expense Type */}
           <Route path="settings/expense-type-list" element={<ExpenseTypeList />} />
+          <Route path="settings/create-expenses-type" element={<CreateExpenseType />} />
+           <Route path="settings/edit-expenses-type/:expenseTypeId" element={<EditExpenseType />} />
           <Route path="settings/view-expenses-type/:expenseTypeId" element={<ViewExpenseType />} />
 
         </Route>
