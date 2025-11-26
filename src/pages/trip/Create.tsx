@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, Form, Button, Row, Col, InputGroup } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
@@ -14,34 +14,33 @@ import DriverPopup from "../driver/DriverPopup";
  
 const TripCreate: React.FC = () => {
   const navigate = useNavigate();
-  const generatedOnce = useRef(false);
  
   const fields = [
-    { name: "customerName", rules: { required: true, type: "text", label: "Customer Name" } },
-    { name: "receivedVia", rules: { required: true, type: "select", label: "Received Via" } },
+    { name: "customerName", rules: { required: true, type: "text" as const, label: "Customer Name" } },
+    { name: "receivedVia", rules: { required: true, type: "select" as const, label: "Received Via" } },
  
-    { name: "fromDate", rules: { required: true, type: "date", label: "From Date" } },
-    { name: "fromTime", rules: { required: true, type: "select", label: "From Time" } },
-    { name: "fromAmPm", rules: { required: true, type: "select", label: "AM/PM" } },
+    { name: "fromDate", rules: { required: true, type: "date" as const, label: "From Date" } },
+    { name: "fromTime", rules: { required: true, type: "select" as const, label: "From Time" } },
+    { name: "fromAmPm", rules: { required: true, type: "select" as const, label: "AM/PM" } },
  
-    { name: "toDate", rules: { required: true, type: "date", label: "To Date" } },
-    { name: "toTime", rules: { required: true, type: "select", label: "To Time" } },
-    { name: "toAmPm", rules: { required: true, type: "select", label: "AM/PM" } },
+    { name: "toDate", rules: { required: true, type: "date" as const, label: "To Date" } },
+    { name: "toTime", rules: { required: true, type: "select" as const, label: "To Time" } },
+    { name: "toAmPm", rules: { required: true, type: "select" as const, label: "AM/PM" } },
  
-    { name: "pickupFrom", rules: { required: true, type: "text", label: "Pickup From" } },
-    { name: "driverName", rules: { required: true, type: "text", label: "Driver Name" } },
+    { name: "pickupFrom", rules: { required: true, type: "text" as const, label: "Pickup From" } },
+    { name: "driverName", rules: { required: true, type: "text" as const, label: "Driver Name" } },
  
-    { name: "dropLocations", rules: { required: true, type: "array", label: "Drop Locations" } },
+    { name: "dropLocations", rules: { required: true, type: "dropLocations" as const, label: "Drop Locations" } },
  
-    { name: "paymentMode", rules: { required: true, type: "select", label: "Payment Mode" } },
-    { name: "paymentDetails", rules: { required: false, type: "text", label: "Payment Details" } },
-    { name: "details", rules: { required: false, type: "text", label: "Trip Details" } }
+    { name: "paymentMode", rules: { required: true, type: "select" as const, label: "Payment Mode" } },
+    { name: "paymentDetails", rules: { required: false, type: "text" as const, label: "Payment Details" } },
+    { name: "details", rules: { required: false, type: "text" as const, label: "Trip Details" } }
   ];
  
   const initialValues: any = {};
   const initialErrors: any = {};
   fields.forEach(f => {
-    if (f.type === "array") initialValues[f.name] = [""];
+    if (f.rules.type === "dropLocations") initialValues[f.name] = [""];
     else initialValues[f.name] = "";
     initialErrors[f.name] = "";
   });
@@ -72,7 +71,7 @@ const TripCreate: React.FC = () => {
     return (
       <>
         {field.rules.label}
-        {field.rules.required && <span className="text-danger">*</span>}
+        {field.rules.required && <span style={{ color: "red", marginLeft: "2px" }}>*</span>}
       </>
     );
   };
@@ -96,10 +95,13 @@ const TripCreate: React.FC = () => {
   };
  
   const overrideMessage = (name: string, ruleType: string) => {
-    if (ruleType === "select" || ruleType === "date") return "Select an option.";
-    if (ruleType === "array") return "This field is required.";
-    if (ruleType === "text") return "This field is required.";
-    return "This field is required.";
+    const field = fields.find(f => f.name === name);
+    const label = field?.rules.label || "This field";
+    
+    if (ruleType === "select" || ruleType === "date") return `${label} is required.`;
+    if (ruleType === "dropLocations") return `${label} is required.`;
+    if (ruleType === "text") return `${label} is required.`;
+    return `${label} is required.`;
   };
  
   const validateField = (name: string, value: any) => {
@@ -136,13 +138,23 @@ const TripCreate: React.FC = () => {
   };
  
   const handleDropChange = (values: string[]) => {
-    setFormData(prev => ({ ...prev, dropLocations: values }));
+    setFormData((prev: any) => ({ ...prev, dropLocations: values }));
     validateField("dropLocations", values);
   };
  
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     if (!validateForm()) return;
+
+    // Validate that customer and driver are selected
+    if (!customerId) {
+      toast.error("Please select a customer");
+      return;
+    }
+    if (!driverId) {
+      toast.error("Please select a driver");
+      return;
+    }
  
     setIsSubmitting(true);
  
@@ -151,21 +163,26 @@ const TripCreate: React.FC = () => {
  
       const payload = {
         tripBookingModeId: Number(formData.receivedVia),
-        customerId,
-        driverId,
+        customerId: customerId,
+        driverId: driverId,
         fromDate: `${formData.fromDate}T${convertTo24(formData.fromTime, formData.fromAmPm)}:00`,
+        fromDateString: formData.fromDate,
         toDate: `${formData.toDate}T${convertTo24(formData.toTime, formData.toAmPm)}:00`,
+        toDateString: formData.toDate,
         fromLocation: formData.pickupFrom,
         toLocation1: drops[0] || "",
         toLocation2: drops[1] || "",
         toLocation3: drops[2] || "",
         toLocation4: drops[3] || "",
         bookedBy: "Admin",
-        tripDetails: formData.details,
+        tripDetails: formData.details || "",
         tripStatus: "Scheduled",
+        tripAmount: 0,
+        advanceAmount: 0,
+        balanceAmount: 0,
         isActive: true,
         paymentMode: formData.paymentMode,
-        paymentDetails: formData.paymentDetails,
+        paymentDetails: formData.paymentDetails || "",
         customerName: formData.customerName,
         driverName: formData.driverName
       };
@@ -174,7 +191,7 @@ const TripCreate: React.FC = () => {
  
       if (res.isSucess) {
         toast.success("Trip created successfully");
-        setTimeout(() => navigate("/admin-dashboard/total-trips"), 1000);
+        setTimeout(() => navigate("/dashboard/trip-list"), 1000);
       } else {
         toast.error(res.customMessage || "Failed to create trip");
       }
@@ -228,10 +245,10 @@ const TripCreate: React.FC = () => {
             </Row>
  
             <CustomerPopup show={showCustomerPopup} handleClose={() => setShowCustomerPopup(false)}
-              onSelect={c => { setCustomerId(c.customerId); setFormData(p => ({...p,customerName:c.customerName})); setShowCustomerPopup(false); }} />
+              onSelect={c => { setCustomerId(c.customerId); setFormData((p: any) => ({...p,customerName:c.customerName})); setShowCustomerPopup(false); }} />
  
             <DriverPopup show={showDriverPopup} handleClose={() => setShowDriverPopup(false)}
-              onSelect={d => { setDriverId(d.driverId); setFormData(p => ({...p,driverName:d.driverName})); setShowDriverPopup(false); }} />
+              onSelect={d => { setDriverId(d.driverId); setFormData((p: any) => ({...p,driverName:d.driverName})); setShowDriverPopup(false); }} />
  
             {/* FROM */}
             <Row className="mb-2 mx-3">
@@ -354,7 +371,6 @@ const TripCreate: React.FC = () => {
               </Col>
  
               <Col md={6}>
-                <Form.Label className="mb-1 fw-medium">{getLabel("dropLocations")}</Form.Label>
                 <KiduDropLocation values={formData.dropLocations} onChange={handleDropChange} />
                 {errors.dropLocations && <div className="text-danger small">{errors.dropLocations}</div>}
               </Col>
