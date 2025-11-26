@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect, useRef } from "react";
 import { Table, Button, Row, Col, Container, Pagination } from "react-bootstrap";
 import { FaEdit, FaEye } from "react-icons/fa";
 import KiduExcelButton from "../components/KiduExcelButton";
@@ -22,11 +22,21 @@ interface KiduTableProps {
   viewRoute?: string;
   editRoute?: string;
   showAddButton?: boolean;
+  showKiduPopupButton?: boolean;
   showExport?: boolean;
   loading?: boolean;
   error?: string | null;
   onRetry?: () => void;
   onRowClick?: (item: any) => void;
+  AddModalComponent?: React.ComponentType<{
+    show: boolean;
+    handleClose: () => void;
+    onAdded: (newItem: any) => void;
+  }>;
+  onAddClick?: () => void;
+  showSearch?: boolean;
+  showActions?: boolean;
+  showTitle?: boolean; // New prop to control title visibility
 }
 
 const KiduTable: React.FC<KiduTableProps> = ({
@@ -40,71 +50,93 @@ const KiduTable: React.FC<KiduTableProps> = ({
   viewRoute,
   editRoute,
   showAddButton = true,
+  showKiduPopupButton = false,
   showExport = true,
   loading = false,
   error = null,
   onRowClick,
-  onRetry
+  onRetry,
+  AddModalComponent,
+  onAddClick,
+  showSearch = true,
+  showActions = true,
+  showTitle = true // Default to true for normal usage
 }) => {
+  const tableRef = useRef<HTMLDivElement>(null);
+  const rowsPerPage = 10;
+
   if (loading) return <div className="text-center py-5">Loading...</div>;
 
   if (error) {
     return (
       <Container fluid className="py-3 mt-5">
         <div className="alert alert-danger">{error}</div>
-        <Button onClick={onRetry} style={{ backgroundColor:"#18575A", border:"none" }}>Retry</Button>
+        <Button onClick={onRetry} style={{ backgroundColor: "#18575A", border: "none" }}>Retry</Button>
       </Container>
     );
   }
 
-  const rowsPerPage = 10;
-  // eslint-disable-next-line react-hooks/rules-of-hooks
+ 
   const reversedData = useMemo(() => [...data].reverse(), [data]);
-    // eslint-disable-next-line react-hooks/rules-of-hooks
+
   const [searchTerm, setSearchTerm] = useState("");
-    // eslint-disable-next-line react-hooks/rules-of-hooks
+
   const filteredData = useMemo(() => {
-    return reversedData.filter((item) =>
-      columns.some((col) =>
+    return reversedData.filter(item =>
+      columns.some(col =>
         String(item[col.key] || "").toLowerCase().includes(searchTerm.toLowerCase())
       )
     );
   }, [reversedData, searchTerm, columns]);
 
   const totalPages = Math.ceil(filteredData.length / rowsPerPage);
-    // eslint-disable-next-line react-hooks/rules-of-hooks
   const [currentPage, setCurrentPage] = useState(1);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, data.length]);
 
   const startIndex = (currentPage - 1) * rowsPerPage;
   const currentData = filteredData.slice(startIndex, startIndex + rowsPerPage);
 
   const handlePageChange = (page: number) => {
-    if (page >= 1 && page <= totalPages) setCurrentPage(page);
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+      if (tableRef.current) {
+        tableRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
   };
+
+  // compute field name for "Add <Field>"
+  const fieldName = title ? title.replace("Select ", "") : addButtonLabel;
 
   return (
     <Container fluid className="py-3 mt-4">
-      {data.length > 0 && (
-        <Row className="mb-2 align-items-center">
-          <Col>
-            <h4 className="mb-0 fw-bold" style={{ fontFamily:"Urbanist" }}>{title}</h4>
-            {subtitle && <p className="text-muted" style={{ fontFamily:"Urbanist" }}>{subtitle}</p>}
-          </Col>
-        </Row>
-      )}
+      {/* Conditionally show title/subtitle row */}
+      {showTitle !== false && data.length > 0 && (
+  <Row className="mb-2 align-items-center">
+    <Col>
+      <h4 className="mb-0 fw-bold" style={{ fontFamily:"Urbanist" }}>{title}</h4>
+      {subtitle && <p className="text-muted" style={{ fontFamily:"Urbanist" }}>{subtitle}</p>}
+    </Col>
+  </Row>
+)}
+
 
       {data.length > 0 && (
         <Row className="mb-3 align-items-center">
-          <Col>
-            <KiduSearchBar
-              placeholder="Search..."
-              onSearch={(val) => {
-                setSearchTerm(val);
-                setCurrentPage(1);
-              }}
-              width="250px"
-            />
-          </Col>
+          {showSearch && (
+            <Col>
+              <KiduSearchBar
+                placeholder="Search..."
+                onSearch={(val) => {
+                  setSearchTerm(val);
+                }}
+                width="250px"
+              />
+            </Col>
+          )}
 
           {showAddButton && addRoute && (
             <Col xs="auto" className="text-end">
@@ -112,7 +144,7 @@ const KiduTable: React.FC<KiduTableProps> = ({
                 label={`+ ${addButtonLabel}`}
                 to={addRoute}
                 className="fw-bold d-flex align-items-center text-white"
-                style={{ backgroundColor:"#18575A", border:"none", height:45, width:200 }}
+                style={{ backgroundColor: "#18575A", border: "none", height: 45, width: 200 }}
               />
             </Col>
           )}
@@ -121,50 +153,64 @@ const KiduTable: React.FC<KiduTableProps> = ({
 
       <Row>
         <Col>
-          {filteredData.length === 0 ? (
-            <div className="text-center py-5">
-              <p className="text-muted">No matching records found.</p>
-              {addRoute && (
-                <KiduPopupButton
-                  label={`+ ${addButtonLabel}`}
-                  onClick={() => window.location.assign(addRoute)}
-                />
-              )}
-            </div>
-          ) : (
-            <div className="table-responsive">
-              <Table striped bordered hover className="align-middle mb-0">
-                <thead className="table-light text-center" style={{ fontFamily:"Urbanist" }}>
-                  <tr>
-                    <th>Sl No</th>
-                    {columns.map(col => <th key={col.key}>{col.label}</th>)}
+          <div ref={tableRef} className="table-responsive">
+            <Table striped bordered hover className="align-middle mb-0">
+              <thead className="table-light text-center" style={{ fontFamily: "Urbanist" }}>
+                <tr>
+                  {/* <th>Sl No</th> */}
+                  {columns.map(col => <th key={col.key}>{col.label}</th>)}
+                  {showActions && (
                     <th className="d-flex justify-content-between">
                       <div className="ms-5 mt-2">Action</div>
-                      {showExport && (
+                      {showExport && data.length > 0 && (
                         <div className="mt-1">
                           <KiduExcelButton data={data} title={title} />
                         </div>
                       )}
                     </th>
-                  </tr>
-                </thead>
+                  )}
+                </tr>
+              </thead>
 
-                <tbody className="text-center" style={{ fontFamily:"Urbanist", fontSize:15 }}>
-                  {currentData.map((item, idx) => (
+              <tbody className="text-center" style={{ fontFamily: "Urbanist", fontSize: 15 }}>
+                {currentData.length === 0 ? (
+                  <tr>
+                    <td
+                      colSpan={columns.length + (showActions ? 2 : 1)}
+                      className="text-center py-5"
+                      style={{ border: "2px solid #dee2e6" }}
+                    >
+                      <div className="d-flex flex-column justify-content-center align-items-center">
+                        <p className="text-muted mb-3">No matching records found</p>
+
+                        {showKiduPopupButton && (AddModalComponent || addRoute) && (
+                          <KiduPopupButton
+                            label={`Add ${fieldName}`}
+                            onClick={() => {
+                              if (onAddClick) onAddClick();
+                              else if (addRoute) window.location.assign(addRoute);
+                            }}
+                          />
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ) : (
+                  currentData.map((item) => (
                     <tr
                       key={item[idKey]}
                       onClick={() => onRowClick?.(item)}
                       style={{ cursor: onRowClick ? "pointer" : "default" }}
                     >
-                      <td>{startIndex + idx + 1}</td>
+                      {/* <td>{startIndex + idx + 1}</td> */}
 
-                      {columns.map(col => (
+                      {columns.map((col) => (
                         <td key={col.key}>
                           {col.key === "profile" ? (
                             <img
                               src={item[col.key] || "/assets/Images/profile.jpeg"}
-                              alt={item.driverName || item.customerName || "Profile"}
-                              style={{ width:45, height:45, borderRadius:"50%" }}
+                              alt="Profile"
+                              style={{ width: 45, height: 45, borderRadius: "50%" }}
                             />
                           ) : (
                             item[col.key]
@@ -172,47 +218,57 @@ const KiduTable: React.FC<KiduTableProps> = ({
                         </td>
                       ))}
 
-                      <td className="text-center">
-                        <div className="d-flex justify-content-center gap-2">
-                          {editRoute && (
-                            <Button
-                              size="sm"
-                              style={{ backgroundColor:"transparent", border:"1px solid #18575A", color:"#18575A" }}
-                              onClick={(e) => { e.stopPropagation(); window.location.assign(`${editRoute}/${item[idKey]}`); }}
-                            >
-                              <FaEdit className="me-1" /> Edit
-                            </Button>
-                          )}
-                          {viewRoute && (
-                            <Button
-                              size="sm"
-                              style={{ backgroundColor:"#18575A", border:"none", color:"white" }}
-                              onClick={(e) => { e.stopPropagation(); window.location.assign(`${viewRoute}/${item[idKey]}`); }}
-                            >
-                              <FaEye className="me-1" /> View
-                            </Button>
-                          )}
-                        </div>
-                      </td>
+                      {showActions && (
+                        <td className="text-center" onClick={(e) => e.stopPropagation()}>
+                          <div className="d-flex justify-content-center gap-2">
+                            {editRoute && (
+                              <Button
+                                size="sm"
+                                style={{
+                                  backgroundColor: "transparent",
+                                  border: "1px solid #18575A",
+                                  color: "#18575A",
+                                }}
+                                onClick={() => window.location.assign(`${editRoute}/${item[idKey]}`)}
+                              >
+                                <FaEdit className="me-1" /> Edit
+                              </Button>
+                            )}
+
+                            {viewRoute && (
+                              <Button
+                                size="sm"
+                                style={{
+                                  backgroundColor: "#18575A",
+                                  border: "none",
+                                  color: "white",
+                                }}
+                                onClick={() => window.location.assign(`${viewRoute}/${item[idKey]}`)}
+                              >
+                                <FaEye className="me-1" /> View
+                              </Button>
+                            )}
+                          </div>
+                        </td>
+                      )}
                     </tr>
-                  ))}
-                </tbody>
-              </Table>
-            </div>
-          )}
+                  ))
+                )}
+              </tbody>
+            </Table>
+          </div>
         </Col>
       </Row>
 
       {totalPages > 1 && (
         <div className="d-flex justify-content-between align-items-center mt-4 px-2">
-          <span style={{ fontFamily:"Urbanist", color:"#18575A", fontWeight:600 }}>
+          <span style={{ fontFamily: "Urbanist", color: "#18575A", fontWeight: 600 }}>
             Page {currentPage} of {totalPages}
           </span>
 
           <Pagination className="m-0">
             <Pagination.First disabled={currentPage === 1} onClick={() => handlePageChange(1)} />
             <Pagination.Prev disabled={currentPage === 1} onClick={() => handlePageChange(currentPage - 1)} />
-
             {Array.from({ length: totalPages }, (_, i) => (
               <Pagination.Item
                 key={i + 1}
@@ -227,7 +283,6 @@ const KiduTable: React.FC<KiduTableProps> = ({
                 {i + 1}
               </Pagination.Item>
             ))}
-
             <Pagination.Next disabled={currentPage === totalPages} onClick={() => handlePageChange(currentPage + 1)} />
             <Pagination.Last disabled={currentPage === totalPages} onClick={() => handlePageChange(totalPages)} />
           </Pagination>

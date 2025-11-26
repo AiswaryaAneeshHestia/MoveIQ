@@ -1,3 +1,6 @@
+// ============================================
+// KiduPopup.tsx - FINAL FIXED VERSION
+// ============================================
 import React, { useState, useEffect, useMemo } from "react";
 import { Modal, Spinner } from "react-bootstrap";
 import HttpService from "../services/common/HttpService";
@@ -35,35 +38,35 @@ function KiduPopup<T extends Record<string, any>>({
   const [loading, setLoading] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
 
+  // 🔹 Fetch data when modal opens
   useEffect(() => {
-  if (!show) return;
-
-  // asynchronously reset query and set loading
-  setTimeout(() => {
+    if (!show) return;
     setQuery("");
     setLoading(true);
-  }, 0);
+    HttpService.callApi<CustomResponse<T[]>>(fetchEndpoint, "GET")
+      .then(res => {
+        if (Array.isArray(res)) setData(res);
+        else if ((res.isSuccess || res.isSucess) && Array.isArray(res.value)) setData(res.value);
+        else if (res.value && typeof res.value === "object" && Array.isArray((res.value as any).data))
+          setData((res.value as any).data);
+        else console.warn("⚠️ Unexpected API format:", res);
+      })
+      .catch(err => console.error("❌ Error fetching popup data:", err))
+      .finally(() => setLoading(false));
+  }, [show, fetchEndpoint]);
 
-  HttpService.callApi<CustomResponse<T[]>>(fetchEndpoint, "GET")
-    .then(res => {
-      if (Array.isArray(res)) setData(res);
-      else if (res.isSuccess && Array.isArray(res.value)) setData(res.value);
-      else if (res.value?.data && Array.isArray(res.value.data)) setData(res.value.data);
-    })
-    .finally(() => setLoading(false));
-}, [show, fetchEndpoint]);
-
-  const filteredData = useMemo(() => {
-    const text = query.trim().toLowerCase();
-    if (!text || !searchKeys?.length) return data;
+  // 🔹 Filter data based on search query
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q || !searchKeys?.length) return data;
     return data.filter(item =>
       searchKeys.some(key =>
-        item[key]?.toString().toLowerCase().includes(text)
+        item[key] && item[key].toString().toLowerCase().includes(q)
       )
     );
   }, [query, data, searchKeys]);
 
-  const handleSelect = (item: T) => {
+  const handleRowClick = (item: T) => {
     onSelect?.(item);
     handleClose();
   };
@@ -82,23 +85,33 @@ function KiduPopup<T extends Record<string, any>>({
             </div>
           ) : (
             <>
+              {/* 🔹 Search bar always visible at top */}
               <div className="mb-3 px-2">
-                <KiduSearchBar onSearch={setQuery} placeholder="Search records..." />
+                <KiduSearchBar
+                  onSearch={setQuery}
+                  placeholder="Search records..."
+                />
               </div>
 
+              {/* 🔹 Table without its own search bar and title */}
               <KiduTable
-                columns={columns.map(c => ({ key:String(c.key), label:c.label }))}
-                data={filteredData}
-                onRowClick={handleSelect}
-                // AddModalComponent={AddModalComponent}
+                showKiduPopupButton={true}
+                columns={columns.map(col => ({ key:String(col.key), label:col.label }))}
+                data={filtered}
+                showActions={false}
+                showSearch={false}
+                showTitle={false} // This hides the title/subtitle row in KiduTable
+                onRowClick={handleRowClick}
+                AddModalComponent={AddModalComponent}
                 title={title}
-                // onAddClick={() => setShowAddModal(true)}
+                onAddClick={() => setShowAddModal(true)}
               />
             </>
           )}
         </Modal.Body>
       </Modal>
 
+      {/* 🔹 Add Modal */}
       {AddModalComponent && (
         <AddModalComponent
           show={showAddModal}
