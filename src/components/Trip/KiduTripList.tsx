@@ -92,6 +92,7 @@ const KiduTripList: React.FC<KiduTripListProps> = ({
             columns={columns}
             data={trips}
             idKey="id"
+            addButtonLabel="Add New Trip"
             viewRoute="/dashboard/view-trip"
             editRoute="/dashboard/edit-trip-form"
             showAddButton={showAddButton}

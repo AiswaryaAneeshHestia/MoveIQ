@@ -69,6 +69,7 @@ import ExpenseTypeList from './pages/settings/expenseType/List';
 import CreateExpenseType from './pages/settings/expenseType/Create';
 import EditExpenseType from './pages/settings/expenseType/Edit';
 import ViewExpenseType from './pages/settings/expenseType/View';
+import AllTrips from './pages/trip/TripStatus/AllTrips';
 
 
 function App() {
@@ -90,6 +91,7 @@ function App() {
           <Route path="trip-list" element={<TripList />} />
           <Route path="trip-create" element={<TripCreate />} />
           {/* Trip-Status */}
+          <Route path="total-trips" element={<AllTrips />} />
           <Route path="scheduled" element={<ScheduledTrips />} />
           <Route path="completed" element={<CompletedTrips />} />
           <Route path="Cancelled" element={<CancelledTrips />} />
