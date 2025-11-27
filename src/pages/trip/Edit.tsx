@@ -261,7 +261,6 @@ const TripEdit: React.FC = () => {
         paymentDetails: formData.paymentDetails || "",
         customerName: formData.customerName,
         driverName: formData.driverName,
-        tripModeName: ""
       };
 
       const res = await TripService.update(Number(tripId), payload);

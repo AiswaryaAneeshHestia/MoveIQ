@@ -42,6 +42,6 @@ export interface TripStatus {
 export interface TripBookingMode {
     tripBookingModeId: number;
     tripBookingModeName: string;
-    tripModeName: string;
+    tripModeName?: string;
 
 }
