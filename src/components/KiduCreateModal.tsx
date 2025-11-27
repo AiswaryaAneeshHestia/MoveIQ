@@ -8,7 +8,7 @@ import KiduReset from "../components/ReuseButtons/KiduReset";
 export interface Field {
   name: string;
   label: string;
-  type: "text" | "number" | "textarea" | "email" | "date";
+  type: "text" | "number" | "textarea" | "email" | "date" | "select";
   required?: boolean;
   minLength?: number;
   maxLength?: number;

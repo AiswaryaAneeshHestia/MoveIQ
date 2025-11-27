@@ -111,7 +111,7 @@ const HomePage: React.FC = () => {
                 <span className="head-font mt-1">Add New Trip</span>
               </div>
             }
-            to="/admin-dashboard/new-trip-form"
+            to="/dashboard/trip-create"
             style={{ width: 200 }}
           />
         </div>

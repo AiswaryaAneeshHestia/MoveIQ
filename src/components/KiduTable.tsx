@@ -6,6 +6,7 @@ import KiduExcelButton from "../components/KiduExcelButton";
 import KiduButton from "../components/KiduButton";
 import KiduSearchBar from "../components/KiduSearchBar";
 import KiduPopupButton from "../components/KiduPopupButton";
+import KiduLoader from "./KiduLoader";
 
 interface Column {
   key: string;
@@ -67,17 +68,6 @@ const KiduTable: React.FC<KiduTableProps> = ({
   const navigate = useNavigate();
   const rowsPerPage = 10;
 
-  if (loading) return <div className="text-center py-5">Loading...</div>;
-
-  if (error) {
-    return (
-      <Container fluid className="py-3 mt-5">
-        <div className="alert alert-danger">{error}</div>
-        <Button onClick={onRetry} style={{ backgroundColor: "#18575A", border: "none" }}>Retry</Button>
-      </Container>
-    );
-  }
-
   const reversedData = useMemo(() => [...data].reverse(), [data]);
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -111,6 +101,18 @@ const KiduTable: React.FC<KiduTableProps> = ({
 
   // compute field name for "Add <Field>"
   const fieldName = title ? title.replace("Select ", "") : addButtonLabel;
+
+  if (loading) return  <KiduLoader type="trip..." />;
+
+  if (error) {
+    return (
+      <Container fluid className="py-3 mt-5">
+        <div className="alert alert-danger">{error}</div>
+        <Button onClick={onRetry} style={{ backgroundColor: "#18575A", border: "none" }}>Retry</Button>
+      </Container>
+    );
+  }
+
 
   return (
     <Container fluid className="py-3 mt-4">

@@ -58,7 +58,7 @@ const TripList: React.FC = () => {
       columns={columns}
       data={trips}
       addButtonLabel="Add New Trip"
-      addRoute="trip-create"
+      addRoute="/dashboard/trip-create"
       editRoute="/dashboard/trip-edit"
       viewRoute="/dashboard/trip-view"
       idKey="id"

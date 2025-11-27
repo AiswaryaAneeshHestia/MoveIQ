@@ -1,9 +1,9 @@
 // DriverCreateModal.tsx
-import KiduCreateModal from "../../components/KiduCreateModal";
+import KiduCreateModal, { type Field } from "../../components/KiduCreateModal";
 import { API_ENDPOINTS } from "../../constants/API_ENDPOINTS";
 import type { Driver } from "../../types/Driver.types";
 
-const driverFields = [
+const driverFields : Field[] = [
   { name: "driverName", label: "Driver Name", type: "text", required: true },
   { name: "contactNumber", label: "Contact Number", type: "text", required: true },
   { name: "license", label: "License", type: "text", required: true },

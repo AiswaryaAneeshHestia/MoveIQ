@@ -1,9 +1,9 @@
 // Updated CustomerCreateModal.tsx
-import KiduCreateModal from "../../components/KiduCreateModal";
+import KiduCreateModal, { type Field } from "../../components/KiduCreateModal";
 import { API_ENDPOINTS } from "../../constants/API_ENDPOINTS";
 import type { Customer } from "../../types/Customer.types";
 
-const customerFields = [
+const customerFields : Field[] = [
   { name: "customerName", label: "Customer Name", type: "text", required: true },
   { name: "customerPhone", label: "Phone", type: "text", required: true },
   { name: "customerEmail", label: "Email", type: "text", required: true },

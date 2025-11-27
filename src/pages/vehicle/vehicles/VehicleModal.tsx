@@ -5,7 +5,7 @@ import type { Vehicle } from "../../../types/vehicle/Vehicles.types";
 const vehicleFields : Field[] = [
   { name: "vehicleType", label: "Vehicle Type", type: "text", required: true },
   { name: "registrationNumber", label: "Registration Number", type: "text", required: true },
-  { name: "currentStatus", label: "Current Status", type: "text", required: true }
+  { name: "registrationExpiry", label: "Registration Expiry", type: "date", required: true }
 ];
 
 interface CustomerCreateModalProps {

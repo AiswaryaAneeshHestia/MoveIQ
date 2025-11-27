@@ -55,6 +55,7 @@ import VehicleView from './pages/vehicle/vehicles/View';
 //Vehicle-Maintenance
 import VehicleMaintenanceList from './pages/vehicle/maintenance/List';
 import CreateVehicleMaintenance from './pages/vehicle/maintenance/Create';
+import EditVehicleMaintenance from './pages/vehicle/maintenance/Edit';
 import ViewMaintenance from './pages/vehicle/maintenance/View';
 
 //User
@@ -74,7 +75,6 @@ import ExpenseTypeList from './pages/settings/expenseType/List';
 import CreateExpenseType from './pages/settings/expenseType/Create';
 import EditExpenseType from './pages/settings/expenseType/Edit';
 import ViewExpenseType from './pages/settings/expenseType/View';
-
 
 function App() {
 
@@ -136,6 +136,7 @@ function App() {
           {/* Vehicles-Maintenance */}
           <Route path="vehicle/maintenance-list" element={<VehicleMaintenanceList />} />
           <Route path="vehicles/create-maintenance" element={<CreateVehicleMaintenance />} />
+          <Route path="vehicles/edit-maintenance/:maintenanceId" element={<EditVehicleMaintenance />} />
           <Route path="vehicles/view-maintenance/:maintenanceId" element={<ViewMaintenance />} />
 
           {/* User */}
