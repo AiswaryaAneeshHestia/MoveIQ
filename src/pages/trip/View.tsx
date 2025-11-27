@@ -108,7 +108,7 @@ const TripView: React.FC = () => {
 
             <Col xs={12} md={4}>
               <div className="fw-semibold" style={{ fontSize: "1rem" }}>Received Via</div>
-              <div className="text-muted" style={{ fontSize: "0.85rem" }}>{data.recivedVia}</div>
+              <div className="text-muted" style={{ fontSize: "0.85rem" }}>{data.tripBookingModeName}</div>
             </Col>
 
             <Col xs={12} md={4}>

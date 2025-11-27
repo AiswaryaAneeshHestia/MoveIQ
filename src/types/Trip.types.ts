@@ -6,6 +6,7 @@ export interface Trip {
     tripOrder?: string;
     tripCode?:string;
     tripBookingModeId: number;
+    tripBookingModeName?:string,
     recivedVia?: string;
     customerId: number;
     driverId: number;
