@@ -174,7 +174,7 @@ const TripEdit: React.FC = () => {
     if (errors[name]) setErrors((prev: any) => ({ ...prev, [name]: "" }));
   };
 
-  const overrideMessage = (name: string, ruleType: string) => {
+  const overrideMessage = (name: string) => {
     const field = fields.find(f => f.name === name);
     const label = field?.rules.label || "This field";
     return `${label} is required.`;
