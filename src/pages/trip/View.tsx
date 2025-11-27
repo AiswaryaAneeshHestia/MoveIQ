@@ -7,18 +7,19 @@ import type { Trip } from "../../types/Trip.types";
 import TripService from "../../services/Trip.services";
 import Attachments from "../../components/KiduAttachments";
 import AuditTrailsComponent from "../../components/KiduAuditLogs";
-// import TripPaymentAccordion, { type TripPaymentAccordionRef } from "../../components/OtherComponents/TripPayementAccordion";
-// import TripKmAccordion, { type TripKilometerAccordionRef } from "../../components/OtherComponents/TripKmAccordion";
-// import TripActionPanel from "../../components/OtherComponents/TripActionPanel";
-// import TripStatusBadge from "../../components/OtherComponents/TripStatusBadge";
+
 import KiduLoader from "../../components/KiduLoader";
 import KiduPrevious from "../../components/KiduPrevious";
+import KiduKilometerAccordion, { type TripKilometerAccordionRef } from "../../components/KiduKilometerAccordion";
+import KiduPaymentAccordion, { type TripPaymentAccordionRef } from "../../components/KiduPaymentAccordion";
+import TripStatusBadge from "./TripStatusBadge";
+import TripActionPanel from "./TripActionPanel";
 
 const TripView: React.FC = () => {
   const navigate = useNavigate();
   const { tripId } = useParams();
-//   const paymentAccordionRef = useRef<TripPaymentAccordionRef>(null);
-//   const kmAccordionRef = useRef<TripKilometerAccordionRef>(null);
+  const paymentAccordionRef = useRef<TripPaymentAccordionRef>(null);
+  const kmAccordionRef = useRef<TripKilometerAccordionRef>(null);
 
   const [data, setData] = useState<Trip | null>(null);
   const [loading, setLoading] = useState(true);
@@ -134,16 +135,16 @@ const TripView: React.FC = () => {
 
           <div className="d-flex align-items-center gap-2">
             {/* Trip Status Badge */}
-            {/* <TripStatusBadge status={tripStatus} /> */}
+            <TripStatusBadge status={tripStatus} />
             
             {/* Trip Action Panel */}
-            {/* <TripActionPanel
+            <TripActionPanel
               trip={{ ...data, tripStatus }}
               currentStatus={tripStatus}
               onStatusUpdate={handleStatusUpdate}
               onKmUpdate={() => kmAccordionRef.current?.refreshData()}
               onPaymentUpdate={() => paymentAccordionRef.current?.refreshData()}
-            /> */}
+            />
 
             {/* Print Button */}
             <Button
@@ -292,19 +293,19 @@ const TripView: React.FC = () => {
         )}
 
         {/* Payment Details Accordion */}
-        {/* <TripPaymentAccordion
+        <KiduPaymentAccordion
           ref={paymentAccordionRef}
           relatedEntityId={Number(data.tripOrderId)}
           relatedEntityType="Trip"
           heading="Payment Details"
-        /> */}
+        />
 
         {/* Kilometer Details Accordion */}
-        {/* <TripKmAccordion
+        <KiduKilometerAccordion
           ref={kmAccordionRef}
           tripId={Number(data.tripOrderId)}
           driverId={data.driverId}
-        /> */}
+        />
 
         {/* Attachments + Audits */}
         <Attachments tableName="TRIPORDER" recordId={data.tripOrderId} />

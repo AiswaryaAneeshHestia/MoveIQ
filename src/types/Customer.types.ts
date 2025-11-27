@@ -1,6 +1,7 @@
 import type { AuditTrails } from "./common/AuditLog.types";
 
 export interface Customer {
+    isDeleted: any;
     customerId: number;
     customerName: string;
     customerPhone: string;
