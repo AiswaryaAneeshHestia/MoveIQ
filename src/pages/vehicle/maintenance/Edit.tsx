@@ -307,7 +307,6 @@ const EditVehicleMaintenance: React.FC = () => {
               <Attachments tableName={tableName} recordId={recordId} />
             </Col>
           </Row>
-
           <div>
             <AuditTrailsComponent tableName={tableName} recordId={recordId} />
           </div>
