@@ -11,6 +11,7 @@ import Attachments from "../../components/KiduAttachments";
 import AuditTrailsComponent from "../../components/KiduAuditLogs";
 import KiduReset from "../../components/ReuseButtons/KiduReset";
 import type {Driver} from "../../types/Driver.types";
+import KiduPaymentAccordion from "../../components/KiduPaymentAccordion";
 
 const DriverEdit:React.FC=()=>{
  const navigate=useNavigate();
@@ -283,6 +284,11 @@ const DriverEdit:React.FC=()=>{
      {/* Attachments */}
      <Row className="mb-2">
       <Col xs={12}>
+      <KiduPaymentAccordion
+                  relatedEntityId={recordId}
+                  relatedEntityType="driver"
+                  heading="Payment Details"
+                />
        <Attachments tableName={tableName} recordId={recordId}/>
       </Col>
      </Row>

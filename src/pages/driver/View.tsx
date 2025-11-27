@@ -10,16 +10,18 @@ import AuditTrailsComponent from "../../components/KiduAuditLogs";
 // import TripPaymentAccordion, { type TripPaymentAccordionRef } from "../../components/OtherComponents/TripPayementAccordion";
 import KiduLoader from "../../components/KiduLoader";
 import KiduPrevious from "../../components/KiduPrevious";
+import KiduPaymentAccordion from "../../components/KiduPaymentAccordion";
 
 const DriverView: React.FC = () => {
   const navigate = useNavigate();
   const { driverId } = useParams();
-//   const paymentAccordionRef = useRef<TripPaymentAccordionRef>(null);
+  //   const paymentAccordionRef = useRef<TripPaymentAccordionRef>(null);
 
   const [data, setData] = useState<Driver | null>(null);
   const [loading, setLoading] = useState(true);
   const [showConfirm, setShowConfirm] = useState(false);
   const [loadingDelete, setLoadingDelete] = useState(false);
+  const recordId = Number(driverId);
 
   useEffect(() => {
     const loadDriver = async () => {
@@ -145,12 +147,11 @@ const DriverView: React.FC = () => {
         </div>
 
         {/* Payment Accordion */}
-        {/* <TripPaymentAccordion
-          ref={paymentAccordionRef}
-          relatedEntityId={Number(data.driverId)}
-          relatedEntityType="vehicle"
+        <KiduPaymentAccordion
+          relatedEntityId={recordId}
+          relatedEntityType="driver"
           heading="Payment Details"
-        /> */}
+        />
 
         {/* Attachments + Audits */}
         <Attachments tableName="Driver" recordId={data.driverId} />

@@ -8,6 +8,7 @@ import KiduLoader from "../../../components/KiduLoader";
 import KiduPrevious from "../../../components/KiduPrevious";
 import Attachments from "../../../components/KiduAttachments";
 import AuditTrailsComponent from "../../../components/KiduAuditLogs";
+import KiduPaymentAccordion from "../../../components/KiduPaymentAccordion";
 
 const ViewMaintenance: React.FC = () => {
   const navigate = useNavigate();
@@ -17,6 +18,8 @@ const ViewMaintenance: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [showConfirm, setShowConfirm] = useState(false);
   const [loadingDelete, setLoadingDelete] = useState(false);
+
+    const recordId = Number(maintenanceId);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -158,6 +161,11 @@ const ViewMaintenance: React.FC = () => {
         </div>
 
         {/* Attachments & Audit Logs */}
+         <KiduPaymentAccordion
+                relatedEntityId={recordId}
+                relatedEntityType="vehicleMaintenance"
+                heading="Payment Details"
+              />
         <Attachments
           tableName="VehicleMaintenanceRecord"
           recordId={data.vehicleMaintenanceRecordId}

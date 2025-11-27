@@ -12,6 +12,7 @@ import Attachments from "../../../components/KiduAttachments";
 import AuditTrailsComponent from "../../../components/KiduAuditLogs";
 import VehiclePopUp from "../vehicles/VehiclePopUp";
 import type { Vehicle } from "../../../types/vehicle/Vehicles.types";
+import KiduPaymentAccordion from "../../../components/KiduPaymentAccordion";
 
 const EditVehicleMaintenance: React.FC = () => {
   const navigate = useNavigate();
@@ -25,7 +26,7 @@ const EditVehicleMaintenance: React.FC = () => {
   const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
   const [vehicleDisplayName, setVehicleDisplayName] = useState<string>("");
   console.log(selectedVehicle);
-  
+
   const tableName = "VehicleMaintenanceRecord";
   const recordId = Number(maintenanceId);
 
@@ -79,7 +80,7 @@ const EditVehicleMaintenance: React.FC = () => {
       }
     };
     loadMaintenanceRecord();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [maintenanceId, navigate]);
 
   const handleChange = (e: any) => {
@@ -114,7 +115,7 @@ const EditVehicleMaintenance: React.FC = () => {
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     if (!validateForm()) return;
-            const loggedUser = JSON.parse(localStorage.getItem("user") || "{}");
+    const loggedUser = JSON.parse(localStorage.getItem("user") || "{}");
 
     try {
       const payload = {
@@ -155,15 +156,15 @@ const EditVehicleMaintenance: React.FC = () => {
                 {fields[0].rules.label} {fields[0].rules.required && <span className="text-danger">*</span>}
               </Form.Label>
               <div className="d-flex gap-2">
-                <Form.Control 
-                  type="text" 
-                  value={vehicleDisplayName} 
-                  placeholder="Select vehicle" 
-                  readOnly 
+                <Form.Control
+                  type="text"
+                  value={vehicleDisplayName}
+                  placeholder="Select vehicle"
+                  readOnly
                   onClick={() => setShowVehiclePopup(true)}
                   style={{ cursor: "pointer" }}
                 />
-                <Button 
+                <Button
                   style={{ backgroundColor: "#18575A", border: "none" }}
                   onClick={() => setShowVehiclePopup(true)}
                 >
@@ -177,12 +178,12 @@ const EditVehicleMaintenance: React.FC = () => {
               <Form.Label className="fw-semibold">
                 {fields[1].rules.label} {fields[1].rules.required && <span className="text-danger">*</span>}
               </Form.Label>
-              <Form.Control 
-                type="date" 
-                name="maintenanceDate" 
-                value={formData.maintenanceDate} 
-                onChange={handleChange} 
-                onBlur={() => validateField("maintenanceDate", formData.maintenanceDate)} 
+              <Form.Control
+                type="date"
+                name="maintenanceDate"
+                value={formData.maintenanceDate}
+                onChange={handleChange}
+                onBlur={() => validateField("maintenanceDate", formData.maintenanceDate)}
               />
               {errors.maintenanceDate && <small className="text-danger">{errors.maintenanceDate}</small>}
             </Col>
@@ -191,13 +192,13 @@ const EditVehicleMaintenance: React.FC = () => {
               <Form.Label className="fw-semibold">
                 {fields[2].rules.label} {fields[2].rules.required && <span className="text-danger">*</span>}
               </Form.Label>
-              <Form.Control 
-                type="text" 
-                name="maintenanceType" 
-                placeholder="Enter maintenance type" 
-                value={formData.maintenanceType} 
-                onChange={handleChange} 
-                onBlur={() => validateField("maintenanceType", formData.maintenanceType)} 
+              <Form.Control
+                type="text"
+                name="maintenanceType"
+                placeholder="Enter maintenance type"
+                value={formData.maintenanceType}
+                onChange={handleChange}
+                onBlur={() => validateField("maintenanceType", formData.maintenanceType)}
               />
               {errors.maintenanceType && <small className="text-danger">{errors.maintenanceType}</small>}
             </Col>
@@ -206,13 +207,13 @@ const EditVehicleMaintenance: React.FC = () => {
               <Form.Label className="fw-semibold">
                 {fields[3].rules.label} {fields[3].rules.required && <span className="text-danger">*</span>}
               </Form.Label>
-              <Form.Control 
-                type="text" 
-                name="workshopName" 
-                placeholder="Enter workshop name" 
-                value={formData.workshopName} 
-                onChange={handleChange} 
-                onBlur={() => validateField("workshopName", formData.workshopName)} 
+              <Form.Control
+                type="text"
+                name="workshopName"
+                placeholder="Enter workshop name"
+                value={formData.workshopName}
+                onChange={handleChange}
+                onBlur={() => validateField("workshopName", formData.workshopName)}
               />
               {errors.workshopName && <small className="text-danger">{errors.workshopName}</small>}
             </Col>
@@ -221,13 +222,13 @@ const EditVehicleMaintenance: React.FC = () => {
               <Form.Label className="fw-semibold">
                 {fields[4].rules.label} {fields[4].rules.required && <span className="text-danger">*</span>}
               </Form.Label>
-              <Form.Control 
-                type="number" 
-                name="cost" 
-                placeholder="Enter cost" 
-                value={formData.cost} 
-                onChange={handleChange} 
-                onBlur={() => validateField("cost", formData.cost)} 
+              <Form.Control
+                type="number"
+                name="cost"
+                placeholder="Enter cost"
+                value={formData.cost}
+                onChange={handleChange}
+                onBlur={() => validateField("cost", formData.cost)}
               />
               {errors.cost && <small className="text-danger">{errors.cost}</small>}
             </Col>
@@ -236,13 +237,13 @@ const EditVehicleMaintenance: React.FC = () => {
               <Form.Label className="fw-semibold">
                 {fields[5].rules.label} {fields[5].rules.required && <span className="text-danger">*</span>}
               </Form.Label>
-              <Form.Control 
-                type="number" 
-                name="odometerReading" 
-                placeholder="Enter odometer reading" 
-                value={formData.odometerReading} 
-                onChange={handleChange} 
-                onBlur={() => validateField("odometerReading", formData.odometerReading)} 
+              <Form.Control
+                type="number"
+                name="odometerReading"
+                placeholder="Enter odometer reading"
+                value={formData.odometerReading}
+                onChange={handleChange}
+                onBlur={() => validateField("odometerReading", formData.odometerReading)}
               />
               {errors.odometerReading && <small className="text-danger">{errors.odometerReading}</small>}
             </Col>
@@ -251,13 +252,13 @@ const EditVehicleMaintenance: React.FC = () => {
               <Form.Label className="fw-semibold">
                 {fields[6].rules.label} {fields[6].rules.required && <span className="text-danger">*</span>}
               </Form.Label>
-              <Form.Control 
-                type="text" 
-                name="performedBy" 
-                placeholder="Enter performed by" 
-                value={formData.performedBy} 
-                onChange={handleChange} 
-                onBlur={() => validateField("performedBy", formData.performedBy)} 
+              <Form.Control
+                type="text"
+                name="performedBy"
+                placeholder="Enter performed by"
+                value={formData.performedBy}
+                onChange={handleChange}
+                onBlur={() => validateField("performedBy", formData.performedBy)}
               />
               {errors.performedBy && <small className="text-danger">{errors.performedBy}</small>}
             </Col>
@@ -266,13 +267,13 @@ const EditVehicleMaintenance: React.FC = () => {
               <Form.Label className="fw-semibold">
                 {fields[7].rules.label}
               </Form.Label>
-              <Form.Control 
-                as="textarea" 
-                rows={3} 
-                name="description" 
-                placeholder="Enter description" 
-                value={formData.description} 
-                onChange={handleChange} 
+              <Form.Control
+                as="textarea"
+                rows={3}
+                name="description"
+                placeholder="Enter description"
+                value={formData.description}
+                onChange={handleChange}
               />
             </Col>
 
@@ -280,13 +281,13 @@ const EditVehicleMaintenance: React.FC = () => {
               <Form.Label className="fw-semibold">
                 {fields[8].rules.label}
               </Form.Label>
-              <Form.Control 
-                as="textarea" 
-                rows={3} 
-                name="remarks" 
-                placeholder="Enter remarks" 
-                value={formData.remarks} 
-                onChange={handleChange} 
+              <Form.Control
+                as="textarea"
+                rows={3}
+                name="remarks"
+                placeholder="Enter remarks"
+                value={formData.remarks}
+                onChange={handleChange}
               />
             </Col>
           </Row>
@@ -298,6 +299,11 @@ const EditVehicleMaintenance: React.FC = () => {
 
           <Row className="mb-2">
             <Col xs={12}>
+              <KiduPaymentAccordion
+                relatedEntityId={recordId}
+                relatedEntityType="vehicleMaintenance"
+                heading="Payment Details"
+              />
               <Attachments tableName={tableName} recordId={recordId} />
             </Col>
           </Row>
@@ -308,10 +314,10 @@ const EditVehicleMaintenance: React.FC = () => {
         </Form>
       </Container>
 
-      <VehiclePopUp 
-        show={showVehiclePopup} 
-        handleClose={() => setShowVehiclePopup(false)} 
-        onSelect={handleVehicleSelect} 
+      <VehiclePopUp
+        show={showVehiclePopup}
+        handleClose={() => setShowVehiclePopup(false)}
+        onSelect={handleVehicleSelect}
       />
 
       <Toaster position="top-right" />

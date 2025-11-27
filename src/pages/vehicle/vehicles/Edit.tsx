@@ -11,6 +11,7 @@ import KiduPrevious from "../../../components/KiduPrevious";
 import KiduReset from "../../../components/ReuseButtons/KiduReset";
 import Attachments from "../../../components/KiduAttachments";
 import AuditTrailsComponent from "../../../components/KiduAuditLogs";
+import KiduPaymentAccordion from "../../../components/KiduPaymentAccordion";
 
 const VehicleEdit: React.FC = () => {
     const navigate = useNavigate();
@@ -29,7 +30,7 @@ const VehicleEdit: React.FC = () => {
         label: (2000 + i).toString(),
     }));
 
-    const statusOptions = ["Active","Operational", "Non-Operational", "Scrap"].map((s) => ({
+    const statusOptions = ["Active", "Operational", "Non-Operational", "Scrap"].map((s) => ({
         value: s,
         label: s,
     }));
@@ -250,6 +251,12 @@ const VehicleEdit: React.FC = () => {
 
                     <Row className="mb-2 mt-4">
                         <Col xs={12}>
+                            {/* Payment Accordion */}
+                            <KiduPaymentAccordion
+                                relatedEntityId={recordId}
+                                relatedEntityType="vehicle"
+                                heading="Payment Details"
+                            />
                             <Attachments tableName={tableName} recordId={recordId} />
                         </Col>
                     </Row>

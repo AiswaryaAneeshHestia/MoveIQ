@@ -21,7 +21,7 @@ const Sidebar: React.FC = () => {
         { icon: <BsCashStack />, label: "Expenses", path: "/dashboard/expense-list" },
     ];
     const invoiceSubMenu = [
-        { label: "Pending Invoices", path: "/dashboard/invoice-list" },
+        { label: "Pending Invoices", path: "/dashboard/completed" },
     ]
     const vehiclesSubMenu = [
         { label: "Vehicles", path: "/dashboard/vehicle/vehicle-list" },

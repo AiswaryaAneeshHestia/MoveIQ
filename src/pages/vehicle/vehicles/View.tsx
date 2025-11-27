@@ -8,10 +8,13 @@ import KiduLoader from "../../../components/KiduLoader";
 import KiduPrevious from "../../../components/KiduPrevious";
 import Attachments from "../../../components/KiduAttachments";
 import AuditTrailsComponent from "../../../components/KiduAuditLogs";
+import KiduPaymentAccordion from "../../../components/KiduPaymentAccordion";
 
 const VehicleView: React.FC = () => {
   const navigate = useNavigate();
   const { vehicleId } = useParams();
+
+  const recordId = Number(vehicleId);
 
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -91,102 +94,107 @@ const VehicleView: React.FC = () => {
             </h5>
           </div>
 
-        <div className="d-flex">
-          <Button
-            className="d-flex align-items-center gap-2 me-1"
-            style={{
-              fontWeight: 500,
-              backgroundColor: "#18575A",
-              fontSize: "15px",
-              border: "none",
-            }}
-            onClick={handleEdit}
-          >
-            <FaEdit /> Edit
-          </Button>
+          <div className="d-flex">
+            <Button
+              className="d-flex align-items-center gap-2 me-1"
+              style={{
+                fontWeight: 500,
+                backgroundColor: "#18575A",
+                fontSize: "15px",
+                border: "none",
+              }}
+              onClick={handleEdit}
+            >
+              <FaEdit /> Edit
+            </Button>
 
-          <Button
-            variant="danger"
-            className="d-flex align-items-center gap-2"
-            style={{ fontWeight: 500, fontSize: "15px" }}
-            onClick={() => setShowConfirm(true)}
-          >
-            <FaTrash size={12} /> Delete
-          </Button>
+            <Button
+              variant="danger"
+              className="d-flex align-items-center gap-2"
+              style={{ fontWeight: 500, fontSize: "15px" }}
+              onClick={() => setShowConfirm(true)}
+            >
+              <FaTrash size={12} /> Delete
+            </Button>
+          </div>
         </div>
-      </div>
 
-      {/* Title / ID */}
-      <div className="text-center mb-4">
-        <h5 className="fw-bold mb-1">{data.registrationNumber}</h5>
-        <p className="small mb-0 fw-bold text-danger">
-          ID: {data.vehicleId}
-        </p>
-      </div>
+        {/* Title / ID */}
+        <div className="text-center mb-4">
+          <h5 className="fw-bold mb-1">{data.registrationNumber}</h5>
+          <p className="small mb-0 fw-bold text-danger">
+            ID: {data.vehicleId}
+          </p>
+        </div>
 
-      {/* Details Table */}
-      <div className="table-responsive">
-        <Table bordered hover responsive className="align-middle mb-0">
-          <tbody>
-            {fields.map(({ key, label }) => {
-              let value = data[key];
+        {/* Details Table */}
+        <div className="table-responsive">
+          <Table bordered hover responsive className="align-middle mb-0">
+            <tbody>
+              {fields.map(({ key, label }) => {
+                let value = data[key];
 
-              return (
-                <tr key={key}>
-                  <td
-                    style={{
-                      width: "40%",
-                      fontWeight: 600,
-                      color: "#18575A",
-                    }}
-                  >
-                    {label}
-                  </td>
-                  <td>{String(value || "-")}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </Table>
-      </div>
+                return (
+                  <tr key={key}>
+                    <td
+                      style={{
+                        width: "40%",
+                        fontWeight: 600,
+                        color: "#18575A",
+                      }}
+                    >
+                      {label}
+                    </td>
+                    <td>{String(value || "-")}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </Table>
+        </div>
 
-      {/* Attachments */}
-      <Attachments tableName="vehicle" recordId={data.vehicleId} />
+        {/* Payment Accordion */}
+        <KiduPaymentAccordion
+          relatedEntityId={recordId}
+          relatedEntityType="vehicle"
+          heading="Payment Details"
+        />
+        {/* Attachments */}
+        <Attachments tableName="vehicle" recordId={data.vehicleId} />
+        {/* Audit Logs */}
+        <AuditTrailsComponent tableName="vehicle" recordId={data.vehicleId} />
+      </Card>
 
-      {/* Audit Logs */}
-      <AuditTrailsComponent tableName="vehicle" recordId={data.vehicleId} />
-    </Card>
+      {/* Delete Confirmation */}
+      <Modal show={showConfirm} onHide={() => setShowConfirm(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirm Delete</Modal.Title>
+        </Modal.Header>
 
-    {/* Delete Confirmation */}
-    <Modal show={showConfirm} onHide={() => setShowConfirm(false)} centered>
-      <Modal.Header closeButton>
-        <Modal.Title>Confirm Delete</Modal.Title>
-      </Modal.Header>
+        <Modal.Body>
+          Are you sure you want to delete this vehicle?
+        </Modal.Body>
 
-      <Modal.Body>
-        Are you sure you want to delete this vehicle?
-      </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowConfirm(false)}>
+            Cancel
+          </Button>
 
-      <Modal.Footer>
-        <Button variant="secondary" onClick={() => setShowConfirm(false)}>
-          Cancel
-        </Button>
+          <Button variant="danger" onClick={handleDelete} disabled={loadingDelete}>
+            {loadingDelete ? (
+              <>
+                <Spinner animation="border" size="sm" className="me-2" /> Deleting...
+              </>
+            ) : (
+              "Delete"
+            )}
+          </Button>
+        </Modal.Footer>
+      </Modal>
 
-        <Button variant="danger" onClick={handleDelete} disabled={loadingDelete}>
-          {loadingDelete ? (
-            <>
-              <Spinner animation="border" size="sm" className="me-2" /> Deleting...
-            </>
-          ) : (
-            "Delete"
-          )}
-        </Button>
-      </Modal.Footer>
-    </Modal>
-
-    <Toaster position="top-right" />
-  </div>
-);
+      <Toaster position="top-right" />
+    </div>
+  );
 };
 
 export default VehicleView;
