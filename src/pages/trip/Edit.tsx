@@ -301,7 +301,7 @@ const TripEdit: React.FC = () => {
                   <Form.Control size="sm" type="text" readOnly value={formData.tripCode} className="custom-input w-100 text-danger fw-bold" />
                 </Form.Group>
               </Col>
-              <Col md={4}>
+              <Col md={5}>
                 <Form.Label className="mb-1 fw-medium">{getLabel("customerName")}</Form.Label>
                 <InputGroup>
                   <Form.Control size="sm" type="text" readOnly placeholder="Enter customer name"
