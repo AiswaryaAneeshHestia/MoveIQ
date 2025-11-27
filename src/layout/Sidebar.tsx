@@ -2,23 +2,27 @@ import React, { useState } from "react";
 import { Nav, Navbar, Container, Collapse } from "react-bootstrap";
 import { NavLink, useNavigate } from "react-router-dom";
 import { BsGridFill, BsChatDots, BsPeople, BsGear, BsPersonFill, BsChevronDown, BsCashStack, BsCarFront, } from "react-icons/bs";
-import { FaFileInvoice } from "react-icons/fa6";
 import { BiLogOut } from "react-icons/bi";
 import AuthService from "../services/common/Auth.services";
+import { FaFileInvoice } from "react-icons/fa6";
 
 const Sidebar: React.FC = () => {
     const [hovered, setHovered] = useState(false);
     const [settingsOpen, setSettingsOpen] = useState(false);
     const [vehiclesOpen, setVehiclesOpen] = useState(false);
+     const [invoiceOpen, setInvoiceOpen] = useState(false);
 
     const menuItems = [
         { icon: <BsGridFill />, label: "Dashboard", path: "/dashboard", exact: true },
         { icon: <BsChatDots />, label: "My Trips", path: "/dashboard/trip-list" },
         { icon: <BsPeople />, label: "Customers", path: "/dashboard/customer-list" },
         { icon: <BsPersonFill />, label: "Drivers", path: "/dashboard/driver-list" },
-        { icon: <FaFileInvoice />, label: "Invoices", path: "/dashboard/invoice-list" },
+       // { icon: <FaFileInvoice />, label: "Invoices", path: "/dashboard/invoice-list" },
         { icon: <BsCashStack />, label: "Expenses", path: "/dashboard/expense-list" },
     ];
+    const invoiceSubMenu = [
+        { label: "Pending Invoices", path: "/dashboard/invoice-list" },
+    ]
     const vehiclesSubMenu = [
         { label: "Vehicles", path: "/dashboard/vehicle/vehicle-list" },
         { label: "Maintenance", path: "/dashboard/vehicle/maintenance-list" },
@@ -101,9 +105,49 @@ const Sidebar: React.FC = () => {
                                 </NavLink>
                             </div>
                         ))}
+
+                        {/* Invoice */}
+                        <div
+                            className={`flex-column gap-2 w-100 text-center ${hovered ? "justify-content-start mt-2" : "justify-content-center"} rounded mt-1`}
+                            style={{ fontSize: "14px", textDecoration: "none" }}
+                            onClick={() => setInvoiceOpen(!invoiceOpen)}
+                        >
+                            <FaFileInvoice className="text-white" />
+                            {hovered && (
+                                <>
+                                    <span className="ms-2 text-white" style={{ cursor: "pointer" }}>Invoices</span>
+                                    <BsChevronDown
+                                        className="ms-2 text-white"
+                                        style={{ transition: "transform 0.3s", cursor: "pointer", transform: invoiceOpen ? "rotate(180deg)" : "rotate(0deg)" }}
+                                    />
+                                </>
+                            )}
+                        </div>
+
+                         <Collapse in={invoiceOpen && hovered}>
+                            <div className="flex-column text-light mt-2" >
+                                {invoiceSubMenu.map((sub) => (
+                                    <NavLink
+                                        key={sub.path}
+                                        to={sub.path}
+                                        end
+                                        className={({ isActive }) =>
+                                            `d-block p-1 ${isActive ? "bg-white text-success rounded mx-3" : "text-white"}`
+                                        }
+                                        style={{ fontSize: "12px", textDecoration: "none" }}
+                                    >
+
+                                        {sub.label}
+                                    </NavLink>
+                                ))}
+                            </div>
+                        </Collapse>
+
+
+
                         {/* Vehicles */}
                         <div
-                            className={`flex-column gap-2 w-100 text-center ${hovered ? "justify-content-start ms-2 mt-2" : "justify-content-center"} rounded `}
+                            className={`flex-column gap-2 w-100 text-center ${hovered ? "justify-content-start mt-3" : "justify-content-center"} rounded `}
                             style={{ fontSize: "14px", textDecoration: "none" }}
                             onClick={() => setVehiclesOpen(!vehiclesOpen)}
                         >
@@ -140,7 +184,7 @@ const Sidebar: React.FC = () => {
 
                         {/* Settings */}
                         <div
-                            className={`flex-column gap-2 w-100 text-center ${hovered ? "justify-content-start ms-2 mt-3" : "justify-content-center"} rounded  mt-2`}
+                            className={`flex-column gap-2 w-100 text-center ${hovered ? "justify-content-start mt-3" : "justify-content-center"} rounded  mt-2`}
                             style={{ fontSize: "14px", textDecoration: "none" }}
                             onClick={() => setSettingsOpen(!settingsOpen)}
                         >
