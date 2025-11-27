@@ -155,4 +155,9 @@ export const API_ENDPOINTS = {
     DELETE: (id: number) => `${API_BASE_URL}/VehicleMaintenanceRecord/${id}`,
   },
 
+
+ SERVER_SIDE_TRIP: {
+  GET_PAGINATED: `${API_BASE_URL}/Api_PaginatedListData/trips-paginated`
+}
+
 };

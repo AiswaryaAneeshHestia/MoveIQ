@@ -109,7 +109,7 @@ const KiduPaymentAccordion = forwardRef<KiduPaymentAccordionRef, KiduPaymentAcco
         };
 
         const handleEdit = (payment: Expenses) => {
-            navigate(`/admin-dashboard/edit-expenses/${payment.expenseMasterId}`);
+            navigate(`/dashboard/edit-expense/${payment.expenseMasterId}`);
         };
 
         const tableHeaders = ["Sl No", "Payment ID", "Type", "Mode", "Amount", "Voucher", "Actions"];
