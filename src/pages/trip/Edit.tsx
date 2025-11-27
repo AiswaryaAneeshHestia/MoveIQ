@@ -13,10 +13,15 @@ import DriverPopup from "../driver/DriverPopup";
 import KiduLoader from "../../components/KiduLoader";
 import Attachments from "../../components/KiduAttachments";
 import AuditTrailsComponent from "../../components/KiduAuditLogs";
+import KiduPaymentAccordion from "../../components/KiduPaymentAccordion";
+import KiduKilometerAccordion from "../../components/KiduKilometerAccordion";
+import TripStatusBadge from "./TripStatusBadge";
+import TripActionPanel from "./TripActionPanel";
 
 const TripEdit: React.FC = () => {
   const navigate = useNavigate();
   const { tripId } = useParams<{ tripId: string }>();
+  const [refreshKey, setRefreshKey] = useState(0);
 
   const fields = [
     { name: "customerName", rules: { required: true, type: "text" as const, label: "Customer Name" } },
@@ -46,6 +51,7 @@ const TripEdit: React.FC = () => {
   const [formData, setFormData] = useState(initialValues);
   const [errors, setErrors] = useState(initialErrors);
   const [originalData, setOriginalData] = useState(initialValues);
+  const [tripStatus, setTripStatus] = useState("Scheduled");
 
   const [bookingModes, setBookingModes] = useState<any[]>([]);
   const [customerId, setCustomerId] = useState<number>();
@@ -94,9 +100,7 @@ const TripEdit: React.FC = () => {
       try {
         setIsLoading(true);
         const res = await TripService.getById(Number(tripId));
-        console.log(res);
         
-
         if (res.isSucess && res.value) {
           const trip = res.value;
 
@@ -107,15 +111,13 @@ const TripEdit: React.FC = () => {
             trip.toLocation4
           ].filter(loc => loc && loc.trim() !== "");
 
+          const fromDate = trip.fromDate ? trip.fromDate.split("T")[0] : "";
           const fromDateTime = trip.fromDate ? new Date(trip.fromDate) : null;
-         // const fromDate = fromDateTime ? fromDateTime.toISOString().split("T")[0] : "";
-         const fromDate = trip.fromDate ? trip.fromDate.split("T")[0] : "";
           const fromTimeStr = fromDateTime ? `${fromDateTime.getHours().toString().padStart(2, "0")}:${fromDateTime.getMinutes().toString().padStart(2, "0")}` : "";
           const fromParsed = convertFrom24(fromTimeStr);
 
-          const toDateTime = trip.toDate ? new Date(trip.toDate) : null;
-          //const toDate = toDateTime ? toDateTime.toISOString().split("T")[0] : "";
           const toDate = trip.toDate ? trip.toDate.split("T")[0] : "";
+          const toDateTime = trip.toDate ? new Date(trip.toDate) : null;
           const toTimeStr = toDateTime ? `${toDateTime.getHours().toString().padStart(2, "0")}:${toDateTime.getMinutes().toString().padStart(2, "0")}` : "";
           const toParsed = convertFrom24(toTimeStr);
 
@@ -141,6 +143,7 @@ const TripEdit: React.FC = () => {
           setOriginalData(loadedData);
           setCustomerId(trip.customerId);
           setDriverId(trip.driverId);
+          setTripStatus(trip.tripStatus || "Scheduled");
         } else {
           toast.error("Failed to load trip data");
           navigate("/dashboard/trip-list");
@@ -249,7 +252,7 @@ const TripEdit: React.FC = () => {
         toLocation4: drops[3] || "",
         bookedBy: "Admin",
         tripDetails: formData.details || "",
-        tripStatus: "Scheduled",
+        tripStatus,
         tripAmount: 0,
         advanceAmount: 0,
         balanceAmount: 0,
@@ -261,7 +264,6 @@ const TripEdit: React.FC = () => {
       };
 
       const res = await TripService.update(Number(tripId), payload);
-      console.log(res);
 
       if (res.isSucess) {
         toast.success("Trip updated successfully");
@@ -282,11 +284,26 @@ const TripEdit: React.FC = () => {
     <>
       <Card className="mx-3" style={{ maxWidth: "100%", fontSize: "0.85rem", marginTop: "50px", backgroundColor: "#f0f0f0ff" }}>
         <Card.Header style={{ backgroundColor: "#18575A", color: "white", padding: "0.5rem" }}>
-          <div className="d-flex align-items-center">
-            <Button size="sm" variant="link" className="me-2" style={{ backgroundColor: "white", padding: "0.2rem 0.5rem", color: "#18575A" }} onClick={() => navigate(-1)}>
-              <FaArrowLeft />
-            </Button>
-            <h6 className="mb-0 p-2 fw-medium fs-5">Edit Booking</h6>
+          <div className="d-flex justify-content-between align-items-center">
+            <div className="d-flex align-items-center">
+              <Button size="sm" variant="link" className="me-2" style={{ backgroundColor: "white", padding: "0.2rem 0.5rem", color: "#18575A" }} onClick={() => navigate(-1)}>
+                <FaArrowLeft />
+              </Button>
+              <h6 className="mb-0 p-2 fw-medium fs-5">Edit Booking</h6>
+            </div>
+            <div className="d-flex align-items-center gap-2">
+              <TripStatusBadge status={tripStatus} />
+              <TripActionPanel
+                trip={{ tripOrderId: recordId, tripStatus }}
+                currentStatus={tripStatus}
+                onStatusUpdate={(status, remarks) => {
+                  setTripStatus(status);
+                  if (remarks) setFormData((prev: any) => ({ ...prev, details: `${prev.details}\n${remarks}` }));
+                }}
+                onKmUpdate={() => setRefreshKey(prev => prev + 1)}
+                onPaymentUpdate={() => setRefreshKey(prev => prev + 1)}
+              />
+            </div>
           </div>
         </Card.Header>
 
@@ -465,13 +482,40 @@ const TripEdit: React.FC = () => {
               </Button>
             </div>
 
-            {/* Attachments + Audit Logs (relocated & width matched) */}
+            {/* Payment Accordion */}
             <Row className="mb-2 mx-3 mt-3">
               <Col xs={12}>
+                <KiduPaymentAccordion
+                  key={`payment-${refreshKey}`}
+                  relatedEntityId={recordId}
+                  relatedEntityType="Trip"
+                  heading="Payment Details"
+                />
+              </Col>
+            </Row>
+
+            {/* Kilometer Accordion */}
+            <Row className="mb-2 mx-3">
+              <Col xs={12}>
+                <KiduKilometerAccordion
+                  key={`km-${refreshKey}`}
+                  tripId={recordId}
+                  driverId={driverId}
+                />
+              </Col>
+            </Row>
+
+            {/* Attachments */}
+            <Row className="mb-2 mx-3">
+              <Col xs={12}>
                 <Attachments tableName={tableName} recordId={recordId} />
-                <div className="mt-3">
-                  <AuditTrailsComponent tableName={tableName} recordId={recordId} />
-                </div>
+              </Col>
+            </Row>
+
+            {/* Audit Logs */}
+            <Row className="mb-2 mx-3">
+              <Col xs={12}>
+                <AuditTrailsComponent tableName={tableName} recordId={recordId} />
               </Col>
             </Row>
 
