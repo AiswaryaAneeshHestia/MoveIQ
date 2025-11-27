@@ -94,8 +94,6 @@ const TripEdit: React.FC = () => {
       try {
         setIsLoading(true);
         const res = await TripService.getById(Number(tripId));
-        console.log(res);
-        
 
         if (res.isSucess && res.value) {
           const trip = res.value;
@@ -108,19 +106,16 @@ const TripEdit: React.FC = () => {
           ].filter(loc => loc && loc.trim() !== "");
 
           const fromDateTime = trip.fromDate ? new Date(trip.fromDate) : null;
-         // const fromDate = fromDateTime ? fromDateTime.toISOString().split("T")[0] : "";
-         const fromDate = trip.fromDate ? trip.fromDate.split("T")[0] : "";
-          const fromTimeStr = fromDateTime ? `${fromDateTime.getHours().toString().padStart(2, "0")}:${fromDateTime.getMinutes().toString().padStart(2, "0")}` : "";
+          const fromDate = fromDateTime ? fromDateTime.toISOString().split("T")[0] : "";
+          const fromTimeStr = fromDateTime ? `${fromDateTime.getHours().toString().padStart(2,"0")}:${fromDateTime.getMinutes().toString().padStart(2,"0")}` : "";
           const fromParsed = convertFrom24(fromTimeStr);
 
           const toDateTime = trip.toDate ? new Date(trip.toDate) : null;
-          //const toDate = toDateTime ? toDateTime.toISOString().split("T")[0] : "";
-          const toDate = trip.toDate ? trip.toDate.split("T")[0] : "";
-          const toTimeStr = toDateTime ? `${toDateTime.getHours().toString().padStart(2, "0")}:${toDateTime.getMinutes().toString().padStart(2, "0")}` : "";
+          const toDate = toDateTime ? toDateTime.toISOString().split("T")[0] : "";
+          const toTimeStr = toDateTime ? `${toDateTime.getHours().toString().padStart(2,"0")}:${toDateTime.getMinutes().toString().padStart(2,"0")}` : "";
           const toParsed = convertFrom24(toTimeStr);
 
           const loadedData = {
-            tripCode: trip.tripCode || "",
             customerName: trip.customerName || "",
             receivedVia: trip.tripBookingModeId?.toString() || "",
             fromDate,
@@ -234,7 +229,6 @@ const TripEdit: React.FC = () => {
 
       const payload = {
         tripOrderId: Number(tripId),
-        tripCode: formData.tripCode,
         tripBookingModeId: Number(formData.receivedVia),
         customerId,
         driverId,
@@ -261,7 +255,6 @@ const TripEdit: React.FC = () => {
       };
 
       const res = await TripService.update(Number(tripId), payload);
-      console.log(res);
 
       if (res.isSucess) {
         toast.success("Trip updated successfully");
@@ -280,34 +273,28 @@ const TripEdit: React.FC = () => {
 
   return (
     <>
-      <Card className="mx-3" style={{ maxWidth: "100%", fontSize: "0.85rem", marginTop: "50px", backgroundColor: "#f0f0f0ff" }}>
-        <Card.Header style={{ backgroundColor: "#18575A", color: "white", padding: "0.5rem" }}>
+      <Card className="mx-3" style={{ maxWidth:"100%",fontSize:"0.85rem",marginTop:"50px",backgroundColor:"#f0f0f0ff" }}>
+        <Card.Header style={{ backgroundColor:"#18575A",color:"white",padding:"0.5rem" }}>
           <div className="d-flex align-items-center">
-            <Button size="sm" variant="link" className="me-2" style={{ backgroundColor: "white", padding: "0.2rem 0.5rem", color: "#18575A" }} onClick={() => navigate(-1)}>
+            <Button size="sm" variant="link" className="me-2" style={{ backgroundColor:"white",padding:"0.2rem 0.5rem",color:"#18575A" }} onClick={() => navigate(-1)}>
               <FaArrowLeft />
             </Button>
             <h6 className="mb-0 p-2 fw-medium fs-5">Edit Booking</h6>
           </div>
         </Card.Header>
 
-        <Card.Body style={{ padding: "1rem" }}>
+        <Card.Body style={{ padding:"1rem" }}>
           <Form onSubmit={handleSubmit}>
 
             {/* CUSTOMER */}
             <Row className="mb-2 mx-3">
-              <Col xs={2} md={1}>
-                <Form.Group className="mb-1">
-                  <Form.Label className="mb-1 fw-medium">Trip ID</Form.Label>
-                  <Form.Control size="sm" type="text" readOnly value={formData.tripCode} className="custom-input w-100 text-danger fw-bold" />
-                </Form.Group>
-              </Col>
-              <Col md={4}>
+              <Col md={6}>
                 <Form.Label className="mb-1 fw-medium">{getLabel("customerName")}</Form.Label>
                 <InputGroup>
                   <Form.Control size="sm" type="text" readOnly placeholder="Enter customer name"
                     name="customerName" value={formData.customerName}
                     onChange={handleChange} onBlur={() => validateField("customerName", formData.customerName)} />
-                  <Button size="sm" onClick={() => setShowCustomerPopup(true)} style={{ backgroundColor: "#18575A" }}>
+                  <Button size="sm" onClick={() => setShowCustomerPopup(true)} style={{ backgroundColor:"#18575A" }}>
                     <BsSearch />
                   </Button>
                 </InputGroup>
@@ -326,10 +313,10 @@ const TripEdit: React.FC = () => {
             </Row>
 
             <CustomerPopup show={showCustomerPopup} handleClose={() => setShowCustomerPopup(false)}
-              onSelect={c => { setCustomerId(c.customerId); setFormData((p: any) => ({ ...p, customerName: c.customerName })); setShowCustomerPopup(false); }} />
+              onSelect={c => { setCustomerId(c.customerId); setFormData((p: any) => ({...p,customerName:c.customerName})); setShowCustomerPopup(false); }} />
 
             <DriverPopup show={showDriverPopup} handleClose={() => setShowDriverPopup(false)}
-              onSelect={d => { setDriverId(d.driverId); setFormData((p: any) => ({ ...p, driverName: d.driverName })); setShowDriverPopup(false); }} />
+              onSelect={d => { setDriverId(d.driverId); setFormData((p: any) => ({...p,driverName:d.driverName})); setShowDriverPopup(false); }} />
 
             {/* FROM */}
             <Row className="mb-2 mx-3">
@@ -411,7 +398,7 @@ const TripEdit: React.FC = () => {
                   <Form.Control size="sm" type="text" readOnly name="driverName"
                     placeholder="Enter driver name" value={formData.driverName}
                     onChange={handleChange} onBlur={() => validateField("driverName", formData.driverName)} />
-                  <Button size="sm" style={{ backgroundColor: "#18575A" }} onClick={() => setShowDriverPopup(true)}>
+                  <Button size="sm" style={{ backgroundColor:"#18575A" }} onClick={() => setShowDriverPopup(true)}>
                     <BsSearch />
                   </Button>
                 </InputGroup>
@@ -460,7 +447,7 @@ const TripEdit: React.FC = () => {
             {/* Reset + Update Buttons */}
             <div className="d-flex justify-content-end gap-2 mt-4 me-4">
               <KiduReset initialValues={originalData} setFormData={setFormData} />
-              <Button type="submit" style={{ backgroundColor: "#18575A", border: "none" }} disabled={isSubmitting}>
+              <Button type="submit" style={{ backgroundColor:"#18575A",border:"none" }} disabled={isSubmitting}>
                 {isSubmitting ? "Updating..." : "Update"}
               </Button>
             </div>
