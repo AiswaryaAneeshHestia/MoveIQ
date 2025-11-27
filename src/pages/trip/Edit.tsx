@@ -185,7 +185,7 @@ const TripEdit: React.FC = () => {
     if (!field) return true;
     const result = KiduValidation.validate(value, field.rules);
     if (!result.isValid) {
-      const msg = overrideMessage(name, field.rules.type);
+      const msg = overrideMessage(name);
       setErrors((prev: any) => ({ ...prev, [name]: msg }));
       return false;
     }
