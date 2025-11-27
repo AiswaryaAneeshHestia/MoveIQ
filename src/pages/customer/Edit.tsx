@@ -104,7 +104,8 @@ const CustomerEdit: React.FC = () => {
         nationalilty: formData.nationality,
         nationality: formData.nationality,
         createdAt: new Date().toISOString(),
-        isActive: true
+        isActive: true,
+        isDeleted: false
       };
 
       const res = await CustomerService.update(Number(customerId), customerData);
