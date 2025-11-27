@@ -223,7 +223,7 @@ const TripActionPanel: React.FC<TripActionPanelProps> = ({ trip, onStatusUpdate,
 
             //const fromDateFormatted = formatDateForAPI(trip.fromDate);
             //const toDateFormatted = formatDateForAPI(trip.toDate);
-             var payload ={
+             const payload ={
                  tripOrderId: trip.tripOrderId,
                   tripStatus: updatedStatus,
                    remark: remarks
@@ -241,6 +241,7 @@ const TripActionPanel: React.FC<TripActionPanelProps> = ({ trip, onStatusUpdate,
                 toast.success(`Trip ${updatedStatus} successfully!`);
 
                 // instantly update UI
+                // eslint-disable-next-line react-hooks/immutability
                 trip.tripStatus = updatedStatus;
                 if (onStatusUpdate) {
                     onStatusUpdate(updatedStatus, remarks);

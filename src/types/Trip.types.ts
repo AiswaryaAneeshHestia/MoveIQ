@@ -1,6 +1,7 @@
 import type { AuditTrails } from "./common/AuditLog.types";
 
 export interface Trip {
+    tripModeName: any;
     tripOrderId: number;
     tripOrder?: string;
     tripCode?:string;
