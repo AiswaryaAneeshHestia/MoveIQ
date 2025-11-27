@@ -19,6 +19,7 @@ const AuditTrailsComponent: React.FC<AuditTrailsProps> = ({ tableName, recordId 
     if (tableName && recordId) {
       fetchHistory();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tableName, recordId]);
 
   const fetchHistory = async () => {

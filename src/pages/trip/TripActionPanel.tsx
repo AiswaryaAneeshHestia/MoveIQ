@@ -246,7 +246,7 @@ const TripActionPanel: React.FC<TripActionPanelProps> = ({ trip, onStatusUpdate,
                     onStatusUpdate(updatedStatus, remarks);
                 }
                 setTimeout(() => {
-                    navigate('/admin-dashboard/total-trips');
+                    navigate('/dashboard/trip-list');
                 }, 1000);
             } else {
                 toast.error(response.customMessage || `Failed to update trip`);

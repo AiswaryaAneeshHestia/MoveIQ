@@ -6,16 +6,16 @@ import type { TripKilometer } from "../types/TripKilometer.types";
 import TripKilometerService from "../services/TripKilometer.services";
 import KmModal from "../pages/trip/ActionPanel/KiloMeterModal";
 
-interface TripKilometerAccordionProps {
+interface KiduKilometerAccordionProps {
   tripId: number;
   driverId?: number;
 }
 
-export interface TripKilometerAccordionRef {
+export interface KiduKilometerAccordionRef {
   refreshData: () => void;
 }
 
-const TripKmAccordion = forwardRef<TripKilometerAccordionRef, TripKilometerAccordionProps>(
+const KiduKmAccordion = forwardRef<KiduKilometerAccordionRef, KiduKilometerAccordionProps>(
   ({ tripId, driverId }, ref) => {
 
     const [kilometers, setKilometers] = useState<TripKilometer[]>([]);
@@ -228,6 +228,6 @@ const TripKmAccordion = forwardRef<TripKilometerAccordionRef, TripKilometerAccor
   }
 );
 
-TripKmAccordion.displayName = "TripKilometerAccordion";
+KiduKmAccordion.displayName = "TripKilometerAccordion";
 
-export default TripKmAccordion;
+export default KiduKmAccordion;
