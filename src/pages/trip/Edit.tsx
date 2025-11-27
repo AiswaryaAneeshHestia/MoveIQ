@@ -260,7 +260,7 @@ const TripEdit: React.FC = () => {
         paymentMode: formData.paymentMode,
         paymentDetails: formData.paymentDetails || "",
         customerName: formData.customerName,
-        driverName: formData.driverName
+        driverName: formData.driverName,
       };
 
       const res = await TripService.update(Number(tripId), payload);
