@@ -77,7 +77,7 @@ const CreateVehicleMaintenance: React.FC = () => {
             const response = await VehicleMaintenanceService.create(payload);
             if (response.isSucess) {
                 toast.success("Maintenance record added successfully!");
-                setTimeout(() => navigate("/dashboard/vehicle-maintenance-list"), 2000);
+                setTimeout(() => navigate("/dashboard/vehicle/maintenance-list"), 2000);
             } else {
                 toast.error(response.customMessage || response.error);
             }

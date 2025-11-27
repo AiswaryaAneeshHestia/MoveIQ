@@ -188,6 +188,8 @@ const TripCreate: React.FC = () => {
       };
  
       const res = await TripService.create(payload);
+      console.log(res);
+      
  
       if (res.isSucess) {
         toast.success("Trip created successfully");
