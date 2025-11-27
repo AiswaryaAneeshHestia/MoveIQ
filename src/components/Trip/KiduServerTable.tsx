@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Table, Button, Row, Col, Container, Pagination } from "react-bootstrap";
 import { FaEdit, FaEye } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
@@ -8,17 +8,15 @@ import KiduButton from "../KiduButton";
 import KiduExcelButton from "../KiduExcelButton";
 import KiduPopupButton from "../KiduPopupButton";
 
-
 interface Column {
   key: string;
   label: string;
 }
 
-interface KiduTableProps {
+interface KiduServerTableProps {
   title?: string;
   subtitle?: string;
   columns: Column[];
-  data: any[];
   idKey?: string;
   addButtonLabel?: string;
   addRoute?: string;
@@ -27,26 +25,23 @@ interface KiduTableProps {
   showAddButton?: boolean;
   showKiduPopupButton?: boolean;
   showExport?: boolean;
-  loading?: boolean;
-  error?: string | null;
-  onRetry?: () => void;
   onRowClick?: (item: any) => void;
-  AddModalComponent?: React.ComponentType<{
-    show: boolean;
-    handleClose: () => void;
-    onAdded: (newItem: any) => void;
-  }>;
   onAddClick?: () => void;
   showSearch?: boolean;
   showActions?: boolean;
   showTitle?: boolean;
+  fetchData: (params: {
+    pageNumber: number;
+    pageSize: number;
+    searchTerm: string;
+  }) => Promise<{ data: any[]; total: number }>;
+  rowsPerPage?: number;
 }
 
-const KiduTable: React.FC<KiduTableProps> = ({
+const KiduServerTable: React.FC<KiduServerTableProps> = ({
   title = "Table",
   subtitle = "",
   columns,
-  data,
   idKey = "id",
   addButtonLabel = "Add New",
   addRoute,
@@ -55,42 +50,91 @@ const KiduTable: React.FC<KiduTableProps> = ({
   showAddButton = true,
   showKiduPopupButton = false,
   showExport = true,
-  loading = false,
-  error = null,
   onRowClick,
-  onRetry,
-  AddModalComponent,
   onAddClick,
   showSearch = true,
   showActions = true,
-  showTitle = true
+  showTitle = true,
+  fetchData,
+  rowsPerPage = 10,
 }) => {
   const tableRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
-  const rowsPerPage = 10;
 
-  const reversedData = useMemo(() => [...data].reverse(), [data]);
-
-  const [searchTerm, setSearchTerm] = useState("");
-
-  const filteredData = useMemo(() => {
-    return reversedData.filter(item =>
-      columns.some(col =>
-        String(item[col.key] || "").toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    );
-  }, [reversedData, searchTerm, columns]);
-
-  const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+  const [data, setData] = useState<any[]>([]);
+  const [total, setTotal] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
+  const totalPages = Math.ceil(total / rowsPerPage);
+
+  // Memoize loadData to prevent unnecessary recreations
+  const loadData = useCallback(async (page: number, search: string) => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      console.log("🔄 KiduServerTable - Loading data for:", { 
+        page, 
+        search, 
+        rowsPerPage 
+      });
+      
+      const result = await fetchData({
+        pageNumber: page,
+        pageSize: rowsPerPage,
+        searchTerm: search,
+      });
+      
+      console.log("📊 KiduServerTable - Received data:", {
+        dataLength: result.data?.length,
+        total: result.total,
+        firstItem: result.data?.[0]
+      });
+      
+      setData(result.data || []);
+      setTotal(result.total || 0);
+      
+    } catch (err: any) {
+      console.error("❌ KiduServerTable - Error:", err);
+      setError(err.message || "Failed to load data");
+      setData([]);
+      setTotal(0);
+    } finally {
+      setLoading(false);
+    }
+  }, [fetchData, rowsPerPage]);
+
+  // Load data on mount
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setCurrentPage(1);
-  }, [searchTerm, data.length]);
+    console.log("🚀 KiduServerTable - Initial load");
+    loadData(currentPage, searchTerm);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loadData]);
 
-  const startIndex = (currentPage - 1) * rowsPerPage;
-  const currentData = filteredData.slice(startIndex, startIndex + rowsPerPage);
+  // Debounced search - reset to page 1 when searching
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (searchTerm !== "" || currentPage !== 1) {
+        console.log("🔍 KiduServerTable - Search triggered:", searchTerm);
+        setCurrentPage(1);
+        loadData(1, searchTerm);
+      }
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchTerm, loadData]);
+
+  // Load data on page change
+  useEffect(() => {
+    if (currentPage !== 1 || searchTerm !== "") {
+      console.log("📄 KiduServerTable - Page changed:", currentPage);
+      loadData(currentPage, searchTerm);
+    }
+  }, [currentPage, loadData, searchTerm]);
 
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) {
@@ -101,42 +145,49 @@ const KiduTable: React.FC<KiduTableProps> = ({
     }
   };
 
-  // compute field name for "Add <Field>"
+  const handleRetry = () => {
+    loadData(currentPage, searchTerm);
+  };
+
   const fieldName = title ? title.replace("Select ", "") : addButtonLabel;
 
-  if (loading) return  <KiduLoader type="trip..." />;
+  if (loading && data.length === 0) return <KiduLoader type="trip..." />;
 
-  if (error) {
+  if (error && data.length === 0) {
     return (
       <Container fluid className="py-3 mt-5">
         <div className="alert alert-danger">{error}</div>
-        <Button onClick={onRetry} style={{ backgroundColor: "#18575A", border: "none" }}>Retry</Button>
+        <Button onClick={handleRetry} style={{ backgroundColor: "#18575A", border: "none" }}>
+          Retry
+        </Button>
       </Container>
     );
   }
 
-
   return (
     <Container fluid className="py-3 mt-4">
-      {/* Conditionally show title/subtitle row */}
-      {showTitle !== false && data.length > 0 && (
+      {showTitle !== false && total > 0 && (
         <Row className="mb-2 align-items-center">
           <Col>
-            <h4 className="mb-0 fw-bold" style={{ fontFamily: "Urbanist" }}>{title}</h4>
-            {subtitle && <p className="text-muted" style={{ fontFamily: "Urbanist" }}>{subtitle}</p>}
+            <h4 className="mb-0 fw-bold" style={{ fontFamily: "Urbanist" }}>
+              {title}
+            </h4>
+            {subtitle && (
+              <p className="text-muted" style={{ fontFamily: "Urbanist" }}>
+                {subtitle}
+              </p>
+            )}
           </Col>
         </Row>
       )}
 
-      {data.length > 0 && (
+      {total > 0 && (
         <Row className="mb-3 align-items-center">
           {showSearch && (
             <Col>
               <KiduSearchBar
                 placeholder="Search..."
-                onSearch={(val) => {
-                  setSearchTerm(val);
-                }}
+                onSearch={(val) => setSearchTerm(val)}
                 width="250px"
               />
             </Col>
@@ -161,11 +212,13 @@ const KiduTable: React.FC<KiduTableProps> = ({
             <Table striped bordered hover className="align-middle mb-0">
               <thead className="table-light text-center" style={{ fontFamily: "Urbanist" }}>
                 <tr>
-                  {columns.map(col => <th key={col.key}>{col.label}</th>)}
+                  {columns.map((col) => (
+                    <th key={col.key}>{col.label}</th>
+                  ))}
                   {showActions && (
                     <th className="d-flex justify-content-between">
                       <div className="ms-5 mt-2">Action</div>
-                      {showExport && data.length > 0 && (
+                      {showExport && total > 0 && (
                         <div className="mt-1">
                           <KiduExcelButton data={data} title={title} />
                         </div>
@@ -176,17 +229,23 @@ const KiduTable: React.FC<KiduTableProps> = ({
               </thead>
 
               <tbody className="text-center" style={{ fontFamily: "Urbanist", fontSize: 15 }}>
-                {currentData.length === 0 ? (
+                {loading ? (
+                  <tr>
+                    <td colSpan={columns.length + (showActions ? 1 : 0)} className="text-center py-5">
+                      <KiduLoader type="trip..." />
+                    </td>
+                  </tr>
+                ) : data.length === 0 ? (
                   <tr>
                     <td
-                      colSpan={columns.length + (showActions ? 2 : 1)}
+                      colSpan={columns.length + (showActions ? 1 : 0)}
                       className="text-center py-5"
                       style={{ border: "2px solid #dee2e6" }}
                     >
                       <div className="d-flex flex-column justify-content-center align-items-center">
                         <p className="text-muted mb-3">No matching records found</p>
 
-                        {showKiduPopupButton && (AddModalComponent || addRoute) && (
+                        {showKiduPopupButton && addRoute && (
                           <KiduPopupButton
                             label={`Add ${fieldName}`}
                             onClick={() => {
@@ -199,9 +258,9 @@ const KiduTable: React.FC<KiduTableProps> = ({
                     </td>
                   </tr>
                 ) : (
-                  currentData.map((item, index) => (
+                  data.map((item, index) => (
                     <tr
-                      key={`${item[idKey]}-${startIndex + index}`}
+                      key={`${item[idKey]}-${index}`}
                       onClick={() => onRowClick?.(item)}
                       style={{ cursor: onRowClick ? "pointer" : "default" }}
                     >
@@ -231,7 +290,6 @@ const KiduTable: React.FC<KiduTableProps> = ({
                                   color: "#18575A",
                                 }}
                                 onClick={() => {
-                                  console.log("Edit clicked - Item ID:", item[idKey]);
                                   navigate(`${editRoute}/${item[idKey]}`);
                                 }}
                               >
@@ -248,7 +306,6 @@ const KiduTable: React.FC<KiduTableProps> = ({
                                   color: "white",
                                 }}
                                 onClick={() => {
-                                  console.log("View clicked - Item ID:", item[idKey]);
                                   navigate(`${viewRoute}/${item[idKey]}`);
                                 }}
                               >
@@ -270,28 +327,50 @@ const KiduTable: React.FC<KiduTableProps> = ({
       {totalPages > 1 && (
         <div className="d-flex justify-content-between align-items-center mt-4 px-2">
           <span style={{ fontFamily: "Urbanist", color: "#18575A", fontWeight: 600 }}>
-            Page {currentPage} of {totalPages}
+            Page {currentPage} of {totalPages} (Total: {total} records)
           </span>
 
           <Pagination className="m-0">
             <Pagination.First disabled={currentPage === 1} onClick={() => handlePageChange(1)} />
-            <Pagination.Prev disabled={currentPage === 1} onClick={() => handlePageChange(currentPage - 1)} />
-            {Array.from({ length: totalPages }, (_, i) => (
-              <Pagination.Item
-                key={i + 1}
-                active={i + 1 === currentPage}
-                onClick={() => handlePageChange(i + 1)}
-                style={{
-                  backgroundColor: i + 1 === currentPage ? "#18575A" : "white",
-                  borderColor: "#18575A",
-                  color: i + 1 === currentPage ? "white" : "#18575A"
-                }}
-              >
-                {i + 1}
-              </Pagination.Item>
-            ))}
-            <Pagination.Next disabled={currentPage === totalPages} onClick={() => handlePageChange(currentPage + 1)} />
-            <Pagination.Last disabled={currentPage === totalPages} onClick={() => handlePageChange(totalPages)} />
+            <Pagination.Prev
+              disabled={currentPage === 1}
+              onClick={() => handlePageChange(currentPage - 1)}
+            />
+            {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
+              let pageNum;
+              if (totalPages <= 5) {
+                pageNum = i + 1;
+              } else if (currentPage <= 3) {
+                pageNum = i + 1;
+              } else if (currentPage >= totalPages - 2) {
+                pageNum = totalPages - 4 + i;
+              } else {
+                pageNum = currentPage - 2 + i;
+              }
+
+              return (
+                <Pagination.Item
+                  key={pageNum}
+                  active={pageNum === currentPage}
+                  onClick={() => handlePageChange(pageNum)}
+                  style={{
+                    backgroundColor: pageNum === currentPage ? "#18575A" : "white",
+                    borderColor: "#18575A",
+                    color: pageNum === currentPage ? "white" : "#18575A",
+                  }}
+                >
+                  {pageNum}
+                </Pagination.Item>
+              );
+            })}
+            <Pagination.Next
+              disabled={currentPage === totalPages}
+              onClick={() => handlePageChange(currentPage + 1)}
+            />
+            <Pagination.Last
+              disabled={currentPage === totalPages}
+              onClick={() => handlePageChange(totalPages)}
+            />
           </Pagination>
         </div>
       )}
@@ -299,4 +378,4 @@ const KiduTable: React.FC<KiduTableProps> = ({
   );
 };
 
-export default KiduTable;
+export default KiduServerTable;

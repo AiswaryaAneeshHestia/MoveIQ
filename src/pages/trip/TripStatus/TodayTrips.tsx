@@ -1,7 +1,9 @@
-import KiduTripList from "../../../components/Trip/KiduTripList";
+import React from "react";
+import KiduServerTripList from "../../../components/Trip/KiduTripList";
 
 const TodaysTrip: React.FC = () => (
-  <KiduTripList
+  <KiduServerTripList
+    key="todays-trips" // Add unique key
     title="Today's Trips"
     subtitle="List of all trips scheduled or completed for today"
     fetchMode="today"

@@ -1,4 +1,4 @@
-export interface KiduTrip {
+export interface ServersideTrip {
     year: number;
     customerId: number;
     listType: string;

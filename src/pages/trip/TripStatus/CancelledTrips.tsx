@@ -1,7 +1,9 @@
-import KiduTripList from "../../../components/Trip/KiduTripList";
+import React from "react";
+import KiduServerTripList from "../../../components/Trip/KiduTripList";
 
 const CancelledTrips: React.FC = () => (
-  <KiduTripList
+  <KiduServerTripList
+    key="cancelled-trips" // Add unique key
     title="Cancelled Trips"
     subtitle="List of trips that are cancelled with quick edit & view actions"
     fetchMode="status"
