@@ -174,7 +174,7 @@ const TripEdit: React.FC = () => {
     if (errors[name]) setErrors((prev: any) => ({ ...prev, [name]: "" }));
   };
 
-  const overrideMessage = (name: string, ruleType: string) => {
+  const overrideMessage = (name: string) => {
     const field = fields.find(f => f.name === name);
     const label = field?.rules.label || "This field";
     return `${label} is required.`;
@@ -185,7 +185,7 @@ const TripEdit: React.FC = () => {
     if (!field) return true;
     const result = KiduValidation.validate(value, field.rules);
     if (!result.isValid) {
-      const msg = overrideMessage(name, field.rules.type);
+      const msg = overrideMessage(name);
       setErrors((prev: any) => ({ ...prev, [name]: msg }));
       return false;
     }
