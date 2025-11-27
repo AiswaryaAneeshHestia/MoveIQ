@@ -1,3 +1,4 @@
+/* eslint-disable no-constant-binary-expression */
 import React, { useRef } from "react";
 import { Modal, Button, Row, Col, Table } from "react-bootstrap";
 import { FaFileInvoice, FaDownload } from "react-icons/fa6";

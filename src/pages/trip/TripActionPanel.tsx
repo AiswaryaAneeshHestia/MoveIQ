@@ -48,12 +48,6 @@ const TripActionPanel: React.FC<TripActionPanelProps> = ({ trip, onStatusUpdate,
     const [confirmType, setConfirmType] = useState<string>("");
     console.log(selectedAction);
 
-    // Payment details state
-    // const [paymentReceived, setPaymentReceived] = useState<boolean>(false);
-    // const [paymentReceived] = useState<boolean>(false);
-
-    // const [paymentMode, setPaymentMode] = useState<string>("");
-    // const [amount, setAmount] = useState<string>("");
 
     // Invoice form state
     const [invoiceNum, setInvoiceNum] = useState("");
@@ -72,12 +66,6 @@ const TripActionPanel: React.FC<TripActionPanelProps> = ({ trip, onStatusUpdate,
     const [showTripSheet, setShowTripSheet] = useState(false);
     console.log(selectedAction);
 
-    // KM fields
-    // const [timeIn, setTimeIn] = useState("");
-    // const [timeOut, setTimeOut] = useState("");
-    // const [blackTopKm, setBlackTopKm] = useState<number>(0);
-    // const [gradedKm, setGradedKm] = useState<number>(0);
-    // const [totalKm, setTotalKm] = useState<number>(0);
 
     const [showKmModal, setShowKmModal] = useState(false); //  New state for KM modal
 
@@ -188,20 +176,6 @@ const TripActionPanel: React.FC<TripActionPanelProps> = ({ trip, onStatusUpdate,
         }
     };
 
-    // const formatDateForAPI = (dateString: string | undefined | null): string | null => {
-    //     if (!dateString) return null;
-
-    //     try {
-    //         const date = new Date(dateString);
-    //         if (!isNaN(date.getTime())) {
-    //             return date.toISOString();
-    //         }
-    //         return null;
-    //     } catch (error) {
-    //         console.error("Error formatting date:", error);
-    //         return null;
-    //     }
-    // };
 
     const formatDateForDisplay = (dateString: string): string => {
         const date = new Date(dateString);
@@ -258,16 +232,6 @@ const TripActionPanel: React.FC<TripActionPanelProps> = ({ trip, onStatusUpdate,
         }
     };
 
-    // const handlePaymentSubmit = () => {
-    //     console.log({
-    //         tripId: trip?.tripOrderId,
-    //         paymentReceived,
-    //         paymentMode,
-    //         amount,
-    //     });
-    //     toast.success("Payment details saved successfully!");
-    //     setShowPaymentModal(false);
-    // };
 
     const handleInvoiceSubmit = async () => {
         try {

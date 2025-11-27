@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import TripService from "../../services/Trip.services";
-import KiduTable from "../../components/KiduTable";
+import KiduServerTable from "../../components/KiduTable";
 import KiduLoader from "../../components/KiduLoader";
 
 const columns = [
@@ -52,7 +52,7 @@ const TripList: React.FC = () => {
   if (loading) return <KiduLoader type="trips..." />;
 
   return (
-    <KiduTable
+    <KiduServerTable
       title="Total Trips"
       subtitle="List of all trips with quick edit & view actions"
       columns={columns}
