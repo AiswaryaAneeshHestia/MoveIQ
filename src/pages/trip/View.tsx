@@ -1,36 +1,35 @@
-import React, { useEffect, useState, useRef } from "react";
-import { Card, Table, Button, Modal, Spinner, Row, Col, Badge } from "react-bootstrap";
+import React, { useEffect, useRef, useState } from "react";
+import { Button, Row, Col } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
-import { FaEdit, FaTrash, FaPrint } from "react-icons/fa";
+import { FaPrint } from "react-icons/fa";
 import toast, { Toaster } from "react-hot-toast";
 import type { Trip } from "../../types/Trip.types";
 import TripService from "../../services/Trip.services";
 import Attachments from "../../components/KiduAttachments";
 import AuditTrailsComponent from "../../components/KiduAuditLogs";
-
 import KiduLoader from "../../components/KiduLoader";
-import KiduPrevious from "../../components/KiduPrevious";
-import KiduKilometerAccordion, { type TripKilometerAccordionRef } from "../../components/KiduKilometerAccordion";
-import KiduPaymentAccordion, { type TripPaymentAccordionRef } from "../../components/KiduPaymentAccordion";
 import TripStatusBadge from "./TripStatusBadge";
-import TripActionPanel from "./TripActionPanel";
+import { FaArrowLeft } from "react-icons/fa6";
+import type { KiduPaymentAccordionRef } from "../../components/KiduPaymentAccordion";
+import type { KiduKilometerAccordionRef } from "../../components/KiduKilometerAccordion";
+import KiduPaymentAccordion from "../../components/KiduPaymentAccordion";
+import KiduKmAccordion from "../../components/KiduKilometerAccordion";
 
 const TripView: React.FC = () => {
   const navigate = useNavigate();
   const { tripId } = useParams();
-  const paymentAccordionRef = useRef<TripPaymentAccordionRef>(null);
-  const kmAccordionRef = useRef<TripKilometerAccordionRef>(null);
+  const paymentAccordionRef = useRef<KiduPaymentAccordionRef>(null);
+  const kmAccordionRef = useRef<KiduKilometerAccordionRef>(null);
 
   const [data, setData] = useState<Trip | null>(null);
   const [loading, setLoading] = useState(true);
-  const [showConfirm, setShowConfirm] = useState(false);
-  const [loadingDelete, setLoadingDelete] = useState(false);
   const [tripStatus, setTripStatus] = useState<string>("");
 
   useEffect(() => {
     const loadTrip = async () => {
       try {
         const res = await TripService.getById(Number(tripId));
+        console.log(res);
         if (res.isSucess && res.value) {
           setData(res.value);
           setTripStatus(res.value.tripStatus || "");
@@ -46,44 +45,7 @@ const TripView: React.FC = () => {
     loadTrip();
   }, [tripId]);
 
-  const handleStatusUpdate = (newStatus: string, remarks?: string) => {
-    setTripStatus(newStatus);
-    setTrip(prev => prev ? { ...prev, tripStatus: newStatus } : null);
-  };
-
-  const handleEdit = () => navigate(`/dashboard/trip-edit/${data?.tripOrderId}`);
-
-  const handleDelete = async () => {
-    if (!data) return;
-    
-    setLoadingDelete(true);
-    try {
-      await TripService.delete(data.tripOrderId);
-      toast.success("Trip deleted successfully");
-      setTimeout(() => navigate("/dashboard/trip-list"), 800);
-    } catch {
-      toast.error("Failed to delete trip.");
-    } finally {
-      setLoadingDelete(false);
-      setShowConfirm(false);
-    }
-  };
-
-  const formatDateTime = (dateString: string | null) => {
-    if (!dateString) return "";
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
-      day: "2-digit",
-      month: "long",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true
-    });
-  };
-
   if (loading) return <KiduLoader type="trip details..." />;
-
   if (!data)
     return (
       <div className="text-center mt-5">
@@ -92,206 +54,120 @@ const TripView: React.FC = () => {
       </div>
     );
 
-  const basicFields = [
-    { key: "tripCode", label: "Trip Code" },
-    { key: "customerName", label: "Customer Name" },
-    { key: "driverName", label: "Driver Name" },
-    { key: "bookedBy", label: "Booked By" },
-    { key: "recivedVia", label: "Received Via" },
-    { key: "paymentMode", label: "Payment Mode" }
-  ];
-
-  const locationFields = [
-    { key: "fromLocation", label: "Pickup Location" },
-    { key: "toLocation1", label: "Drop Location 1" },
-    { key: "toLocation2", label: "Drop Location 2" },
-    { key: "toLocation3", label: "Drop Location 3" },
-    { key: "toLocation4", label: "Drop Location 4" }
-  ];
-
-  const amountFields = [
-    { key: "tripAmount", label: "Trip Amount" },
-    { key: "advanceAmount", label: "Advance Amount" },
-    { key: "balanceAmount", label: "Balance Amount" }
-  ];
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD'
-    }).format(amount);
-  };
-
   return (
     <div className="container d-flex justify-content-center align-items-center mt-5" style={{ fontFamily: "Urbanist" }}>
-      <Card className="shadow-lg p-4 w-100" style={{ maxWidth: "1300px", borderRadius: "15px", border: "none" }}>
+      <div className="shadow-lg py-2 px-3 w-100" style={{ maxWidth: "1300px", borderRadius: "15px", border: "none" }}>
 
         {/* Header */}
-        <div className="d-flex justify-content-between align-items-center mb-4">
+        <div className="d-flex justify-content-between w-100 align-items-center mb-1 px-2 " style={{
+          backgroundColor: "#18575A",
+          fontSize: "1rem",
+          height: "60px",
+        }}>
           <div className="d-flex align-items-center">
-            <KiduPrevious />
-            <h5 className="fw-bold m-0 ms-2" style={{ color: "#18575A" }}>Trip Details</h5>
+            <Button
+              size="sm"
+              variant="link"
+              onClick={() => navigate(-1)}
+              className="me-3"
+              style={{ backgroundColor: "white", padding: "0.2rem 0.5rem", textDecoration: "none", color: "#18575A" }}
+            >
+              <FaArrowLeft className="me-1 fw-bold" size={18} />
+            </Button>
+            <h5 className="fw-bold m-0 ms-2 text-white">Trip Details</h5>
           </div>
-
           <div className="d-flex align-items-center gap-2">
             {/* Trip Status Badge */}
             <TripStatusBadge status={tripStatus} />
-            
-            {/* Trip Action Panel */}
-            <TripActionPanel
-              trip={{ ...data, tripStatus }}
-              currentStatus={tripStatus}
-              onStatusUpdate={handleStatusUpdate}
-              onKmUpdate={() => kmAccordionRef.current?.refreshData()}
-              onPaymentUpdate={() => paymentAccordionRef.current?.refreshData()}
-            />
-
             {/* Print Button */}
             <Button
-              variant="outline-secondary"
+              variant="outline-danger"
               className="d-flex align-items-center gap-2"
               style={{ fontWeight: 500, fontSize: "15px" }}
             >
-              <FaPrint /> Print
-            </Button>
-
-            {/* Edit Button */}
-            <Button
-              className="d-flex align-items-center gap-2 me-1"
-              style={{ fontWeight: 500, backgroundColor: "#18575A", fontSize: "15px", border: "none" }}
-              onClick={handleEdit}
-            >
-              <FaEdit /> Edit
-            </Button>
-
-            {/* Delete Button */}
-            <Button 
-              variant="danger" 
-              className="d-flex align-items-center gap-2"
-              style={{ fontWeight: 500, fontSize: "15px" }}
-              onClick={() => setShowConfirm(true)}
-            >
-              <FaTrash size={12} /> Delete
+              <FaPrint />
             </Button>
           </div>
         </div>
+        <div style={{ padding: "1.5rem" }}>
+          <Row className="gy-3 ps-4">
+            <Col xs={12} md={4}>
+              <div className="fw-semibold" style={{ fontSize: "1rem" }}>Trip ID</div>
+              <div className="text-danger" style={{ fontSize: "0.85rem" }}>{data.tripOrderId}</div>
+            </Col>
 
-        {/* Trip ID Header */}
-        <div className="text-center mb-4">
-          <h5 className="fw-bold mb-1">{data.tripCode || `T${data.tripOrderId.toString().padStart(3, "0")}`}</h5>
-          <p className="small mb-0 fw-bold text-danger" style={{ color: "#18575A" }}>
-            Trip ID : {data.tripOrderId}
-          </p>
+            <Col xs={12} md={4}>
+              <div className="fw-semibold" style={{ fontSize: "1rem" }}>Customer Name</div>
+              <div className="text-muted" style={{ fontSize: "0.85rem" }}>{data.customerName}</div>
+            </Col>
+
+            <Col xs={12} md={4}>
+              <div className="fw-semibold" style={{ fontSize: "1rem" }}>Driver</div>
+              <div className="text-muted" style={{ fontSize: "0.85rem" }}>{data.driverName}</div>
+            </Col>
+
+            <Col xs={12} md={4}>
+              <div className="fw-semibold" style={{ fontSize: "1rem" }}>Received Via</div>
+              <div className="text-muted" style={{ fontSize: "0.85rem" }}>{data.recivedVia}</div>
+            </Col>
+
+            <Col xs={12} md={4}>
+              <div className="fw-semibold" style={{ fontSize: "1rem" }}>Start Date & Time</div>
+              <div className="text-muted" style={{ fontSize: "0.85rem" }}>
+                {data.fromDateString || "-"}
+              </div>
+            </Col>
+
+            <Col xs={12} md={4}>
+              <div className="fw-semibold" style={{ fontSize: "1rem" }}>End Date & Time</div>
+              <div className="text-muted" style={{ fontSize: "0.85rem" }}>
+                {data.toDateString || "-"}
+              </div>
+            </Col>
+
+            <Col xs={12} md={4}>
+              <div className="d-flex gap-3 flex-wrap">
+                <div>
+                  <div className="fw-semibold" style={{ fontSize: "1rem" }}>Pickup From</div>
+                  <div className="text-muted" style={{ fontSize: "0.85rem" }}>{data.fromLocation}</div>
+                </div>
+              </div>
+            </Col>
+
+            <Col xs={12} md={4}>
+              <div>
+                <div className="fw-semibold" style={{ fontSize: "1rem" }}>Drop Locations</div>
+                <div className="text-muted" style={{ fontSize: "0.85rem" }}>
+                  {data.toLocation1} , {data.toLocation2} , {data.toLocation3} , {data.toLocation4}
+                </div>
+              </div>
+              {/* )} */}
+            </Col>
+
+            {data.paymentMode && data.paymentMode.trim() !== "" && (
+              <Col xs={12} md={4}>
+                <div className="fw-semibold" style={{ fontSize: "1rem" }}>Payment Mode</div>
+                <div className="text-muted" style={{ fontSize: "0.85rem" }}>{data.paymentMode}</div>
+              </Col>
+            )}
+
+            {data.paymentDetails && data.paymentDetails.trim() !== "" && (
+              <Col xs={12} md={4}>
+                <div className="fw-semibold" style={{ fontSize: "1rem" }}>Payment Details</div>
+                <div className="text-muted" style={{ fontSize: "0.85rem" }}>{data.paymentDetails}</div>
+              </Col>
+            )}
+
+            {data.tripDetails && data.tripDetails.trim() !== "" && (
+              <Col xs={12} className="mt-3">
+                <div className="fw-semibold mb-1" style={{ fontSize: "1rem" }}>Other Trip Details</div>
+                <div className="text-muted" style={{ fontSize: "0.85rem", backgroundColor: "transparent" }}>
+                  {data.tripDetails}
+                </div>
+              </Col>
+            )}
+          </Row>
         </div>
-
-        {/* Date & Time Section */}
-        <Row className="mb-4">
-          <Col md={6}>
-            <Card className="h-100 border-0 shadow-sm">
-              <Card.Header style={{ backgroundColor: "#18575A", color: "white", fontWeight: 600 }}>
-                Start Date & Time
-              </Card.Header>
-              <Card.Body>
-                <div className="text-center">
-                  <h6 className="fw-bold">{formatDateTime(data.fromDate)}</h6>
-                </div>
-              </Card.Body>
-            </Card>
-          </Col>
-          <Col md={6}>
-            <Card className="h-100 border-0 shadow-sm">
-              <Card.Header style={{ backgroundColor: "#18575A", color: "white", fontWeight: 600 }}>
-                End Date & Time
-              </Card.Header>
-              <Card.Body>
-                <div className="text-center">
-                  <h6 className="fw-bold">{formatDateTime(data.toDate)}</h6>
-                </div>
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
-
-        {/* Basic Information Table */}
-        <Card className="border-0 shadow-sm mb-4">
-          <Card.Header style={{ backgroundColor: "#f8f9fa", fontWeight: 600, color: "#18575A" }}>
-            Basic Information
-          </Card.Header>
-          <Card.Body>
-            <Table bordered hover responsive className="align-middle mb-0">
-              <tbody>
-                {basicFields.map(({ key, label }) => {
-                  const value: any = (data as any)[key];
-                  return (
-                    <tr key={key}>
-                      <td style={{ width: "40%", fontWeight: 600, color: "#18575A" }}>{label}</td>
-                      <td>{value || "-"}</td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </Table>
-          </Card.Body>
-        </Card>
-
-        {/* Location Information */}
-        <Card className="border-0 shadow-sm mb-4">
-          <Card.Header style={{ backgroundColor: "#f8f9fa", fontWeight: 600, color: "#18575A" }}>
-            Location Information
-          </Card.Header>
-          <Card.Body>
-            <Table bordered hover responsive className="align-middle mb-0">
-              <tbody>
-                {locationFields.map(({ key, label }) => {
-                  const value: any = (data as any)[key];
-                  return value ? (
-                    <tr key={key}>
-                      <td style={{ width: "40%", fontWeight: 600, color: "#18575A" }}>{label}</td>
-                      <td>{value}</td>
-                    </tr>
-                  ) : null;
-                })}
-              </tbody>
-            </Table>
-          </Card.Body>
-        </Card>
-
-        {/* Amount Information */}
-        <Card className="border-0 shadow-sm mb-4">
-          <Card.Header style={{ backgroundColor: "#f8f9fa", fontWeight: 600, color: "#18575A" }}>
-            Financial Information
-          </Card.Header>
-          <Card.Body>
-            <Table bordered hover responsive className="align-middle mb-0">
-              <tbody>
-                {amountFields.map(({ key, label }) => {
-                  const value: number = (data as any)[key];
-                  return (
-                    <tr key={key}>
-                      <td style={{ width: "40%", fontWeight: 600, color: "#18575A" }}>{label}</td>
-                      <td className={value > 0 ? "fw-bold" : ""}>
-                        {value ? formatCurrency(value) : "-"}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </Table>
-          </Card.Body>
-        </Card>
-
-        {/* Trip Details */}
-        {data.tripDetails && (
-          <Card className="border-0 shadow-sm mb-4">
-            <Card.Header style={{ backgroundColor: "#f8f9fa", fontWeight: 600, color: "#18575A" }}>
-              Trip Details
-            </Card.Header>
-            <Card.Body>
-              <p className="mb-0">{data.tripDetails}</p>
-            </Card.Body>
-          </Card>
-        )}
-
         {/* Payment Details Accordion */}
         <KiduPaymentAccordion
           ref={paymentAccordionRef}
@@ -299,43 +175,16 @@ const TripView: React.FC = () => {
           relatedEntityType="Trip"
           heading="Payment Details"
         />
-
         {/* Kilometer Details Accordion */}
-        <KiduKilometerAccordion
+        <KiduKmAccordion
           ref={kmAccordionRef}
           tripId={Number(data.tripOrderId)}
           driverId={data.driverId}
         />
-
         {/* Attachments + Audits */}
         <Attachments tableName="TRIPORDER" recordId={data.tripOrderId} />
         <AuditTrailsComponent tableName="TRIPORDER" recordId={data.tripOrderId} />
-
-      </Card>
-
-      {/* Delete Modal */}
-      <Modal show={showConfirm} onHide={() => setShowConfirm(false)} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Confirm Delete</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>Are you sure you want to delete this trip? This action cannot be undone.</Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowConfirm(false)} disabled={loadingDelete}>
-            Cancel
-          </Button>
-          <Button variant="danger" onClick={handleDelete} disabled={loadingDelete}>
-            {loadingDelete ? (
-              <>
-                <Spinner animation="border" size="sm" className="me-2" />
-                Deleting...
-              </>
-            ) : (
-              "Delete"
-            )}
-          </Button>
-        </Modal.Footer>
-      </Modal>
-
+      </div>
       <Toaster position="top-right" />
     </div>
   );
@@ -343,6 +192,3 @@ const TripView: React.FC = () => {
 
 export default TripView;
 
-function setTrip(arg0: (prev: any) => any) {
-    throw new Error("Function not implemented.");
-}

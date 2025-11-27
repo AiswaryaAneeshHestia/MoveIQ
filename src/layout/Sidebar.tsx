@@ -147,7 +147,7 @@ const Sidebar: React.FC = () => {
 
                         {/* Vehicles */}
                         <div
-                            className={`flex-column gap-2 w-100 text-center ${hovered ? "justify-content-start mt-3" : "justify-content-center"} rounded `}
+                            className={`flex-column gap-2 w-100 text-center mt-2 ${hovered ? "justify-content-start mt-3" : "justify-content-center"} rounded `}
                             style={{ fontSize: "14px", textDecoration: "none" }}
                             onClick={() => setVehiclesOpen(!vehiclesOpen)}
                         >
