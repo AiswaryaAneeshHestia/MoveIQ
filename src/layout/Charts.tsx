@@ -1,32 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Row, Col, Card } from "react-bootstrap";
-import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  Legend,
-  Line,
-  LineChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-  PieChart,
-  Pie,
-  Cell,
-} from "recharts";
-
-import DashboardService from "../services/dashboard/Dashboard.services";
-import Loader from "../components/KiduLoader";
+import {Bar,BarChart,CartesianGrid,Legend,Line,LineChart,ResponsiveContainer,Tooltip,XAxis,YAxis,PieChart,Pie,Cell,} from "recharts";
 import type { ExpenseCategoryData, MonthlyData, TripCountData, VehicleStatusData } from "../types/dashboard/TripDashboard.types";
+import DashboardService from "../services/dashboard/Dashboard.services";
+import KiduLoader from "../components/KiduLoader";
 
 // Color Palette for a modern look
 const PRIMARY_COLOR = "#007bff"; // Blue for general trends
 const SUCCESS_COLOR = "#28a745"; // Green for revenue/available
 const DANGER_COLOR = "#dc3545"; // Red for expenses/maintenance
 const WARNING_COLOR = "#ffc107"; // Yellow for trips/utilization
-
-// --- FALLBACK DUMMY DATA (in case API fails) ---
 
 // 1. Financial/Monthly Data (Existing structure)
 const dummyMonthlyData: MonthlyData[] = [
@@ -191,7 +174,7 @@ const Charts: React.FC = () => {
         <Col>
           <div className="d-flex justify-content-center align-items-center" style={{ minHeight: "400px" }}>
             <div className="text-center">
-              <Loader type="spinner" />
+              <KiduLoader type="spinner" />
               <p className="mt-3 text-muted">Loading dashboard data...</p>
             </div>
           </div>

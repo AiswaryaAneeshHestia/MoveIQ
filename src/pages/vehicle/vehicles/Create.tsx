@@ -16,7 +16,7 @@ const CreateVehicle: React.FC = () => {
         value: (2000 + i).toString(),
         label: (2000 + i).toString(),
     }));
-    const statusOptions = ["Operational", "Non-Operational", "Scrap"].map(
+    const statusOptions = ["Active","Operational", "Non-Operational", "Scrap"].map(
         (s) => ({ value: s, label: s })
     );
     // FIELD DEFINITIONS

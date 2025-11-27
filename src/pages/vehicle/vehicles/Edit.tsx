@@ -29,7 +29,7 @@ const VehicleEdit: React.FC = () => {
         label: (2000 + i).toString(),
     }));
 
-    const statusOptions = ["Operational", "Non-Operational", "Scrap"].map((s) => ({
+    const statusOptions = ["Active","Operational", "Non-Operational", "Scrap"].map((s) => ({
         value: s,
         label: s,
     }));

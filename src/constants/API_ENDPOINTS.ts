@@ -3,6 +3,7 @@ const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || 'https://tripapi.hestiatechnology.com/api';
 // import.meta.env.VITE_API_BASE_URL || 'https://localhost:7284/api';
 export const API_ENDPOINTS = {
+
   CUSTOMER: {
     GET_ALL: `${API_BASE_URL}/Customer`,
     GET_BY_ID: (id: number) => `${API_BASE_URL}/Customer/${id}`,
@@ -29,7 +30,6 @@ export const API_ENDPOINTS = {
     UPDATE: (id: number) => `${API_BASE_URL}/TripOrder/${id}`,
     UPDATESTATUS: `${API_BASE_URL}/TripOrder/UpdateTripStatus`,
     DELETE: (id: number) => `${API_BASE_URL}/TripOrder/${id}`,
-
     GET_ALL_BY_STATUS: (status: string) => // Get trips by status
       `${API_BASE_URL}/TripOrder/GetAllTripListbyStatus?status=${encodeURIComponent(status)}`,
     GET_ALL_BY_YEAR: (year: number) =>  //Get trips by selected year
@@ -52,24 +52,23 @@ export const API_ENDPOINTS = {
       `${API_BASE_URL}/AuditLog/${tableName}/${recordId}`,
     GET_BY_ID: (logID: string) => `${API_BASE_URL}/AuditLog/GetById/${logID}`,
   },
-  DASHBOARD: {
-    GET_MONTHLY_FINANCIAL: (year: number) => `/TripDashboard/monthly-financial/${year}`,
-    GET_MONTHLY_TRIP_COUNT: (year: number) => `/TripDashboard/monthly-trip-count/${year}`,
-    GET_VEHICLE_STATUS: () => `/TripDashboard/vehicle-status`,
-    GET_EXPENSE_CATEGORIES: (year?: number) => year ? `/TripDashboard/expense-categories/${year}` : `/TripDashboard/expense-categories`,
-    GET_DASHBOARD_SUMMARY: (year: number) => `/TripDashboard/summary/${year}`,
-  },
-  ATTACHMENT: {
 
+  DASHBOARD: {
+    GET_MONTHLY_FINANCIAL: (year: number) => `${API_BASE_URL}/TripDashboard/monthly-financial/${year}`,
+    GET_MONTHLY_TRIP_COUNT: (year: number) => `${API_BASE_URL}/TripDashboard/monthly-trip-count/${year}`,
+    GET_VEHICLE_STATUS: () => `${API_BASE_URL}/TripDashboard/vehicle-status`,
+    GET_EXPENSE_CATEGORIES: (year?: number) => year ? `${API_BASE_URL}/TripDashboard/expense-categories/${year}` : `${API_BASE_URL}/TripDashboard/expense-categories`,
+    GET_DASHBOARD_SUMMARY: (year: number) => `${API_BASE_URL}/TripDashboard/summary/${year}`,
+  },
+
+  ATTACHMENT: {
     GET_BY_TABLE_AND_ID: (tableName: string, recordId: number) =>
       `${API_BASE_URL}/Attachment/${tableName}/${recordId}`,
-
     GET_BY_ID: (attachmentId: number) => `${API_BASE_URL}/Attachment/${attachmentId}`,
     UPLOAD: `${API_BASE_URL}/Attachment/upload`,
     DELETE: (attachmentId: number) => `${API_BASE_URL}/Attachment/${attachmentId}`,
     GET: `${API_BASE_URL}/Attachment`,
     DOWNLOAD: (attachmentId: number) => `${API_BASE_URL}/Attachment/download/${attachmentId}`,
-
   },
 
   USER: {
@@ -88,6 +87,7 @@ export const API_ENDPOINTS = {
     UPDATE: (id: number) => `${API_BASE_URL}/Company/Update/${id}`,
     DELETE: (id: number) => `${API_BASE_URL}/Company/Delete/${id}`,
   },
+
   //  New Trip Notes Endpoints
   TRIP_NOTES: {
     GET_ALL: `${API_BASE_URL}/TripOrder/GetTripNotes`,
@@ -98,7 +98,6 @@ export const API_ENDPOINTS = {
   },
 
   TRIP_KILOMETER: {
-
     GET_ALL: `${API_BASE_URL}/TripkiloMeter`,
     GET_BY_ID: (id: number) => `${API_BASE_URL}/TripkiloMeter/${id}`,
     CREATE: `${API_BASE_URL}/TripkiloMeter`,

@@ -1,19 +1,7 @@
-import HttpService from "../../services/common/HttpService";
-import type { CustomResponse } from "../../types/common/ApiTypes";
 import { API_ENDPOINTS } from "../../constants/API_ENDPOINTS";
-import type {
-  DashboardSummary,
-  ExpenseCategoryData,
-  MonthlyData,
-  MonthlyFinancialResponse,
-  MonthlyTripCountResponse,
-  TripCountData,
-  VehicleStatusData,
-  // newly referenced response types
-  VehicleStatusResponse,
-  ExpenseCategoryResponse
-} from "../../types/dashboard/TripDashboard.types";
-
+import type { CustomResponse } from "../../types/common/ApiTypes";
+import type { DashboardSummary, ExpenseCategoryData, ExpenseCategoryResponse, MonthlyData, MonthlyFinancialResponse, MonthlyTripCountResponse, TripCountData, VehicleStatusData, VehicleStatusResponse } from "../../types/dashboard/TripDashboard.types";
+import HttpService from "../common/HttpService";
 
 // Color constants for consistent chart styling
 const CHART_COLORS = {
