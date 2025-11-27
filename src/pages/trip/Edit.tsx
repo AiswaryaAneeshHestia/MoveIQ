@@ -10,34 +10,31 @@ import KiduReset from "../../components/ReuseButtons/KiduReset";
 import KiduDropLocation from "../../components/Trip/KiduDropLocation";
 import CustomerPopup from "../customer/CustomerPopup";
 import DriverPopup from "../driver/DriverPopup";
+import KiduLoader from "../../components/KiduLoader";
+import Attachments from "../../components/KiduAttachments";
+import AuditTrailsComponent from "../../components/KiduAuditLogs";
 
- 
 const TripEdit: React.FC = () => {
   const navigate = useNavigate();
-  const { tripId } = useParams<{ tripId: string }>(); // Changed from 'id' to 'tripId'
- 
+  const { tripId } = useParams<{ tripId: string }>();
+
   const fields = [
     { name: "customerName", rules: { required: true, type: "text" as const, label: "Customer Name" } },
     { name: "receivedVia", rules: { required: true, type: "select" as const, label: "Received Via" } },
- 
     { name: "fromDate", rules: { required: true, type: "date" as const, label: "From Date" } },
     { name: "fromTime", rules: { required: true, type: "select" as const, label: "From Time" } },
     { name: "fromAmPm", rules: { required: true, type: "select" as const, label: "AM/PM" } },
- 
     { name: "toDate", rules: { required: true, type: "date" as const, label: "To Date" } },
     { name: "toTime", rules: { required: true, type: "select" as const, label: "To Time" } },
     { name: "toAmPm", rules: { required: true, type: "select" as const, label: "AM/PM" } },
- 
     { name: "pickupFrom", rules: { required: true, type: "text" as const, label: "Pickup From" } },
     { name: "driverName", rules: { required: true, type: "text" as const, label: "Driver Name" } },
- 
     { name: "dropLocations", rules: { required: true, type: "dropLocations" as const, label: "Drop Locations" } },
- 
     { name: "paymentMode", rules: { required: true, type: "select" as const, label: "Payment Mode" } },
     { name: "paymentDetails", rules: { required: false, type: "text" as const, label: "Payment Details" } },
     { name: "details", rules: { required: false, type: "text" as const, label: "Trip Details" } }
   ];
- 
+
   const initialValues: any = {};
   const initialErrors: any = {};
   fields.forEach(f => {
@@ -45,11 +42,11 @@ const TripEdit: React.FC = () => {
     else initialValues[f.name] = "";
     initialErrors[f.name] = "";
   });
- 
+
   const [formData, setFormData] = useState(initialValues);
   const [errors, setErrors] = useState(initialErrors);
   const [originalData, setOriginalData] = useState(initialValues);
- 
+
   const [bookingModes, setBookingModes] = useState<any[]>([]);
   const [customerId, setCustomerId] = useState<number>();
   const [driverId, setDriverId] = useState<number>();
@@ -57,7 +54,10 @@ const TripEdit: React.FC = () => {
   const [showDriverPopup, setShowDriverPopup] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
- 
+
+  const tableName = "TRIPORDER";
+  const recordId = Number(tripId);
+
   const timesList = (() => {
     const arr: string[] = [];
     for (let h = 1; h <= 12; h++) {
@@ -67,7 +67,7 @@ const TripEdit: React.FC = () => {
     }
     return arr;
   })();
- 
+
   const getLabel = (name: string) => {
     const field = fields.find(f => f.name === name);
     if (!field) return "";
@@ -79,7 +79,6 @@ const TripEdit: React.FC = () => {
     );
   };
 
-  // Convert 24-hour time to 12-hour format with AM/PM
   const convertFrom24 = (time24: string) => {
     if (!time24) return { time: "", ampm: "" };
     const [hour24, min] = time24.split(":");
@@ -87,29 +86,18 @@ const TripEdit: React.FC = () => {
     const ampm = hour >= 12 ? "PM" : "AM";
     if (hour === 0) hour = 12;
     else if (hour > 12) hour -= 12;
-    return { 
-      time: `${hour.toString().padStart(2, "0")}:${min}`,
-      ampm 
-    };
+    return { time: `${hour.toString().padStart(2, "0")}:${min}`, ampm };
   };
 
-  // Load trip data
   useEffect(() => {
     const loadTripData = async () => {
-      if (!tripId) { // Changed from 'id' to 'tripId'
-        toast.error("Trip ID not found");
-        navigate("/dashboard/trip-list");
-        return;
-      }
-
       try {
         setIsLoading(true);
-        const res = await TripService.getById(Number(tripId)); // Changed from 'id' to 'tripId'
-        
+        const res = await TripService.getById(Number(tripId));
+
         if (res.isSucess && res.value) {
           const trip = res.value;
 
-          // Extract drop locations
           const drops = [
             trip.toLocation1,
             trip.toLocation2,
@@ -117,25 +105,23 @@ const TripEdit: React.FC = () => {
             trip.toLocation4
           ].filter(loc => loc && loc.trim() !== "");
 
-          // Parse from date/time
           const fromDateTime = trip.fromDate ? new Date(trip.fromDate) : null;
-          const fromDate = fromDateTime ? fromDateTime.toISOString().split('T')[0] : "";
-          const fromTimeStr = fromDateTime ? `${fromDateTime.getHours().toString().padStart(2, "0")}:${fromDateTime.getMinutes().toString().padStart(2, "0")}` : "";
+          const fromDate = fromDateTime ? fromDateTime.toISOString().split("T")[0] : "";
+          const fromTimeStr = fromDateTime ? `${fromDateTime.getHours().toString().padStart(2,"0")}:${fromDateTime.getMinutes().toString().padStart(2,"0")}` : "";
           const fromParsed = convertFrom24(fromTimeStr);
 
-          // Parse to date/time
           const toDateTime = trip.toDate ? new Date(trip.toDate) : null;
-          const toDate = toDateTime ? toDateTime.toISOString().split('T')[0] : "";
-          const toTimeStr = toDateTime ? `${toDateTime.getHours().toString().padStart(2, "0")}:${toDateTime.getMinutes().toString().padStart(2, "0")}` : "";
+          const toDate = toDateTime ? toDateTime.toISOString().split("T")[0] : "";
+          const toTimeStr = toDateTime ? `${toDateTime.getHours().toString().padStart(2,"0")}:${toDateTime.getMinutes().toString().padStart(2,"0")}` : "";
           const toParsed = convertFrom24(toTimeStr);
 
           const loadedData = {
             customerName: trip.customerName || "",
             receivedVia: trip.tripBookingModeId?.toString() || "",
-            fromDate: fromDate,
+            fromDate,
             fromTime: fromParsed.time,
             fromAmPm: fromParsed.ampm,
-            toDate: toDate,
+            toDate,
             toTime: toParsed.time,
             toAmPm: toParsed.ampm,
             pickupFrom: trip.fromLocation || "",
@@ -154,7 +140,7 @@ const TripEdit: React.FC = () => {
           toast.error("Failed to load trip data");
           navigate("/dashboard/trip-list");
         }
-      } catch (error) {
+      } catch {
         toast.error("Error loading trip data");
         navigate("/dashboard/trip-list");
       } finally {
@@ -163,9 +149,8 @@ const TripEdit: React.FC = () => {
     };
 
     loadTripData();
-  }, [tripId, navigate]); // Changed from 'id' to 'tripId'
+  }, [tripId, navigate]);
 
-  // Load booking modes
   useEffect(() => {
     const loadModes = async () => {
       try {
@@ -177,39 +162,32 @@ const TripEdit: React.FC = () => {
     };
     loadModes();
   }, []);
- 
+
   const handleChange = (e: any) => {
     const { name, value } = e.target;
     setFormData((prev: any) => ({ ...prev, [name]: value }));
     if (errors[name]) setErrors((prev: any) => ({ ...prev, [name]: "" }));
   };
- 
+
   const overrideMessage = (name: string, ruleType: string) => {
     const field = fields.find(f => f.name === name);
     const label = field?.rules.label || "This field";
-    
-    if (ruleType === "select" || ruleType === "date") return `${label} is required.`;
-    if (ruleType === "dropLocations") return `${label} is required.`;
-    if (ruleType === "text") return `${label} is required.`;
     return `${label} is required.`;
   };
- 
+
   const validateField = (name: string, value: any) => {
     const field = fields.find(f => f.name === name);
     if (!field) return true;
- 
     const result = KiduValidation.validate(value, field.rules);
- 
     if (!result.isValid) {
       const msg = overrideMessage(name, field.rules.type);
       setErrors((prev: any) => ({ ...prev, [name]: msg }));
       return false;
     }
- 
     setErrors((prev: any) => ({ ...prev, [name]: "" }));
     return true;
   };
- 
+
   const validateForm = () => {
     let ok = true;
     fields.forEach(f => {
@@ -217,7 +195,7 @@ const TripEdit: React.FC = () => {
     });
     return ok;
   };
- 
+
   const convertTo24 = (time: string, ampm: string) => {
     if (!time) return "";
     const [h, m] = time.split(":");
@@ -226,17 +204,15 @@ const TripEdit: React.FC = () => {
     if (ampm === "AM" && hour === 12) hour = 0;
     return `${hour.toString().padStart(2, "0")}:${m}`;
   };
- 
+
   const handleDropChange = (values: string[]) => {
     setFormData((prev: any) => ({ ...prev, dropLocations: values }));
     validateField("dropLocations", values);
   };
- 
+
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     if (!validateForm()) return;
-
-    // Validate that customer and driver are selected
     if (!customerId) {
       toast.error("Please select a customer");
       return;
@@ -245,17 +221,17 @@ const TripEdit: React.FC = () => {
       toast.error("Please select a driver");
       return;
     }
- 
+
     setIsSubmitting(true);
- 
+
     try {
       const drops = formData.dropLocations.filter((d: string) => d.trim() !== "");
- 
+
       const payload = {
-        tripOrderId: Number(tripId), // Changed from 'id' to 'tripId'
+        tripOrderId: Number(tripId),
         tripBookingModeId: Number(formData.receivedVia),
-        customerId: customerId,
-        driverId: driverId,
+        customerId,
+        driverId,
         fromDate: `${formData.fromDate}T${convertTo24(formData.fromTime, formData.fromAmPm)}:00`,
         fromDateString: formData.fromDate,
         toDate: `${formData.toDate}T${convertTo24(formData.toTime, formData.toAmPm)}:00`,
@@ -277,9 +253,9 @@ const TripEdit: React.FC = () => {
         customerName: formData.customerName,
         driverName: formData.driverName
       };
- 
-      const res = await TripService.update(Number(tripId), payload); // Changed from 'id' to 'tripId'
- 
+
+      const res = await TripService.update(Number(tripId), payload);
+
       if (res.isSucess) {
         toast.success("Trip updated successfully");
         setTimeout(() => navigate("/dashboard/trip-list"), 1000);
@@ -289,39 +265,27 @@ const TripEdit: React.FC = () => {
     } catch {
       toast.error("Error updating trip");
     }
- 
+
     setIsSubmitting(false);
   };
 
-  if (isLoading) {
-    return (
-      <Card className="mx-3" style={{ maxWidth:"100%",fontSize:"0.85rem",marginTop:"50px",backgroundColor:"#f0f0f0ff" }}>
-        <Card.Body className="text-center py-5">
-          <div className="spinner-border text-primary" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </div>
-          <p className="mt-3">Loading trip data...</p>
-        </Card.Body>
-      </Card>
-    );
-  }
- 
+  if (isLoading) return <KiduLoader type="trips..." />;
+
   return (
     <>
       <Card className="mx-3" style={{ maxWidth:"100%",fontSize:"0.85rem",marginTop:"50px",backgroundColor:"#f0f0f0ff" }}>
         <Card.Header style={{ backgroundColor:"#18575A",color:"white",padding:"0.5rem" }}>
           <div className="d-flex align-items-center">
-            <Button size="sm" variant="link" className="me-2" style={{ backgroundColor:"white",padding:"0.2rem 0.5rem",color:"#18575A" }}
-              onClick={() => navigate(-1)}>
+            <Button size="sm" variant="link" className="me-2" style={{ backgroundColor:"white",padding:"0.2rem 0.5rem",color:"#18575A" }} onClick={() => navigate(-1)}>
               <FaArrowLeft />
             </Button>
             <h6 className="mb-0 p-2 fw-medium fs-5">Edit Booking</h6>
           </div>
         </Card.Header>
- 
+
         <Card.Body style={{ padding:"1rem" }}>
           <Form onSubmit={handleSubmit}>
- 
+
             {/* CUSTOMER */}
             <Row className="mb-2 mx-3">
               <Col md={6}>
@@ -336,7 +300,7 @@ const TripEdit: React.FC = () => {
                 </InputGroup>
                 {errors.customerName && <div className="text-danger small">{errors.customerName}</div>}
               </Col>
- 
+
               <Col md={6}>
                 <Form.Label className="mb-1 fw-medium">{getLabel("receivedVia")}</Form.Label>
                 <Form.Select size="sm" name="receivedVia" value={formData.receivedVia}
@@ -347,13 +311,13 @@ const TripEdit: React.FC = () => {
                 {errors.receivedVia && <div className="text-danger small">{errors.receivedVia}</div>}
               </Col>
             </Row>
- 
+
             <CustomerPopup show={showCustomerPopup} handleClose={() => setShowCustomerPopup(false)}
               onSelect={c => { setCustomerId(c.customerId); setFormData((p: any) => ({...p,customerName:c.customerName})); setShowCustomerPopup(false); }} />
- 
+
             <DriverPopup show={showDriverPopup} handleClose={() => setShowDriverPopup(false)}
               onSelect={d => { setDriverId(d.driverId); setFormData((p: any) => ({...p,driverName:d.driverName})); setShowDriverPopup(false); }} />
- 
+
             {/* FROM */}
             <Row className="mb-2 mx-3">
               <Col md={6}>
@@ -364,7 +328,7 @@ const TripEdit: React.FC = () => {
                       onChange={handleChange} onBlur={() => validateField("fromDate", formData.fromDate)} />
                     {errors.fromDate && <div className="text-danger small">{errors.fromDate}</div>}
                   </Col>
- 
+
                   <Col sm={5}>
                     <Form.Select size="sm" name="fromTime" value={formData.fromTime}
                       onChange={handleChange} onBlur={() => validateField("fromTime", formData.fromTime)}>
@@ -373,7 +337,7 @@ const TripEdit: React.FC = () => {
                     </Form.Select>
                     {errors.fromTime && <div className="text-danger small">{errors.fromTime}</div>}
                   </Col>
- 
+
                   <Col sm={2}>
                     <Form.Select size="sm" name="fromAmPm" value={formData.fromAmPm}
                       onChange={handleChange} onBlur={() => validateField("fromAmPm", formData.fromAmPm)}>
@@ -385,7 +349,7 @@ const TripEdit: React.FC = () => {
                   </Col>
                 </Row>
               </Col>
- 
+
               {/* TO */}
               <Col md={6}>
                 <Form.Label className="mb-1 fw-medium">{getLabel("toDate")}</Form.Label>
@@ -395,7 +359,7 @@ const TripEdit: React.FC = () => {
                       onChange={handleChange} onBlur={() => validateField("toDate", formData.toDate)} />
                     {errors.toDate && <div className="text-danger small">{errors.toDate}</div>}
                   </Col>
- 
+
                   <Col sm={5}>
                     <Form.Select size="sm" name="toTime" value={formData.toTime}
                       onChange={handleChange} onBlur={() => validateField("toTime", formData.toTime)}>
@@ -404,7 +368,7 @@ const TripEdit: React.FC = () => {
                     </Form.Select>
                     {errors.toTime && <div className="text-danger small">{errors.toTime}</div>}
                   </Col>
- 
+
                   <Col sm={2}>
                     <Form.Select size="sm" name="toAmPm" value={formData.toAmPm}
                       onChange={handleChange} onBlur={() => validateField("toAmPm", formData.toAmPm)}>
@@ -417,7 +381,7 @@ const TripEdit: React.FC = () => {
                 </Row>
               </Col>
             </Row>
- 
+
             {/* PICKUP / DRIVER */}
             <Row className="mb-2 mx-3">
               <Col md={6}>
@@ -427,7 +391,7 @@ const TripEdit: React.FC = () => {
                   onChange={handleChange} onBlur={() => validateField("pickupFrom", formData.pickupFrom)} />
                 {errors.pickupFrom && <div className="text-danger small">{errors.pickupFrom}</div>}
               </Col>
- 
+
               <Col md={6}>
                 <Form.Label className="mb-1 fw-medium">{getLabel("driverName")}</Form.Label>
                 <InputGroup>
@@ -441,7 +405,7 @@ const TripEdit: React.FC = () => {
                 {errors.driverName && <div className="text-danger small">{errors.driverName}</div>}
               </Col>
             </Row>
- 
+
             {/* PAYMENT */}
             <Row className="mb-2 mx-3">
               <Col md={6}>
@@ -456,7 +420,7 @@ const TripEdit: React.FC = () => {
                 </Form.Select>
                 {errors.paymentMode && <div className="text-danger small">{errors.paymentMode}</div>}
               </Col>
- 
+
               <Col md={6}>
                 <Form.Label className="mb-1 fw-medium">{getLabel("paymentDetails")}</Form.Label>
                 <Form.Control as="textarea" rows={2} name="paymentDetails"
@@ -464,7 +428,7 @@ const TripEdit: React.FC = () => {
                   onBlur={() => validateField("paymentDetails", formData.paymentDetails)} />
               </Col>
             </Row>
- 
+
             {/* DROP LOCATIONS & DETAILS */}
             <Row className="mb-2 mx-3">
               <Col md={6}>
@@ -473,27 +437,38 @@ const TripEdit: React.FC = () => {
                   value={formData.details} onChange={handleChange}
                   onBlur={() => validateField("details", formData.details)} />
               </Col>
- 
+
               <Col md={6}>
                 <KiduDropLocation values={formData.dropLocations} onChange={handleDropChange} />
                 {errors.dropLocations && <div className="text-danger small">{errors.dropLocations}</div>}
               </Col>
             </Row>
- 
+
+            {/* Reset + Update Buttons */}
             <div className="d-flex justify-content-end gap-2 mt-4 me-4">
               <KiduReset initialValues={originalData} setFormData={setFormData} />
               <Button type="submit" style={{ backgroundColor:"#18575A",border:"none" }} disabled={isSubmitting}>
                 {isSubmitting ? "Updating..." : "Update"}
               </Button>
             </div>
- 
+
+            {/* Attachments + Audit Logs (relocated & width matched) */}
+            <Row className="mb-2 mx-3 mt-3">
+              <Col xs={12}>
+                <Attachments tableName={tableName} recordId={recordId} />
+                <div className="mt-3">
+                  <AuditTrailsComponent tableName={tableName} recordId={recordId} />
+                </div>
+              </Col>
+            </Row>
+
           </Form>
         </Card.Body>
       </Card>
- 
+
       <Toaster position="top-right" />
     </>
   );
 };
- 
+
 export default TripEdit;
