@@ -15,16 +15,21 @@ import type { KiduKilometerAccordionRef } from "../../components/KiduKilometerAc
 import KiduPaymentAccordion from "../../components/KiduPaymentAccordion";
 import KiduKmAccordion from "../../components/KiduKilometerAccordion";
 import KiduCommentAccordion from "../../components/KiduCommentAccordion";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
+import TripActionPanel from "./TripActionPanel";
 
 const TripView: React.FC = () => {
   const navigate = useNavigate();
   const { tripId } = useParams();
   const paymentAccordionRef = useRef<KiduPaymentAccordionRef>(null);
   const kmAccordionRef = useRef<KiduKilometerAccordionRef>(null);
-
+  const printRef = useRef<HTMLDivElement>(null);
   const [data, setData] = useState<Trip | null>(null);
   const [loading, setLoading] = useState(true);
   const [tripStatus, setTripStatus] = useState<string>("");
+  const [refreshKey, setRefreshKey] = useState(0);
+  const recordId = Number(tripId);
 
   useEffect(() => {
     const loadTrip = async () => {
@@ -45,6 +50,56 @@ const TripView: React.FC = () => {
     };
     loadTrip();
   }, [tripId]);
+
+  const handlePrint = async () => {
+    if (!printRef.current) return;
+    const element = printRef.current;
+    // Temporarily make the card full-width for capture
+    const originalStyles = {
+      width: element.style.width,
+      maxWidth: element.style.maxWidth,
+      transform: element.style.transform,
+      backgroundColor: element.style.backgroundColor,
+    };
+    element.style.width = "210mm"; // A4 width
+    element.style.maxWidth = "none";
+    element.style.backgroundColor = "#fff"; // ensure white background
+    element.style.transform = "scale(1)";
+    try {
+      const canvas = await html2canvas(element, {
+        scale: 2, // clearer text
+        useCORS: true,
+        scrollX: 0,
+        scrollY: 0,
+        windowWidth: 1920, // force wide capture
+        backgroundColor: "#ffffff",
+      });
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4",
+      });
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      console.log(pageHeight);
+      // Calculate image dimensions to fit page
+      const imgWidth = pageWidth;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      // Add image (auto-scale height)
+      pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
+      pdf.save(`${data?.tripOrderId || "TripDetails"}.pdf`);
+    } catch (err) {
+      console.error("Print error:", err);
+      toast.error("Failed to generate PDF");
+    } finally {
+      // Restore original styles
+      element.style.width = originalStyles.width;
+      element.style.maxWidth = originalStyles.maxWidth;
+      element.style.backgroundColor = originalStyles.backgroundColor;
+      element.style.transform = originalStyles.transform;
+    }
+  };
 
   if (loading) return <KiduLoader type="trip details..." />;
   if (!data)
@@ -80,17 +135,27 @@ const TripView: React.FC = () => {
           <div className="d-flex align-items-center gap-2">
             {/* Trip Status Badge */}
             <TripStatusBadge status={tripStatus} />
+            <TripActionPanel
+              trip={{ tripOrderId: recordId, tripStatus }}
+              currentStatus={tripStatus}
+              onStatusUpdate={(status, remarks) => {
+                setTripStatus(status);
+                if (remarks) setData((prev: any) => ({ ...prev, details: `${prev.details}\n${remarks}` }));
+              }}
+              onKmUpdate={() => setRefreshKey(prev => prev + 1)}
+              onPaymentUpdate={() => setRefreshKey(prev => prev + 1)}
+            />
             {/* Print Button */}
             <Button
-              variant="outline-danger"
-              className="d-flex align-items-center gap-2"
-              style={{ fontWeight: 500, fontSize: "15px" }}
+              onClick={handlePrint}
+              className="d-flex align-items-center gap-2 text-danger fs-5"
+              style={{ fontWeight: 500, fontSize: "15px", backgroundColor: "#18575A", border: "none" }}
             >
               <FaPrint />
             </Button>
           </div>
         </div>
-        <div style={{ padding: "1.5rem" }}>
+        <div ref={printRef} style={{ padding: "1.5rem" }}>
           <Row className="gy-3 ps-4">
             <Col xs={12} md={4}>
               <div className="fw-semibold" style={{ fontSize: "1rem" }}>Trip ID</div>
@@ -169,9 +234,10 @@ const TripView: React.FC = () => {
             )}
           </Row>
         </div>
-        
+
         {/* Payment Details Accordion */}
         <KiduPaymentAccordion
+          key={`payment-${refreshKey}`}
           ref={paymentAccordionRef}
           relatedEntityId={Number(data.tripOrderId)}
           relatedEntityType="Trip"
@@ -179,6 +245,7 @@ const TripView: React.FC = () => {
         />
         {/* Kilometer Details Accordion */}
         <KiduKmAccordion
+          key={`km-${refreshKey}`}
           ref={kmAccordionRef}
           tripId={Number(data.tripOrderId)}
           driverId={data.driverId}

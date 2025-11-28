@@ -185,6 +185,7 @@ const TripCreate: React.FC = () => {
         paymentDetails: formData.paymentDetails || "",
         customerName: formData.customerName,
         driverName: formData.driverName,
+        tripModeName:formData.tripModeName
       };
  
       const res = await TripService.create(payload);

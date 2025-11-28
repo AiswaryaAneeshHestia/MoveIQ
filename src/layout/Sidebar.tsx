@@ -4,8 +4,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { BsGridFill, BsPeople, BsGear, BsPersonFill, BsChevronDown, BsCashStack, BsCarFront, } from "react-icons/bs";
 import { BiLogOut } from "react-icons/bi";
 import AuthService from "../services/common/Auth.services";
-import { FaFileInvoice } from "react-icons/fa6";
-import { FaMapMarkerAlt } from "react-icons/fa";
+import { FaCarSide, FaFileInvoice} from "react-icons/fa6";
 import  profileImg from "../assets/Images/profile.jpeg"
 
 const Sidebar: React.FC = () => {
@@ -16,7 +15,7 @@ const Sidebar: React.FC = () => {
 
     const menuItems = [
         { icon: <BsGridFill />, label: "Dashboard", path: "/dashboard", exact: true },
-        { icon:<FaMapMarkerAlt />, label: "My Trips", path: "/dashboard/trip-list" },
+        { icon:<FaCarSide />, label: "My Trips", path: "/dashboard/trip-list" },
         { icon: <BsPeople />, label: "Customers", path: "/dashboard/customer-list" },
         { icon: <BsPersonFill />, label: "Drivers", path: "/dashboard/driver-list" },
        // { icon: <FaFileInvoice />, label: "Invoices", path: "/dashboard/invoice-list" },
@@ -60,9 +59,9 @@ const Sidebar: React.FC = () => {
                 <div className="profile-section text-center mb-4">
                     {hovered ? (
                         <p className="mt-2 text-white fw-bold" style={{ fontSize: "15px" }}>
-                           <FaMapMarkerAlt /> <span>MoveIQ</span>
+                           <span>MoveIQ</span>
                         </p>
-                    ) : <p className="fw-bolder fs-6 text-white head-font"><FaMapMarkerAlt /><span style={{fontSize:"8px"}}>MoveIQ</span></p>}
+                    ) : <p className="fw-bolder fs-6 text-white head-font"><span style={{fontSize:"8px"}}>MoveIQ</span></p>}
                     <img
                         src={profileImg}
                         alt="profile"

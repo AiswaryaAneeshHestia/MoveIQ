@@ -22,7 +22,7 @@ const DriverList: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
 
     const [showAvailability, setShowAvailability] = useState(false);
-    const [selectedDriver, setSelectedDriver] = useState<Driver | null>(null);
+    const [selectedDriver] = useState<Driver | null>(null);
 
     const loadData = useCallback(async () => {
         try {

@@ -1,6 +1,5 @@
 import React, { useCallback } from "react";
 import InvoiceService from "../../services/Invoice.services";
-import { toast } from "react-hot-toast";
 import KiduServerTable from "../../components/Trip/KiduServerTable";
 
 const InvoiceList: React.FC = () => {
@@ -59,54 +58,54 @@ const InvoiceList: React.FC = () => {
   }, []);
 
   // Handle download of selected invoices
-  const handleDownloadSelected = async (selectedIds: number[]) => {
-    try {
-      console.log("📥 Downloading selected invoices:", selectedIds);
+  // const handleDownloadSelected = async (selectedIds: number[]) => {
+  //   try {
+  //     console.log("📥 Downloading selected invoices:", selectedIds);
       
-      if (selectedIds.length === 0) {
-        toast.error("Please select at least one invoice to download");
-        return;
-      }
+  //     if (selectedIds.length === 0) {
+  //       toast.error("Please select at least one invoice to download");
+  //       return;
+  //     }
       
-      const loadingToast = toast.loading(`Downloading ${selectedIds.length} invoice(s)...`);
+  //     const loadingToast = toast.loading(`Downloading ${selectedIds.length} invoice(s)...`);
       
-      // Download each invoice individually
-      for (const invoiceId of selectedIds) {
-        try {
-          await downloadSingleInvoice(invoiceId);
-          // Small delay to avoid overwhelming the server
-          await new Promise(resolve => setTimeout(resolve, 300));
-        } catch (error) {
-          console.error(`Failed to download invoice ${invoiceId}:`, error);
-          // Continue with other invoices even if one fails
-        }
-      }
+  //     // Download each invoice individually
+  //     for (const invoiceId of selectedIds) {
+  //       try {
+  //         await downloadSingleInvoice(invoiceId);
+  //         // Small delay to avoid overwhelming the server
+  //         await new Promise(resolve => setTimeout(resolve, 300));
+  //       } catch (error) {
+  //         console.error(`Failed to download invoice ${invoiceId}:`, error);
+  //         // Continue with other invoices even if one fails
+  //       }
+  //     }
       
-      toast.success(`Download initiated for ${selectedIds.length} invoice(s)`, {
-        id: loadingToast
-      });
+  //     toast.success(`Download initiated for ${selectedIds.length} invoice(s)`, {
+  //       id: loadingToast
+  //     });
       
-    } catch (error: any) {
-      console.error("❌ Error in download process:", error);
-      toast.error("Failed to download selected invoices");
-    }
-  };
+  //   } catch (error: any) {
+  //     console.error("❌ Error in download process:", error);
+  //     toast.error("Failed to download selected invoices");
+  //   }
+  // };
 
   // Download single invoice (helper function)
-  const downloadSingleInvoice = async (invoiceId: number) => {
-    try {
-      // If you have a dedicated download endpoint, use it:
-      // const response = await InvoiceService.downloadInvoice(invoiceId);
+  // const downloadSingleInvoice = async (invoiceId: number) => {
+  //   try {
+  //     // If you have a dedicated download endpoint, use it:
+  //     // const response = await InvoiceService.downloadInvoice(invoiceId);
       
-      // For now, we'll simulate download by opening view page
-      // You can replace this with actual PDF download logic
-      window.open(`/dashboard/view-invoice/${invoiceId}`, '_blank');
+  //     // For now, we'll simulate download by opening view page
+  //     // You can replace this with actual PDF download logic
+  //     window.open(`/dashboard/view-invoice/${invoiceId}`, '_blank');
       
-    } catch (error) {
-      console.error(`Failed to download invoice ${invoiceId}:`, error);
-      throw error;
-    }
-  };
+  //   } catch (error) {
+  //     console.error(`Failed to download invoice ${invoiceId}:`, error);
+  //     throw error;
+  //   }
+  // };
 
   // Handle individual row click
   const handleRowClick = (invoice: any) => {
@@ -126,9 +125,9 @@ const InvoiceList: React.FC = () => {
       addRoute="/dashboard/invoice-create"
       editRoute="/dashboard/invoice-edit"
       viewRoute="/dashboard/view-invoice"
-      showCheckboxes={true} // ✅ THIS ENABLES THE CHECKBOX COLUMN
-      onDownloadSelected={handleDownloadSelected}
-      downloadButtonLabel="Download Invoices"
+      // showCheckboxes={true} // THIS ENABLES THE CHECKBOX COLUMN
+      // onDownloadSelected={handleDownloadSelected}
+      // downloadButtonLabel="Download Invoices"
       fetchData={fetchInvoiceData}
       onRowClick={handleRowClick}
       showExport={true}
