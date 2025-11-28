@@ -1,122 +1,75 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
-import TripService from "../../services/Trip.services";
-import KiduServerTable from "./KiduServerTable";
+import { Row, Col, Form, Button, InputGroup } from "react-bootstrap";
+import { BsTrash } from "react-icons/bs";
+import { FaPlus } from "react-icons/fa6";
 
-interface KiduServerTripListProps {
-  title: string;
-  subtitle?: string;
-  fetchMode: "all" | "today" | "status";
-  status?: "Scheduled" | "Completed" | "Canceled";
-  showAddButton?: boolean;
+interface AddDropLocationProps {
+  values: string[];
+  onChange: (values: string[]) => void;
 }
 
-const KiduServerTripList: React.FC<KiduServerTripListProps> = ({
-  title,
-  subtitle,
-  fetchMode,
-  status,
-  showAddButton = true,
-}) => {
-  const navigate = useNavigate();
-  const currentYear = new Date().getFullYear();
+const AddDropLocation: React.FC<AddDropLocationProps> = ({ values, onChange }) => {
+  // FIX: Guarantee values is always an array
+  const safeValues = Array.isArray(values) ? values : [""];
 
-  // Updated columns to match actual API response structure
-  const columns = [
-    { key: "tripOrderId", label: "Trip ID" },
-    { key: "tripDate", label: "Trip Date" },
-    { key: "customerName", label: "Customer" },
-    { key: "driverName", label: "Driver" },
-    { key: "vehicleRegNo", label: "Vehicle" },
-    { key: "pickupLocation", label: "Pickup" },
-    { key: "dropLocation", label: "Drop" },
-    { key: "tripStatus", label: "Status" },
-    { key: "totalAmount", label: "Amount" },
-  ];
+  const handleAddInput = () => {
+    if (safeValues.length < 5) onChange([...safeValues, ""]);
+  };
 
-  const fetchData = async ({
-    pageNumber,
-    pageSize,
-    searchTerm,
-  }: {
-    pageNumber: number;
-    pageSize: number;
-    searchTerm: string;
-  }) => {
-    let listType = "";
-    
-    // Determine listType based on fetchMode
-    if (fetchMode === "all") {
-      listType = "all";
-    } else if (fetchMode === "today") {
-      listType = "today";
-    } else if (fetchMode === "status" && status) {
-      listType = status;
-    }
+  const handleRemoveInput = (index: number) => {
+    const newInputs = safeValues.filter((_, i) => i !== index);
+    onChange(newInputs.length ? newInputs : [""]);
+  };
 
-    const response = await TripService.getPaginatedTrips({
-      year: currentYear,
-      customerId: 0,
-      listType: listType,
-      filtertext: searchTerm || "",
-      pagesize: pageSize,
-      pagenumber: pageNumber,
-    });
-
-    console.log("API Response:", response);
-    console.log("List Type:", listType);
-
-    if (response.isSucess && response.value) {
-      // Log the first item to see the actual structure
-      if (response.value.data && response.value.data.length > 0) {
-        console.log("First item structure:", response.value.data[0]);
-        console.log("All keys:", Object.keys(response.value.data[0]));
-      }
-
-      // Transform the data to ensure proper formatting
-      const transformedData = response.value.data.map((trip: any) => ({
-        tripOrderId: trip.tripOrderId || trip.TripOrderId || "",
-        tripDate: trip.tripDate || trip.TripDate || "",
-        customerName: trip.customerName || trip.CustomerName || "",
-        driverName: trip.driverName || trip.DriverName || "",
-        vehicleRegNo: trip.vehicleRegNo || trip.VehicleRegNo || "",
-        pickupLocation: trip.pickupLocation || trip.PickupLocation || "",
-        dropLocation: trip.dropLocation || trip.DropLocation || "",
-        tripStatus: trip.tripStatus || trip.TripStatus || "",
-        totalAmount: trip.totalAmount || trip.TotalAmount || "",
-      }));
-
-      console.log("Transformed data:", transformedData);
-
-      return {
-        data: transformedData,
-        total: response.value.total,
-      };
-    } else {
-      throw new Error(response.error || "Failed to fetch trips");
-    }
+  const handleChange = (index: number, value: string) => {
+    const newInputs = [...safeValues];
+    newInputs[index] = value;
+    onChange(newInputs);
   };
 
   return (
-    <KiduServerTable
-      title={title}
-      subtitle={subtitle}
-      columns={columns}
-      idKey="tripOrderId"
-      addButtonLabel="Add Trip"
-      addRoute="/trips/add"
-      viewRoute="/dashboard/trip-view"
-      editRoute="/dashboard/trip-edit"
-      showAddButton={showAddButton}
-      showExport={true}
-      showSearch={true}
-      showActions={true}
-      showTitle={true}
-      fetchData={fetchData}
-      rowsPerPage={10}
-      onRowClick={(trip) => navigate(`/dashboard/trip-view/${trip.tripOrderId}`)}
-    />
+    <>
+      <Form.Label className="mb-2 fw-medium">Drop Locations</Form.Label>
+
+      {safeValues.map((input, index) => (
+        <Row key={index} className="mb-2">
+          <Col xs={12}>
+            <InputGroup size="sm" className="custom-input rounded">
+              <InputGroup.Text>{index + 1}</InputGroup.Text>
+
+              <Form.Control
+                type="text"
+                placeholder={`Drop location ${index + 1}`}
+                className="p-2"
+                value={input || ""}
+                onChange={(e) => handleChange(index, e.target.value)}
+                style={{ backgroundColor: "#ffffffff" }}
+              />
+
+              <Button
+                variant="light"
+                onClick={() => handleRemoveInput(index)}
+                disabled={safeValues.length === 1}
+              >
+                <BsTrash color="red" />
+              </Button>
+            </InputGroup>
+          </Col>
+        </Row>
+      ))}
+
+      {safeValues.length < 4 && (
+        <Button
+          variant="outline-success"
+          size="sm"
+          onClick={handleAddInput}
+          className="mb-3 d-flex align-items-center gap-2"
+        >
+          <FaPlus /> Add Drop Location
+        </Button>
+      )}
+    </>
   );
 };
 
-export default KiduServerTripList;
+export default AddDropLocation;
