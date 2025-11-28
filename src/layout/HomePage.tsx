@@ -27,12 +27,12 @@ interface CardData {
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
-
   const [cards, setCards] = useState<CardData[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   const { selectedYear } = useYear();
 
+  // --------------------- FETCH DASHBOARD ---------------------
   useEffect(() => {
     const fetchCardData = async () => {
       try {
@@ -55,7 +55,7 @@ const HomePage: React.FC = () => {
     fetchCardData();
   }, [selectedYear]);
 
-  // --------------------- SERVER-SIDE TRIP SEARCH ---------------------
+  // --------------------- HANDLE SEARCH ---------------------
   const handleSearch = async (term: string) => {
     if (!term) {
       toast.error("Please enter a Trip ID to search.");
@@ -63,26 +63,10 @@ const HomePage: React.FC = () => {
     }
 
     try {
-      const payload = {
-        year: 0,
-        customerId: 0,
-        listType: "ALL",
-        filtertext: term,
-        pagesize: 1,
-        pagenumber: 1
-      };
-
-      const response = await TripService.getPaginatedTrips(payload);
+      const response = await TripService.getById(Number(term));
 
       if (response.isSucess && response.value) {
-        const list = response.value.data || response.value;
-
-        if (!list || list.length === 0) {
-          toast.error("No trip found with this ID.");
-          return;
-        }
-
-        const trip = list[0];
+        const trip = response.value;
         const status = trip.tripStatus;
 
         switch (status) {
@@ -99,12 +83,12 @@ const HomePage: React.FC = () => {
             navigate(`/admin-dashboard/today-trips/${trip.tripOrderId}`);
         }
 
-        toast.success(`Trip ${trip.tripOrderId} found! Redirecting...`);
+        toast.success(`Trip ${trip.tripOrderId} found! Opening ${status} trips...`);
       } else {
         toast.error("No trip found with this ID.");
       }
     } catch (error) {
-      console.error("Error searching trip:", error);
+      console.error("Error fetching trip by ID:", error);
       toast.error("Error fetching trip details.");
     }
   };
@@ -113,7 +97,7 @@ const HomePage: React.FC = () => {
     <>
       <div className="d-flex flex-column p-3 mt-5 mt-md-2">
 
-        {/* Search + Add New Trip */}
+        {/* Search + Add Button */}
         <div className="d-flex justify-content-between flex-column flex-md-row align-items-stretch gap-2 mt-5">
 
           <KiduSearchBar onSearch={handleSearch} />

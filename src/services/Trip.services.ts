@@ -5,7 +5,7 @@ import { API_ENDPOINTS } from "../constants/API_ENDPOINTS";
 import type { TripTable } from "../types/TripTable.types";
 import type { TripDashboardCard } from "../types/dashboard/TripDashboard.types";
 import type { MonthlyData } from "../types/dashboard/TripDashboard.types";
-import type { KiduTrip } from "../types/KiduTrip.types";
+import type { ServersideTrip } from "../types/ServerSideTrip.types";
 
 class TripService {
   static async getAll(): Promise<CustomResponse<Trip[]>> {
@@ -72,7 +72,7 @@ class TripService {
     return HttpService.callApi(API_ENDPOINTS.TRIP.GET_BookingMode_TRIPS, "GET");
   }
 
-  static async getPaginatedTrips(data: KiduTrip): Promise<CustomResponse<any>> {
+  static async getPaginatedTrips(data: ServersideTrip): Promise<CustomResponse<any>> {
     return HttpService.callApi(API_ENDPOINTS.SERVER_SIDE_TRIP.GET_PAGINATED, "POST", data);
   }
 }

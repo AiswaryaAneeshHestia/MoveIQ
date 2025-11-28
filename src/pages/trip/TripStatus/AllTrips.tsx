@@ -1,7 +1,9 @@
-import KiduTripList from "../../../components/Trip/KiduTripList";
+import React from "react";
+import KiduServerTripList from "../../../components/Trip/KiduTripList";
 
 const AllTrips: React.FC = () => (
-  <KiduTripList
+  <KiduServerTripList
+    key="all-trips" // Add unique key
     title="Total Trips"
     subtitle="List of all trips with quick edit & view actions"
     fetchMode="all"

@@ -1,107 +1,106 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import type { Trip } from "../../types/Trip.types";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 import TripService from "../../services/Trip.services";
-import KiduTable from "../KiduTable";
+import KiduServerTable from "./KiduServerTable";
 
-const columns = [
+interface KiduServerTripListProps {
+  title: string;
+  subtitle?: string;
+  fetchMode: "all" | "today" | "status";
+  status?: "Scheduled" | "Completed" | "Canceled";
+  showAddButton?: boolean;
+}
+
+const KiduServerTripList: React.FC<KiduServerTripListProps> = ({
+  title,
+  subtitle,
+  fetchMode,
+  status,
+  showAddButton = true,
+}) => {
+  const navigate = useNavigate();
+  const currentYear = new Date().getFullYear();
+
+  // Updated columns to match the fields you want to display
+  const columns = [
     { key: "tripCode", label: "Trip ID" },
     { key: "fromDateString", label: "Departure Date" },
     { key: "customerName", label: "Customer Name" },
     { key: "recivedVia", label: "Received Via" },
     { key: "driverName", label: "Driver" },
     { key: "pickUpFrom", label: "Pickup From" },
-];
+    { key: "status", label: "Status" }
+  ];
 
-interface KiduTripListProps {
-    title: string;
-    subtitle: string;
-    fetchMode: "all" | "status" | "today";
-    status?: string;
-    showAddButton?: boolean;
-}
+  const fetchData = async ({
+    pageNumber,
+    pageSize,
+    searchTerm,
+  }: {
+    pageNumber: number;
+    pageSize: number;
+    searchTerm: string;
+  }) => {
+    let listType = "";
+    
+    // Determine listType based on fetchMode
+    if (fetchMode === "all") {
+      listType = "all";
+    } else if (fetchMode === "today") {
+      listType = "today";
+    } else if (fetchMode === "status" && status) {
+      listType = status; // "Scheduled", "Completed", or "Canceled"
+    }
 
-const KiduTripList: React.FC<KiduTripListProps> = ({
-    title,
-    subtitle,
-    fetchMode,
-    status,
-    showAddButton = false,
-}) => {
-    const { tripId } = useParams<{ tripId?: string }>();
-    const [trips, setTrips] = useState<Trip[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+    const response = await TripService.getPaginatedTrips({
+      year: currentYear,
+      customerId: 0,
+      listType: listType,
+      filtertext: searchTerm || "",
+      pagesize: pageSize,
+      pagenumber: pageNumber,
+    });
 
-    const fetchTrips = async () => {
-        try {
-            setLoading(true);
-            setError(null);
+    console.log("API Response:", response);
+    console.log("List Type:", listType);
 
-            let response;
+    if (response.isSucess && response.value) {
+      console.log("Data:", response.value.data);
+      
+      // Check if the first item has the fields you want
+      if (response.value.data.length > 0) {
+        console.log("First item fields:", Object.keys(response.value.data[0]));
+      }
+      
+      return {
+        data: response.value.data,
+        total: response.value.total,
+      };
+    } else {
+      throw new Error(response.error || "Failed to fetch trips");
+    }
+  };
 
-            if (tripId) {
-                response = await TripService.getById(Number(tripId));
-                if (response.isSucess && response.value) {
-                    setTrips([response.value]);
-                } else {
-                    setTrips([]);
-                    setError("No trip found with this Trip ID");
-                }
-            } else {
-                switch (fetchMode) {
-                    case "all":
-                        response = await TripService.getAll();
-                        break;
-
-                    case "status":
-                        if (!status) throw new Error("Status required for status mode");
-                        response = await TripService.getTripsByStatus(status);
-                        break;
-
-                    case "today":
-                        response = await TripService.getTodaysTrip();
-                        break;
-
-                    default:
-                        throw new Error("Invalid fetch mode");
-                }
-
-                if (response.isSucess && response.value) {
-                    setTrips(response.value);
-                } else {
-                    setError(response.customMessage || "Failed to fetch trips");
-                }
-            }
-        } catch (err) {
-            console.error("Error fetching trips:", err);
-            setError("An error occurred while fetching trips");
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        fetchTrips();
-    }, [tripId, fetchMode, status]);
-
-    return (
-        <KiduTable
-            title={title}
-            subtitle={subtitle}
-            columns={columns}
-            data={trips}
-            showAddButton={showAddButton}
-            addButtonLabel="Add New Trip"
-            addRoute="/dashboard/trip-create"
-            editRoute="/dashboard/trip-edit"
-            viewRoute="/dashboard/trip-view"
-            idKey="tripOrderId"
-            loading={loading}
-            error={error}
-            onRetry={fetchTrips}
-        />
-    );
+  return (
+    <KiduServerTable
+      title={title}
+      subtitle={subtitle}
+      columns={columns}
+      idKey="tripOrderId"
+      addButtonLabel="Add Trip"
+      addRoute="/trips/add"
+      viewRoute="/dashboard/trip-view"
+      editRoute="/dashboard/trip-edit"
+      showAddButton={showAddButton}
+      showExport={true}
+      showSearch={true}
+      showActions={true}
+      showTitle={true}
+      fetchData={fetchData}
+      rowsPerPage={10}
+      onRowClick={(trip) => navigate(`/trips/view/${trip.tripOrderId}`)}
+    />
+  );
 };
 
-export default KiduTripList;
+export default KiduServerTripList;
