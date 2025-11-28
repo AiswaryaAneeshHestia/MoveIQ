@@ -7,6 +7,8 @@ import KiduButton from "../components/KiduButton";
 import KiduSearchBar from "../components/KiduSearchBar";
 import KiduPopupButton from "../components/KiduPopupButton";
 import KiduLoader from "./KiduLoader";
+import defaultProfile from "../assets/Images/profile.jpeg";
+
 
 interface Column {
   key: string;
@@ -84,6 +86,7 @@ const KiduTable: React.FC<KiduTableProps> = ({
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setCurrentPage(1);
   }, [searchTerm, data.length]);
 
@@ -102,7 +105,7 @@ const KiduTable: React.FC<KiduTableProps> = ({
   // compute field name for "Add <Field>"
   const fieldName = title ? title.replace("Select ", "") : addButtonLabel;
 
-  if (loading) return  <KiduLoader type="trip..." />;
+  if (loading) return <KiduLoader type="trip..." />;
 
   if (error) {
     return (
@@ -207,15 +210,17 @@ const KiduTable: React.FC<KiduTableProps> = ({
                         <td key={`${item[idKey]}-${col.key}`}>
                           {col.key === "profile" ? (
                             <img
-                              src={item[col.key] || "/assets/Images/profile.jpeg"}
+                              src={item[col.key] || defaultProfile}
                               alt="Profile"
-                              style={{ width: 45, height: 45, borderRadius: "50%" }}
+                              style={{ width: 45, height: 45, borderRadius: "50%", objectFit: "cover" }}
+                              onError={(e: any) => { e.target.src = defaultProfile; }}
                             />
                           ) : (
                             item[col.key]
                           )}
                         </td>
                       ))}
+
 
                       {showActions && (
                         <td className="text-center" onClick={(e) => e.stopPropagation()}>

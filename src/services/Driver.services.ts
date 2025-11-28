@@ -24,21 +24,20 @@ class DriverService {
     return HttpService.callApi(API_ENDPOINTS.DRIVER.DELETE(id), "DELETE");
   }
 
-  // ⭐ Correct image upload API
+  // ✅ CORRECT: Backend expects "AppUserId" and "ProfilePic"
   static async uploadProfilePic(driverId: number, file: File): Promise<CustomResponse<string>> {
-  const formData = new FormData();
-  formData.append("AppUserId", driverId.toString());       // IMPORTANT
-  formData.append("ProfilePic", file);                     // EXACT NAME
+    const formData = new FormData();
+    formData.append("AppUserId", driverId.toString());  // ✅ Match backend parameter name
+    formData.append("ProfilePic", file);                // ✅ Match backend parameter name
 
-  return HttpService.callApi(
-    API_ENDPOINTS.DRIVER.UPLOAD_PROFILE_PIC,
-    "POST",
-    formData,
-    false,
-    true
-  );
-}
-
+    return HttpService.callApi(
+      API_ENDPOINTS.DRIVER.UPLOAD_PROFILE_PIC,
+      "POST",
+      formData,
+      false,
+      true
+    );
+  }
 }
 
 export default DriverService;

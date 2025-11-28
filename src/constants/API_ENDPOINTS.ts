@@ -1,9 +1,8 @@
 //API_ENDPOINTS.ts
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || 'https://tripapi.hestiatechnology.com/api';
-// import.meta.env.VITE_API_BASE_URL || 'https://localhost:7284/api';
-export const API_ENDPOINTS = {
 
+export const API_ENDPOINTS = {
   CUSTOMER: {
     GET_ALL: `${API_BASE_URL}/Customer`,
     GET_BY_ID: (id: number) => `${API_BASE_URL}/Customer/${id}`,
@@ -14,7 +13,7 @@ export const API_ENDPOINTS = {
 
   DRIVER: {
     GET_ALL: `${API_BASE_URL}/Driver/GetAll`,
-    GET_BY_ID: (id: number) => `${API_BASE_URL}/Driver/GetById//${id}`,
+    GET_BY_ID: (id: number) => `${API_BASE_URL}/Driver/GetById/${id}`, // ✅ Fixed double slash
     CREATE: `${API_BASE_URL}/Driver/Create`,
     UPDATE: (id: number) => `${API_BASE_URL}/Driver/Update/${id}`,
     DELETE: (id: number) => `${API_BASE_URL}/Driver/Delete/${id}`,
@@ -22,7 +21,6 @@ export const API_ENDPOINTS = {
   },
 
   TRIP: {
-    // GET_ALL: `${API_BASE_URL}/TripOrder`,
     GET_ALL: `${API_BASE_URL}/TripOrder/GetAll`,
     GET_ALL_TRIPLIST: `${API_BASE_URL}/TripOrder/GetAllTripList`,
     GET_BY_ID: (id: number) => `${API_BASE_URL}/TripOrder/${id}`,
@@ -30,17 +28,16 @@ export const API_ENDPOINTS = {
     UPDATE: (id: number) => `${API_BASE_URL}/TripOrder/${id}`,
     UPDATESTATUS: `${API_BASE_URL}/TripOrder/UpdateTripStatus`,
     DELETE: (id: number) => `${API_BASE_URL}/TripOrder/${id}`,
-    GET_ALL_BY_STATUS: (status: string) => // Get trips by status
+    GET_ALL_BY_STATUS: (status: string) =>
       `${API_BASE_URL}/TripOrder/GetAllTripListbyStatus?status=${encodeURIComponent(status)}`,
-    GET_ALL_BY_YEAR: (year: number) =>  //Get trips by selected year
+    GET_ALL_BY_YEAR: (year: number) =>
       `${API_BASE_URL}/TripOrder/GetAllTripLists?year=${year}`,
-    GET_CANCELLED_TRIPS: `${API_BASE_URL}/TripOrder/CancelTrip`,  //  Get cancelled trips (Trip Notes per Trip)
+    GET_CANCELLED_TRIPS: `${API_BASE_URL}/TripOrder/CancelTrip`,
     GET_SCHEDULED_TRIPS: `${API_BASE_URL}/TripOrder/GetAllTripListbyStatus?status=Scheduled`,
     GET_COMPLETED_TRIPS: `${API_BASE_URL}/TripOrder/GetAllTripListbyStatus?status=Completed`,
     GET_BookingMode_TRIPS: `${API_BASE_URL}/TripBookingMode`,
   },
 
-  //Trip Dashboard
   TRIP_DASHBOARD: {
     GET_DASHBOARD: (year: number) => `${API_BASE_URL}/TripDashboard/GetTripDashboard?year=${year}`,
     GET_TODAYS_TRIP: `${API_BASE_URL}/TripDashboard/today`,
@@ -88,13 +85,10 @@ export const API_ENDPOINTS = {
     DELETE: (id: number) => `${API_BASE_URL}/Company/Delete/${id}`,
   },
 
-  //  New Trip Notes Endpoints
   TRIP_NOTES: {
     GET_ALL: `${API_BASE_URL}/TripOrder/GetTripNotes`,
     GET_BY_ID: (id: number) => `${API_BASE_URL}/TripOrder/GetTripNotespfTrip/${id}`,
     CREATE: `${API_BASE_URL}/TripOrder/CreateTripNotes`,
-    // UPDATE: (id: number) => `${API_BASE_URL}/TripNotes/Update/${id}`,
-    // DELETE: (id: number) => `${API_BASE_URL}/TripNotes/Delete/${id}`,
   },
 
   TRIP_KILOMETER: {
@@ -110,7 +104,6 @@ export const API_ENDPOINTS = {
     LOGOUT: `${API_BASE_URL}/Auth/logout`,
     CHANGE_PASSWORD: `${API_BASE_URL}/Auth/change-password`,
     FORGOT_PASSWORD: `${API_BASE_URL}/Auth/forgot-password`,
-    // REFRESH_TOKEN: `${API_BASE_URL}/Auth/refresh-token`,
   },
 
   INVOICE_MASTER: {
@@ -135,7 +128,7 @@ export const API_ENDPOINTS = {
     CREATE: `${API_BASE_URL}/ExpenseMaster`,
     UPDATE: (id: number) => `${API_BASE_URL}/ExpenseMaster/${id}`,
     DELETE: (id: number) => `${API_BASE_URL}/ExpenseMaster/${id}`,
-    GET_BY_TABLE_AND_RECORD: (tableName: string, recordId: number) => //Get expenses by table name and record ID
+    GET_BY_TABLE_AND_RECORD: (tableName: string, recordId: number) =>
       `${API_BASE_URL}/ExpenseMaster/${tableName}/${recordId}`,
   },
 
@@ -155,16 +148,33 @@ export const API_ENDPOINTS = {
     DELETE: (id: number) => `${API_BASE_URL}/VehicleMaintenanceRecord/${id}`,
   },
 
+  SERVER_SIDE_TRIP: {
+    GET_PAGINATED: `${API_BASE_URL}/Api_PaginatedListData/trips-paginated`
+  },
 
- SERVER_SIDE_TRIP: {
-  GET_PAGINATED: `${API_BASE_URL}/Api_PaginatedListData/trips-paginated`
-},
-COMMENT: {
-  GET_BY_TABLE_AND_ID: (tableName: string, recordId: number) => 
-    `${API_BASE_URL}/Comment/${tableName}/${recordId}`,
-  CREATE: `${API_BASE_URL}/Comment/AddComment`,
-  DELETE: (commentId: number) => `${API_BASE_URL}/Comment/${commentId}`,
-},
+  COMMENT: {
+    GET_BY_TABLE_AND_ID: (tableName: string, recordId: number) => 
+      `${API_BASE_URL}/Comment/${tableName}/${recordId}`,
+    CREATE: `${API_BASE_URL}/Comment/AddComment`,
+    DELETE: (commentId: number) => `${API_BASE_URL}/Comment/${commentId}`,
+  },
+};
 
-
+// ✅ Helper function to get full image URL
+export const getFullImageUrl = (imagePath: string | null | undefined): string => {
+  if (!imagePath) return '';
+  
+  // If already a complete URL, return as is
+  if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+    return imagePath;
+  }
+  
+  // Otherwise, prepend API base URL
+  const baseUrl = import.meta.env.VITE_API_BASE_URL || 'https://tripapi.hestiatechnology.com/api';
+  
+  // Remove '/api' from base URL if present since image paths start with /
+  const cleanBaseUrl = baseUrl.replace('/api', '');
+  
+  // Ensure proper path construction
+  return `${cleanBaseUrl}${imagePath}`;
 };

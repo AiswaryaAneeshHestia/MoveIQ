@@ -4,6 +4,8 @@ import KiduTable from "../../components/KiduTable";
 import DriverCalender from "./DriverCalender";
 import DriverService from "../../services/Driver.services";
 import KiduLoader from "../../components/KiduLoader";
+import { getFullImageUrl } from "../../constants/API_ENDPOINTS";
+import defaultProfile from "../../assets/Images/profile.jpeg";
 
 const columns = [
     { key: "driverId", label: "Driver ID" },
@@ -19,23 +21,36 @@ const DriverList: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    //State for calender modal
     const [showAvailability, setShowAvailability] = useState(false);
     const [selectedDriver, setSelectedDriver] = useState<Driver | null>(null);
 
-    //  Load data 
     const loadData = useCallback(async () => {
         try {
             setLoading(true);
             const res = await DriverService.getAll();
 
             if (res.isSucess && res.value) {
-                setDrivers(res.value);
+                // ✅ Transform data and add 'profile' field for KiduTable
+                const transformedDrivers = res.value.map((driver: Driver) => {
+                    const imageUrl = driver.profileImagePath 
+                        ? getFullImageUrl(driver.profileImagePath)
+                        : defaultProfile;
+                    
+                    console.log(`Driver ${driver.driverId} - Original path:`, driver.profileImagePath, '→ Full URL:', imageUrl);
+                    
+                    return {
+                        ...driver,
+                        profile: imageUrl  // ✅ Add 'profile' field for KiduTable
+                    };
+                });
+                
+                setDrivers(transformedDrivers);
                 setError(null);
             } else {
                 setError("Failed to fetch drivers");
             }
         } catch (err) {
+            console.error("Error loading drivers:", err);
             setError("An error occurred while fetching drivers");
         } finally {
             setLoading(false);
@@ -46,7 +61,6 @@ const DriverList: React.FC = () => {
         loadData();
     }, [loadData]);
 
-    // Handle calender button click
     const handleAvailabilityClick = (driver: Driver) => {
         setSelectedDriver(driver);
         setShowAvailability(true);
@@ -66,8 +80,6 @@ const DriverList: React.FC = () => {
                 addRoute="/dashboard/driver-create"
                 editRoute="/dashboard/driver-edit"
                 viewRoute="/dashboard/driver-view"
-                // showAvailabilityButton={true}
-                // onAvailabilityClick={handleAvailabilityClick}
                 error={error}
                 onRetry={loadData}
             />
