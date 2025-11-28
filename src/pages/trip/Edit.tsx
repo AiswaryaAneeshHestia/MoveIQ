@@ -263,7 +263,7 @@ const TripEdit: React.FC = () => {
         paymentDetails: formData.paymentDetails || "",
         customerName: formData.customerName,
         driverName: formData.driverName,
-        tripModeName:formData.tripModeName
+        tripModeName: formData.tripModeName
       };
 
       const res = await TripService.update(Number(tripId), payload);
@@ -488,6 +488,10 @@ const TripEdit: React.FC = () => {
             {/* Payment Accordion */}
             <Row className="mb-2 mx-3 mt-3">
               <Col xs={12}>
+                <KiduCommentAccordion
+                  tableName="Trip"
+                  recordId={recordId}
+                />
                 <KiduPaymentAccordion
                   key={`payment-${refreshKey}`}
                   relatedEntityId={recordId}
@@ -512,10 +516,6 @@ const TripEdit: React.FC = () => {
             <Row className="mb-2 mx-3">
               <Col xs={12}>
                 <Attachments tableName={tableName} recordId={recordId} />
-                <KiduCommentAccordion
-                  tableName="Trip"
-                  recordId={recordId}
-                />
               </Col>
             </Row>
 

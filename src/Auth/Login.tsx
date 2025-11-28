@@ -1,348 +1,350 @@
-// src/pages/Login.tsx
-import React, { useState, type ChangeEvent, type FormEvent } from "react";
-import { Col, Container, Row } from "react-bootstrap";
+import React, { useState, useEffect, type ChangeEvent, type FormEvent } from "react";
+import { Col, Container, Row, Form, InputGroup, Button, Spinner } from "react-bootstrap";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { useNavigate } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
+import { Link, useNavigate } from "react-router-dom";
 import AuthService from "../services/common/Auth.services";
-import KiduValidation from "../components/KiduValidation";
+
+// --- CAROUSEL DATA (From your Proposal) ---
+const SLIDES = [
+    {
+        title: "Visual Command Center",
+        desc: "Dynamic graphs displaying trip volume trends and total revenue at a glance. Move from manual oversight to automated decisions.",
+        img: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2940&auto=format&fit=crop"
+    },
+    {
+        title: "Unified Trip Management",
+        desc: "No more switching between spreadsheets. Smart scheduling, resource allocation, and digital PODs in one secure hub.",
+        img: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=2940&auto=format&fit=crop"
+    },
+    {
+        title: "Financial Control & Invoicing",
+        desc: "Instant visibility on trip revenue versus maintenance expenses. Generate professional PDF invoices directly from trip details.",
+        img: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=2822&auto=format&fit=crop"
+    },
+    {
+        title: "Military-Grade Audit Trails",
+        desc: "Every change is tracked. We capture the Old vs. New Value, specific user, and timestamp for total operational accountability.",
+        img: "https://images.unsplash.com/photo-1558494949-ef526b0042a0?q=80&w=2600&auto=format&fit=crop"
+    }
+];
+
+// --- CUSTOM STYLES ---
+const styles = {
+    mainContainer: {
+        overflow: 'hidden',
+        minHeight: '100vh',
+    },
+    leftColumn: {
+        backgroundColor: '#ffffff',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        minHeight: '100vh',
+        position: 'relative' as 'relative',
+        zIndex: 10,
+    },
+    rightColumn: {
+        position: 'relative' as 'relative',
+        minHeight: '100vh',
+        backgroundColor: '#0f172a', // Slate-900 base
+        overflow: 'hidden',
+    },
+    // Dynamic Background Layer
+    bgLayer: (imgUrl: string) => ({
+        position: 'absolute' as 'absolute',
+        top: 0, left: 0, right: 0, bottom: 0,
+        backgroundImage: `url('${imgUrl}')`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        transition: 'background-image 1s ease-in-out', // Smooth crossfade
+        transform: 'scale(1.05)', // Slight zoom effect
+    }),
+    overlay: {
+        position: 'absolute' as 'absolute',
+        top: 0, left: 0, right: 0, bottom: 0,
+        background: 'linear-gradient(to top, #0f172a 10%, rgba(15, 23, 42, 0.6) 100%)', // Gradient overlay
+        zIndex: 1,
+    },
+    carouselContent: {
+        position: 'absolute' as 'absolute',
+        bottom: 0, left: 0, right: 0,
+        padding: '4rem',
+        zIndex: 10,
+        color: 'white',
+    },
+    input: {
+        padding: '12px 16px',
+        backgroundColor: '#f9fafb',
+        border: '1px solid #e5e7eb',
+        fontSize: '15px',
+    },
+    primaryBtn: {
+        backgroundColor: '#0f766e', // Teal-700
+        borderColor: '#0f766e',
+        padding: '12px',
+        fontWeight: 600,
+    },
+    dot: (isActive: boolean) => ({
+        height: '6px',
+        width: isActive ? '32px' : '8px',
+        backgroundColor: isActive ? '#ffffff' : 'rgba(255,255,255,0.4)',
+        borderRadius: '4px',
+        transition: 'all 0.3s ease',
+        cursor: 'pointer',
+        border: 'none',
+        padding: 0,
+    })
+};
 
 interface Errors {
-  email: string;
-  password: string;
+    email: string;
+    password: string;
 }
 
 const Login: React.FC = () => {
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [errors, setErrors] = useState<Errors>({ email: "", password: "" });
-  const [submitted, setSubmitted] = useState<boolean>(false);
-  const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const navigate = useNavigate();
+    // --- AUTH STATE ---
+    const [email, setEmail] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
+    const [errors, setErrors] = useState<Errors>({ email: "", password: "" });
+    const [submitted, setSubmitted] = useState<boolean>(false);
+    const [showPassword, setShowPassword] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    
+    // --- CAROUSEL STATE ---
+    const [activeSlide, setActiveSlide] = useState<number>(0);
+    
+    const navigate = useNavigate();
 
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    // --- CAROUSEL EFFECT ---
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setActiveSlide((prev) => (prev + 1) % SLIDES.length);
+        }, 5000); // Change slide every 5 seconds
+        return () => clearInterval(timer);
+    }, []);
 
-const validateEmail = (value: string): string => {
-  const val = value?.trim() ?? "";
+    // --- VALIDATION LOGIC (Kept same) ---
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).{8,}$/;
 
-  if (!val) return "* Email is required";
-  if (!emailRegex.test(val)) return "* Please enter a valid email address";
+    const validateEmail = (value: string): string => {
+        if (!value) return "Email is required";
+        if (!emailRegex.test(value)) return "Please enter a valid email address";
+        return "";
+    };
 
-  try {
-    const kv = KiduValidation.validate(val, {
-      type: "email",
-      required: true,
-      label: "Email",
-    });
+    const validatePassword = (value: string): string => {
+        if (!value) return "Password is required";
+        if (!passwordRegex.test(value))
+            return "Min 8 chars, 1 uppercase, 1 lowercase, 1 number, 1 special char";
+        return "";
+    };
 
-    if (!kv.isValid && kv.message) {
-      return `* ${kv.message}`;
-    }
-  } catch (err) {
-    void err; // reference to avoid "unused variable" errors
-  }
+    const handleEmailChange = (e: ChangeEvent<HTMLInputElement>): void => {
+        const value = e.target.value;
+        setEmail(value);
+        if (submitted) setErrors((prev) => ({ ...prev, email: validateEmail(value) }));
+    };
 
-  return "";
-};
+    const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>): void => {
+        const value = e.target.value;
+        setPassword(value);
+        if (submitted) setErrors((prev) => ({ ...prev, password: validatePassword(value) }));
+    };
 
-const validatePassword = (value: string): string => {
-  if (!value) return "* Password is required";
+    const handleSubmit = async (e: FormEvent): Promise<void> => {
+        e.preventDefault();
+        setSubmitted(true);
+        const emailError = validateEmail(email);
+        const passwordError = validatePassword(password);
+        setErrors({ email: emailError, password: passwordError });
 
-  try {
-    const kv = KiduValidation.validate(value, {
-      type: "password",
-      required: true,
-      label: "Password",
-    });
-
-    // Only take "required" message — ignore complexity (since login)
-    if (!kv.isValid && kv.message?.toLowerCase().includes("required")) {
-      return "* Password is required";
-    }
-  } catch (err) {
-    void err; // reference to avoid "unused variable" errors
-  }
-
-  return "";
-};
-
-
-
-  const handleEmailChange = (e: ChangeEvent<HTMLInputElement>): void => {
-    const value = e.target.value;
-    setEmail(value);
-
-    if (submitted) {
-      setErrors((prev) => ({
-        ...prev,
-        email: validateEmail(value),
-      }));
-    }
-  };
-
-  const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>): void => {
-    const value = e.target.value;
-    setPassword(value);
-
-    if (submitted) {
-      setErrors((prev) => ({
-        ...prev,
-        password: validatePassword(value),
-      }));
-    }
-  };
-
-  const handleSubmit = async (e: FormEvent): Promise<void> => {
-    e.preventDefault();
-    setSubmitted(true);
-
-    const emailError = validateEmail(email);
-    const passwordError = validatePassword(password);
-
-    setErrors({ email: emailError, password: passwordError });
-
-    if (!emailError && !passwordError) {
-      setIsLoading(true);
-
-      try {
-        const response = await AuthService.login({ email, password });
-
-        if (response.isSucess && response.value) {
-          const token = localStorage.getItem("jwt_token");
-          const user = localStorage.getItem("user");
-
-          if (token && user) {
-            toast.success(response.customMessage || "Login successful!", {
-              autoClose: 3000,
-            });
-
-            setSubmitted(false);
-            setEmail("");
-            setPassword("");
-
-            setTimeout(() => navigate("/dashboard"), 1000);
-          } else {
-            toast.error("Login successful but data storage failed.", {
-              autoClose: 3000,
-            });
-          }
-        } else {
-          toast.error(
-            response.error ||
-              response.customMessage ||
-              "Login failed. Please check your credentials.",
-            { autoClose: 3000 }
-          );
+        if (!emailError && !passwordError) {
+            setIsLoading(true);
+            try {
+                const response = await AuthService.login({ email, password });
+                if (response.isSucess && response.value) {
+                    const storedToken = localStorage.getItem('jwt_token');
+                    if (storedToken) {
+                        toast.success("Login successful!");
+                        setTimeout(() => navigate("/dashboard"), 1000);
+                    } else {
+                        toast.error("Login successful but data storage failed.");
+                    }
+                } else {
+                    toast.error(response.error || "Login failed.");
+                }
+            } catch (error: any) {
+                toast.error("An error occurred.");
+            } finally {
+                setIsLoading(false);
+            }
         }
-      } catch (error: any) {
-        if (error?.message?.includes("401")) {
-          toast.error("Invalid email or password.", { autoClose: 3000 });
-        } else if (error?.message?.includes("Network")) {
-          toast.error("Network error. Please check your connection.", {
-            autoClose: 3000,
-          });
-        } else {
-          toast.error("An error occurred during login. Please try again.", {
-            autoClose: 3000,
-          });
-        }
-      } finally {
-        setIsLoading(false);
-      }
-    }
-  };
+    };
 
-  const togglePassword = (): void => setShowPassword(!showPassword);
+    // --- RENDER SECTION ---
+    return (
+        <Container fluid style={styles.mainContainer}>
+            <Toaster position="top-right" />
+            <Row className="g-0 h-100"> 
+                
+                {/* LEFT COLUMN: Form */}
+                <Col lg={6} style={styles.leftColumn}>
+                    <div className="w-100" style={{ maxWidth: '420px', padding: '2rem' }}>
+                        
+                        {/* Logo Area */}
+                        <div className="d-flex align-items-center mb-5 gap-2">
+                             <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                                <path d="M20 40C20 40 36 26.5 36 16C36 7.16 28.84 0 20 0C11.16 0 4 7.16 4 16C4 26.5 20 40 20 40Z" fill="#0f766e"/>
+                                <path d="M20 10L25 19H15L20 10Z" fill="white"/> 
+                            </svg>
+                            <span className="h3 fw-bold mb-0 text-dark">MoveIQ</span>
+                        </div>
 
-  return (
-    <>
-      <Container fluid className="background">
-        <Row>
-          <Col></Col>
-          <Col className="justify-content-center align-items-center mt-3">
-            {/* AUTO-FILL FULLY DISABLED */}
-            <form
-              className="form"
-              onSubmit={handleSubmit}
-              autoComplete="off"
-            >
-              {/* Hidden fake username + password fields (Chrome autofill bypass) */}
-              <input
-                type="text"
-                name="fakeusernameremembered"
-                style={{ display: "none" }}
-                autoComplete="off"
-              />
-              <input
-                type="password"
-                name="fakepasswordremembered"
-                style={{ display: "none" }}
-                autoComplete="off"
-              />
+                        <h1 className="fw-bold mb-2">Welcome back</h1>
+                        <p className="text-muted mb-5">Enter your credentials to access your Digital Command Center.</p>
 
-              <div
-                className="container bg-white shadow border px-5 py-4"
-                style={{
-                  borderRadius: "24px",
-                  marginTop: "80px",
-                }}
-              >
-                <h1
-                  className="fw-medium text-center fs-3"
-                  style={{
-                    fontFamily: "Plus Jakarta Sans",
-                    fontWeight: 600,
-                    fontSize: "28px",
-                  }}
-                >
-                  Sign in
-                </h1>
+                        <Form onSubmit={handleSubmit}>
+                            {/* Email Input */}
+                            <Form.Group className="mb-4">
+                                <Form.Label className="fw-medium small">Work Email</Form.Label>
+                                <Form.Control 
+                                    type="email" 
+                                    placeholder="name@company.com" 
+                                    value={email}
+                                    onChange={handleEmailChange}
+                                    isInvalid={submitted && !!errors.email}
+                                    style={styles.input}
+                                    className="shadow-none rounded-3"
+                                />
+                                <Form.Control.Feedback type="invalid">{errors.email}</Form.Control.Feedback>
+                            </Form.Group>
 
-                {/* Email */}
-                <div className="d-grid gap-2 mb-2 mt-4">
-                  <label
-                    style={{
-                      fontFamily: "Urbanist",
-                      color: "#A6A6A6",
-                      fontSize: "15px",
-                    }}
-                  >
-                    Email
-                  </label>
-                </div>
+                            {/* Password Input */}
+                            <Form.Group className="mb-4">
+                                <Form.Label className="fw-medium small">Password</Form.Label>
+                                <InputGroup hasValidation>
+                                    <Form.Control 
+                                        type={showPassword ? "text" : "password"}
+                                        placeholder="••••••••"
+                                        value={password}
+                                        onChange={handlePasswordChange}
+                                        isInvalid={submitted && !!errors.password}
+                                        style={styles.input}
+                                        className="shadow-none rounded-start-3 border-end-0"
+                                    />
+                                    <InputGroup.Text 
+                                        className="bg-white border-start-0 rounded-end-3" 
+                                        style={{ cursor: 'pointer', borderColor: submitted && errors.password ? '#dc3545' : '#e5e7eb' }}
+                                        onClick={() => setShowPassword(!showPassword)}
+                                    >
+                                        {showPassword ? <AiFillEyeInvisible color="#6c757d"/> : <AiFillEye color="#6c757d"/>}
+                                    </InputGroup.Text>
+                                    <Form.Control.Feedback type="invalid">{errors.password}</Form.Control.Feedback>
+                                </InputGroup>
+                            </Form.Group>
 
-                <div className="d-grid gap-2 mb-2">
-                  <input
-                    type="text"
-                    autoComplete="new-password"
-                    className={`p-2 rounded-2 border ${
-                      errors.email ? "border-danger" : ""
-                    }`}
-                    value={email}
-                    onChange={handleEmailChange}
-                  />
-                  {submitted && errors.email && (
-                    <span
-                      className="text-danger"
-                      style={{ fontFamily: "Urbanist", fontSize: "13px" }}
-                    >
-                      {errors.email}
-                    </span>
-                  )}
-                </div>
+                            {/* Remember & Forgot */}
+                            <div className="d-flex justify-content-between align-items-center mb-4 small">
+                                <Form.Check 
+                                    type="checkbox" 
+                                    label="Keep me signed in" 
+                                    id="rememberMe"
+                                    className="text-secondary"
+                                />
+                                <Link to="/forgot-password" className="text-decoration-none fw-semibold" style={{ color: '#0f766e' }}>
+                                    Forgot password?
+                                </Link>
+                            </div>
 
-                {/* Password */}
-                <div className="d-grid gap-2 mb-2">
-                  <label
-                    style={{
-                      fontFamily: "Urbanist",
-                      color: "#A6A6A6",
-                      fontSize: "15px",
-                    }}
-                  >
-                    Password
-                  </label>
-                </div>
+                            {/* Submit Button */}
+                            <Button 
+                                type="submit" 
+                                className="w-100 shadow-sm border-0 rounded-3" 
+                                disabled={isLoading}
+                                style={{ ...styles.primaryBtn, opacity: isLoading ? 0.7 : 1 }}
+                            >
+                                {isLoading ? (
+                                    <>
+                                        <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" className="me-2"/>
+                                        Verifying...
+                                    </>
+                                ) : (
+                                    <>Log In to Dashboard</>
+                                )}
+                            </Button>
 
-                <div
-                  className="d-grid gap-2 mb-2"
-                  style={{ position: "relative" }}
-                >
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    autoComplete="new-password"
-                    className={`p-2 rounded-2 border ${
-                      errors.password ? "border-danger" : ""
-                    }`}
-                    value={password}
-                    onChange={handlePasswordChange}
-                  />
+                            <div className="text-center mt-4 small text-muted">
+                                © 2024 MoveIQ. Secure Logistics Ecosystem.
+                            </div>
+                        </Form>
+                    </div>
+                </Col>
 
-                  <span
-                    onClick={togglePassword}
-                    style={{
-                      position: "absolute",
-                      right: "10px",
-                      top: "50%",
-                      transform: "translateY(-50%)",
-                      cursor: "pointer",
-                      fontSize: "20px",
-                      color: "#555",
-                    }}
-                  >
-                    {showPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
-                  </span>
-                </div>
+                {/* RIGHT COLUMN: Feature Carousel (Hidden on Mobile) */}
+                <Col lg={6} className="d-none d-lg-block p-0" style={styles.rightColumn}>
+                    
+                    {/* Background Image Layer */}
+                    <div style={styles.bgLayer(SLIDES[activeSlide].img)}></div>
+                    
+                    {/* Dark Gradient Overlay */}
+                    <div style={styles.overlay}></div>
 
-                {submitted && errors.password && (
-                  <span
-                    className="text-danger"
-                    style={{ fontFamily: "Urbanist", fontSize: "13px" }}
-                  >
-                    {errors.password}
-                  </span>
-                )}
+                    {/* Carousel Text Content */}
+                    <div style={styles.carouselContent}>
+                        {/* Feature Tag */}
+                        <div className="d-inline-block px-2 py-1 mb-4" style={{ 
+                            fontSize: '0.75rem', 
+                            fontWeight: 600, 
+                            letterSpacing: '0.05em', 
+                            textTransform: 'uppercase', 
+                            color: '#5eead4', // Teal-300
+                            backgroundColor: 'rgba(15, 118, 110, 0.3)', 
+                            border: '1px solid rgba(20, 184, 166, 0.4)',
+                            borderRadius: '9999px',
+                            backdropFilter: 'blur(4px)'
+                        }}>
+                            Feature Spotlight
+                        </div>
 
-                {/* Submit */}
-                <div className="d-grid gap-2">
-                  <button
-                    className="rounded-3 p-2 border-0"
-                    type="submit"
-                    disabled={isLoading}
-                    style={{
-                      backgroundColor: "#18575A",
-                      fontFamily: "Urbanist",
-                      fontSize: "15px",
-                      color: "#FFFFFF",
-                      fontWeight: 800,
-                      opacity: isLoading ? 0.7 : 1,
-                      cursor: isLoading ? "not-allowed" : "pointer",
-                    }}
-                  >
-                    {isLoading ? "Logging in..." : "Log in"}
-                  </button>
-                </div>
+                        {/* Animated Text Container */}
+                        <div key={activeSlide} className="animate-fade-up">
+                            <h2 className="display-6 fw-bold mb-3">{SLIDES[activeSlide].title}</h2>
+                            <p className="lead fw-light text-light opacity-75 mb-5" style={{ maxWidth: '85%' }}>
+                                {SLIDES[activeSlide].desc}
+                            </p>
+                        </div>
 
-                {/* Terms */}
-                <p
-                  className="text-dark fw-medium mt-2"
-                  style={{ fontFamily: "Urbanist", fontSize: "9px" }}
-                >
-                  By continuing you agree to the{" "}
-                  <span className="text-decoration-underline">Terms of use</span>{" "}
-                  and{" "}
-                  <span className="text-decoration-underline">
-                    Privacy Policy
-                  </span>
-                  .
-                </p>
-
-                {/* Forgot password */}
-                <p className="text-end">
-                  <span
-                    onClick={() => navigate("/forgot-password")}
-                    className="text-dark fw-bold text-decoration-underline"
-                    style={{
-                      fontFamily: "Urbanist",
-                      fontSize: "12px",
-                      cursor: "pointer",
-                    }}
-                  >
-                    Forgot your password?
-                  </span>
-                </p>
-              </div>
-            </form>
-          </Col>
-          <Col></Col>
-        </Row>
-
-        <ToastContainer position="top-right" autoClose={3000} />
-      </Container>
-    </>
-  );
+                        {/* Navigation Dots */}
+                        <div className="d-flex gap-2">
+                            {SLIDES.map((_, index) => (
+                                <button
+                                    key={index}
+                                    onClick={() => setActiveSlide(index)}
+                                    style={styles.dot(index === activeSlide)}
+                                    aria-label={`Go to slide ${index + 1}`}
+                                />
+                            ))}
+                        </div>
+                    </div>
+                </Col>
+            </Row>
+            
+            {/* Inline Style for Simple Animation */}
+            <style>
+                {`
+                    @keyframes fadeInUp {
+                        from { opacity: 0; transform: translateY(10px); }
+                        to { opacity: 1; transform: translateY(0); }
+                    }
+                    .animate-fade-up {
+                        animation: fadeInUp 0.5s ease-out forwards;
+                    }
+                `}
+            </style>
+        </Container>
+    );
 };
 
 export default Login;

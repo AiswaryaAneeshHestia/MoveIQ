@@ -48,7 +48,8 @@ const ViewExpenseType: React.FC = () => {
   const fields = [
     { key: "expenseTypeName", label: "Expense Type Name" },
     { key: "expenseTypeCode", label: "Expense Type Code" },
-    { key: "description", label: "Description" }
+    { key: "description", label: "Description" },
+    { key: "creditDebitType", label: "Credit Debit Type" }
   ];
 
   const handleEdit = () =>

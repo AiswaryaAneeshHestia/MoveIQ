@@ -205,6 +205,21 @@ const KiduPaymentAccordion = forwardRef<KiduPaymentAccordionRef, KiduPaymentAcco
                         <Button variant="danger" onClick={handleDelete} disabled={deleting}>{deleting ? "Deleting..." : "Delete"}</Button>
                     </Modal.Footer>
                 </Modal>
+
+                  <style>{`
+        .custom-comment-header.accordion-button {
+          background-color: #18575A !important;
+          color: white !important;
+          box-shadow: none !important;
+        }
+        .custom-comment-header.accordion-button:not(.collapsed) {
+          background-color: #18575A !important;
+          color: white !important;
+        }
+        .custom-comment-header.accordion-button::after {
+          filter: invert(1);
+        }
+      `}</style>
             </>
         );
     }

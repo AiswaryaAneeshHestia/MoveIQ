@@ -234,7 +234,10 @@ const TripView: React.FC = () => {
             )}
           </Row>
         </div>
-
+        <KiduCommentAccordion
+          tableName="Trip"
+          recordId={data.tripOrderId}
+        />
         {/* Payment Details Accordion */}
         <KiduPaymentAccordion
           key={`payment-${refreshKey}`}
@@ -252,10 +255,7 @@ const TripView: React.FC = () => {
         />
         {/* Attachments + Audits */}
         <Attachments tableName="TRIPORDER" recordId={data.tripOrderId} />
-        <KiduCommentAccordion
-          tableName="Trip"
-          recordId={data.tripOrderId}
-        />
+
         <AuditTrailsComponent tableName="TRIPORDER" recordId={data.tripOrderId} />
       </div>
       <Toaster position="top-right" />

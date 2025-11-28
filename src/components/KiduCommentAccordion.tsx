@@ -13,6 +13,7 @@ interface KiduCommentAccordionProps {
     recordId: string | number;
 }
 
+const PRIMARY_COLOR = "#18575A";
 const KiduCommentAccordion: React.FC<KiduCommentAccordionProps> = ({
     tableName,
     recordId
@@ -56,9 +57,9 @@ const KiduCommentAccordion: React.FC<KiduCommentAccordionProps> = ({
             setDeletingId(CommentId);
 
             const deletedBy = localStorage.getItem("username") || "User";
-            const res = await CommentService.delete(CommentId , deletedBy);
+            const res = await CommentService.delete(CommentId, deletedBy);
             console.log(res);
-            
+
 
             if (res.isSucess) {
                 toast.success("Comment deleted successfully!");
@@ -93,27 +94,12 @@ const KiduCommentAccordion: React.FC<KiduCommentAccordionProps> = ({
         <>
             <Accordion className="mt-4 custom-accordion">
                 <Accordion.Item eventKey="0">
-                    <Card.Header
-                        as={Accordion.Button}
-                        className="custom-comment-header"
-                        style={{
-                            backgroundColor: "#18575A",
-                            color: "white",
-                            width: "100%",
-                            padding: "0.5rem 1rem",
-                            borderRadius: "0.25rem",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "space-between",
-                            cursor: "pointer",
-                            height: "50px",
-                        }}
-                    >
-                        <h6 className="mb-0 fw-medium head-font d-flex align-items-center">
+                    <Accordion.Header>
+                        <h6 className="mb-0 fw-medium head-font d-flex align-items-center" style={{ color: PRIMARY_COLOR }}>
                             <FaComment className="me-2" />
-                            Comments {comments.length > 0 && `(${comments.length})`}
+                            Comments ({comments.length})
                         </h6>
-                    </Card.Header>
+                    </Accordion.Header>
 
                     <Accordion.Body>
                         <Card
@@ -134,7 +120,7 @@ const KiduCommentAccordion: React.FC<KiduCommentAccordionProps> = ({
                                         onClick={() => setShowModal(true)}
                                     >
                                         <FaPlus className="me-1" />
-                                        Add Comment
+                                        Comment
                                     </Button>
                                 </div>
                                 {loading ? (
@@ -144,21 +130,7 @@ const KiduCommentAccordion: React.FC<KiduCommentAccordionProps> = ({
                                     </div>
                                 ) : error ? (
                                     <Alert variant="danger">{error}</Alert>
-                                ) : comments.length === 0 ? (
-                                    <div className="text-center py-4">
-                                        <p className="text-muted mb-3">
-                                            No comments available yet.
-                                        </p>
-                                        <Button
-                                            size="sm"
-                                            style={{ backgroundColor: "#18575A", border: "none" }}
-                                            onClick={() => setShowModal(true)}
-                                        >
-                                            <FaPlus className="me-1" />
-                                            Add First Comment
-                                        </Button>
-                                    </div>
-                                ) : (
+                                )  : (
                                     <Accordion alwaysOpen>
                                         {comments.map((comment, idx) => (
                                             <Accordion.Item eventKey={idx.toString()} key={comment.commentId}>
@@ -166,7 +138,7 @@ const KiduCommentAccordion: React.FC<KiduCommentAccordionProps> = ({
                                                     <div className="head-font d-flex flex-column flex-sm-row justify-content-between w-100 pe-3">
                                                         <span className="fw-medium fst-italic fs-6 head-font">
                                                             <FaComment className="me-2" size={14} />
-                                                            Comment #{comment.commentId} by {comment.createdBy}
+                                                            by {comment.createdBy}
                                                         </span>
                                                         <small className="text-muted head-font">
                                                             {formatDateSafe(comment.createdOn)}
@@ -176,13 +148,13 @@ const KiduCommentAccordion: React.FC<KiduCommentAccordionProps> = ({
                                                 <Accordion.Body>
                                                     <div className="d-flex justify-content-between align-items-start">
                                                         <div className="flex-grow-1">
-                                                            <div className="mb-2">
-                                                                <strong className="text-muted" style={{ fontSize: "0.8rem" }}>
+                                                            <div>
+                                                                {/* <strong className="text-muted" style={{ fontSize: "0.8rem" }}>
                                                                     Comment ID: {comment.commentId}
-                                                                </strong>
+                                                                </strong> */}
                                                             </div>
-                                                            <div className="p-3 bg-light rounded border">
-                                                                <p className="mb-0" style={{ whiteSpace: "pre-wrap" }}>
+                                                            <div className="p-3 rounded border" style={{backgroundColor: "#18575a18"}}>
+                                                                <p className="mb-0 fw-bold" style={{ whiteSpace: "pre-wrap" }}>
                                                                     {comment.description}
                                                                 </p>
                                                             </div>
@@ -190,7 +162,7 @@ const KiduCommentAccordion: React.FC<KiduCommentAccordionProps> = ({
                                                         <Button
                                                             variant="outline-danger"
                                                             size="sm"
-                                                            className="ms-3"
+                                                            className="ms-3 mt-2"
                                                             onClick={() => handleDeleteComment(comment.commentId)}
                                                             disabled={deletingId === comment.commentId}
                                                             title="Delete comment"

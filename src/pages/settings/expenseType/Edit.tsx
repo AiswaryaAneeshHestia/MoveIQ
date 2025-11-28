@@ -226,14 +226,14 @@ const EditExpenseType: React.FC = () => {
             {/* Description */}
             <Col md={6} className="mb-3">
               <Form.Label className="fw-semibold">
-                {fields[2].rules.label}
+                {fields[3].rules.label}
               </Form.Label>
               <Form.Control
                 as="textarea"
                 rows={3}
-                name={fields[2].name}
+                name={fields[3].name}
                 placeholder="Enter description"
-                value={formData[fields[2].name]}
+                value={formData[fields[3].name]}
                 onChange={handleChange}
               />
             </Col>
