@@ -39,9 +39,17 @@ export class HttpService {
     return response.json();
   }
 
-  // new added
+  // ✅ FIXED: Added authentication token
   static async downloadFile(url: string, fileName: string): Promise<void> {
-    const response = await fetch(url);
+    const token = localStorage.getItem('jwt_token');
+    const headers: Record<string, string> = {};
+
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    const response = await fetch(url, { headers });
+    
     if (!response.ok) throw new Error(`Download error: ${response.status}`);
 
     const blob = await response.blob();
