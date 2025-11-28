@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
+import toast, { Toaster } from "react-hot-toast";
 
 interface ConfirmCancelPopupProps {
   show: boolean;
@@ -22,43 +23,46 @@ const ConfirmCancelPopup: React.FC<ConfirmCancelPopupProps> = ({
       setRemarks("");
     }
     else {
-      alert("Please enter remarks before confirming.");
+      toast.error("Please enter remarks before confirming.");
     }
   };
 
   return (
-    <Modal show={show} onHide={handleClose} centered>
-      <Modal.Header closeButton style={{ backgroundColor: "#18575A", color: "white" }}>
-        <Modal.Title>
-          {confirmType === "Trip Cancel" ? "Cancel Trip" : "Complete Trip"}
-        </Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <Form.Group>
-          <Form.Label>
-            Enter remarks for {confirmType === "Trip Cancel" ? "cancellation" : "completion"}:
-          </Form.Label>
-          <Form.Control
-            as="textarea"
-            rows={3}
-            value={remarks}
-            onChange={(e) => setRemarks(e.target.value)}
-            placeholder="Enter remarks..."
-          />
-        </Form.Group>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={handleClose}>
-          Close
-        </Button>
-        <Button
-          variant={confirmType === "Trip Cancel" ? "danger" : "success"}
-          onClick={handleSubmit}
-        >
-          Confirm
-        </Button>
-      </Modal.Footer>
-    </Modal>
+   <>
+      <Modal show={show} onHide={handleClose} centered>
+        <Modal.Header closeButton style={{ backgroundColor: "#18575A", color: "white" }}>
+          <Modal.Title>
+            {confirmType === "Trip Cancel" ? "Cancel Trip" : "Complete Trip"}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form.Group>
+            <Form.Label>
+              Enter remarks for {confirmType === "Trip Cancel" ? "cancellation" : "completion"}:
+            </Form.Label>
+            <Form.Control
+              as="textarea"
+              rows={3}
+              value={remarks}
+              onChange={(e) => setRemarks(e.target.value)}
+              placeholder="Enter remarks..."
+            />
+          </Form.Group>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+          <Button
+            variant={confirmType === "Trip Cancel" ? "danger" : "success"}
+            onClick={handleSubmit}
+          >
+            Confirm
+          </Button>
+        </Modal.Footer>
+      </Modal>
+       <Toaster position="top-right"/>
+   </>
   );
 };
 

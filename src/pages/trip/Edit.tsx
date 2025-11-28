@@ -221,6 +221,13 @@ const TripEdit: React.FC = () => {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+     // SIMPLE DATE VALIDATION
+  if (formData.fromDate && formData.toDate) {
+    if (new Date(formData.toDate) < new Date(formData.fromDate)) {
+      toast.error("To Date cannot be before From Date");
+      return;
+    }
+  }
     if (!validateForm()) return;
     if (!customerId) {
       toast.error("Please select a customer");
