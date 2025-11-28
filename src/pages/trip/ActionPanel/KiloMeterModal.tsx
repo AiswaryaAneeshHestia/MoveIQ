@@ -4,7 +4,16 @@ import toast from "react-hot-toast";
 import { BsSearch } from "react-icons/bs";
 import VehiclePopUp from "../../vehicle/vehicles/VehiclePopUp";
 
-const KmModal = ({ show, onHide, onSave, editData }) => {
+interface KmModalProps {
+  show: boolean;
+  onHide: () => void;
+  onSave: (data: any) => void;
+  editData?: any;
+  tripId: number;
+  driverId?: number;
+}
+
+const KmModal: React.FC<KmModalProps> = ({ show, onHide, onSave, editData }) => {
   const [vehicleId, setVehicleId] = useState(0);
   const [vehicleName, setVehicleName] = useState("");
   const [showVehiclePopup, setShowVehiclePopup] = useState(false);
@@ -16,7 +25,7 @@ const KmModal = ({ show, onHide, onSave, editData }) => {
   const [gradedKm, setGradedKm] = useState(0);
   const [totalKm, setTotalKm] = useState(0);
 
-  useEffect(() => { setTotalKm((blackTopKm ) + (gradedKm )) }, [blackTopKm, gradedKm]);
+  useEffect(() => { setTotalKm(blackTopKm + gradedKm) }, [blackTopKm, gradedKm]);
 
   useEffect(() => {
     if (editData && show) {
@@ -24,12 +33,14 @@ const KmModal = ({ show, onHide, onSave, editData }) => {
       setVehicleName(`${editData.vehicleType || ""} - ${editData.registrationNumber || ""}`);
       setBlackTopKm(editData.tripStartReading);
       setGradedKm(editData.tripEndReading);
+
       // eslint-disable-next-line react-hooks/immutability
       const t1 = parseTimeString(editData.tripStartTimeString);
       if (t1) { setTimeIn(t1.time); setTimeInAmPm(t1.ampm) }
+
       const t2 = parseTimeString(editData.tripEndingTimeString);
       if (t2) { setTimeOut(t2.time); setTimeOutAmPm(t2.ampm) }
-    // eslint-disable-next-line react-hooks/immutability
+      // eslint-disable-next-line react-hooks/immutability
     } else resetForm();
   }, [editData, show]);
 
@@ -42,7 +53,7 @@ const KmModal = ({ show, onHide, onSave, editData }) => {
   const generate12HourTimes = () => {
     const t = [];
     for (let h = 1; h <= 12; h++) {
-      for (let m = 0; m < 60; m += 15) t.push(`${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}`);
+      for (let m = 0; m < 60; m += 15) t.push(`${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`);
     }
     return t;
   };
@@ -77,6 +88,7 @@ const KmModal = ({ show, onHide, onSave, editData }) => {
       toast.error("Please fill all fields correctly!");
       return;
     }
+
     onSave({
       vehicleId,
       timeIn: convertTo24HourISO(timeIn, timeInAmPm),
@@ -85,10 +97,11 @@ const KmModal = ({ show, onHide, onSave, editData }) => {
       gradedKm,
       totalKm
     });
-    toast.success(`Kilometer details ${editData ? "updated" : "saved"} successfully`);
+
     resetForm();
     onHide();
   };
+
 
   const handleClose = () => { resetForm(); onHide() };
 
@@ -101,11 +114,11 @@ const KmModal = ({ show, onHide, onSave, editData }) => {
   return (
     <>
       <Modal show={show} onHide={handleClose} centered backdrop="static" size="lg">
-        <Modal.Header closeButton style={{backgroundColor:"#18575A",color:"white"}}>
+        <Modal.Header closeButton style={{ backgroundColor: "#18575A", color: "white" }}>
           <Modal.Title className="fs-5">{editData ? "Edit Kilometer Details" : "Add Kilometer Details"}</Modal.Title>
         </Modal.Header>
 
-        <Modal.Body style={{fontFamily:"Urbanist"}}>
+        <Modal.Body style={{ fontFamily: "Urbanist" }}>
           <Form>
             <Row>
               <Col md={12}>
@@ -113,7 +126,7 @@ const KmModal = ({ show, onHide, onSave, editData }) => {
                   <Form.Label>Vehicle <span className="text-danger">*</span></Form.Label>
                   <InputGroup>
                     <Form.Control size="sm" type="text" readOnly placeholder="Select vehicle" value={vehicleName} className="p-2" />
-                    <Button size="sm" onClick={() => setShowVehiclePopup(true)} style={{backgroundColor:"#18575A",border:"none"}}>
+                    <Button size="sm" onClick={() => setShowVehiclePopup(true)} style={{ backgroundColor: "#18575A", border: "none" }}>
                       <BsSearch />
                     </Button>
                   </InputGroup>
@@ -181,7 +194,7 @@ const KmModal = ({ show, onHide, onSave, editData }) => {
               <Col md={12}>
                 <Form.Group className="mb-3">
                   <Form.Label>Total K.M</Form.Label>
-                  <Form.Control type="number" readOnly value={totalKm} style={{backgroundColor:"#f0f0f0"}} />
+                  <Form.Control type="number" readOnly value={totalKm} style={{ backgroundColor: "#f0f0f0" }} />
                 </Form.Group>
               </Col>
             </Row>
@@ -190,7 +203,7 @@ const KmModal = ({ show, onHide, onSave, editData }) => {
 
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>Cancel</Button>
-          <Button style={{backgroundColor:"#18575A",border:"none"}} onClick={handleSubmit}>{editData ? "Update Details" : "Save Details"}</Button>
+          <Button style={{ backgroundColor: "#18575A", border: "none" }} onClick={handleSubmit}>{editData ? "Update Details" : "Save Details"}</Button>
         </Modal.Footer>
       </Modal>
 
