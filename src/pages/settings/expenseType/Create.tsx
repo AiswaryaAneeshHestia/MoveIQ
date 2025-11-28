@@ -10,9 +10,14 @@ import KiduReset from "../../../components/ReuseButtons/KiduReset";
 const CreateExpenseType: React.FC = () => {
     const navigate = useNavigate();
 
+    const creditDebitTypeOptions = ["Credit", "Debit", "Indicative"].map(
+        (cd) => ({ value: cd, label: cd })
+    );
+
     const fields = [
         { name: "expenseTypeName", rules: { required: true, type: "text", label: "Expense Type Name" } },
         { name: "expenseTypeCode", rules: { required: true, type: "text", label: "Expense Type Code" } },
+        { name: "creditDebitType", rules: { required: true, type: "text", label: "Credit Debit Type" } },
         { name: "description", rules: { required: false, type: "text", label: "Description" } }
     ];
 
@@ -123,10 +128,33 @@ const CreateExpenseType: React.FC = () => {
                             )}
                         </Col>
 
+                        {/* credit debit Dropdown */}
+                        <Col md={6} className="mb-3">
+                            <Form.Label className="fw-semibold">{fields[2].rules.label} {fields[2].rules.required ? <span className="text-danger">*</span> : ""}</Form.Label>
+                            <Form.Select
+                                name={fields[2].name}
+                                value={formData.creditDebitType}
+                                onChange={handleChange}
+                                onBlur={() =>
+                                    validateField("creditDebitType", formData.creditDebitType)
+                                }
+                            >
+                                <option value="" disabled >Select</option>
+                                {creditDebitTypeOptions.map((cd, i) => (
+                                    <option key={i} value={cd.value}>
+                                        {cd.label}
+                                    </option>
+                                ))}
+                            </Form.Select>
+                            {errors.creditDebitType && (
+                                <small className="text-danger">{errors.creditDebitType}</small>
+                            )}
+                        </Col>
+
                         {/* DESCRIPTION */}
-                        <Col md={12} className="mb-3">
+                        <Col md={6} className="mb-3">
                             <Form.Label className="fw-semibold">
-                                {fields[2].rules.label}
+                                {fields[3].rules.label}
                             </Form.Label>
                             <Form.Control
                                 as="textarea"

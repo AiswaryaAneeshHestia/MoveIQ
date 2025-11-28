@@ -7,6 +7,7 @@ import UserService from "../../../services/settings/User.services";
 import KiduLoader from "../../../components/KiduLoader";
 import KiduPrevious from "../../../components/KiduPrevious";
 import AuditTrailsComponent from "../../../components/KiduAuditLogs";
+import Attachments from "../../../components/KiduAttachments";
 
 const ViewUser: React.FC = () => {
     const navigate = useNavigate();
@@ -154,9 +155,10 @@ const ViewUser: React.FC = () => {
                         </tbody>
                     </Table>
                 </div>
+                 <Attachments tableName="USER" recordId={data.userId} />
 
                 {/*Audit Logs */}
-                <AuditTrailsComponent tableName="users" recordId={data.userId} />
+                <AuditTrailsComponent tableName="User" recordId={data.userId} />
             </Card>
 
             {/* Delete Modal */}

@@ -75,7 +75,7 @@ const ViewExpenseType: React.FC = () => {
     >
       <Card
         className="shadow-lg p-4 w-100"
-        style={{ maxWidth: "1150px", borderRadius: "15px", border: "none" }}
+        style={{ maxWidth: "1280px", borderRadius: "15px", border: "none" }}
       >
         {/* Header */}
         <div className="d-flex justify-content-between align-items-center mb-4">

@@ -9,6 +9,7 @@ import KiduValidation from "../../../components/KiduValidation";
 import KiduLoader from "../../../components/KiduLoader";
 import KiduPrevious from "../../../components/KiduPrevious";
 import KiduReset from "../../../components/ReuseButtons/KiduReset";
+import Attachments from "../../../components/KiduAttachments";
 
 const CompanyEdit: React.FC = () => {
   const navigate = useNavigate();
@@ -369,6 +370,7 @@ const CompanyEdit: React.FC = () => {
               Update
             </Button>
           </div>
+            <Attachments tableName="COMPANY" recordId={Number(companyId)} />
         </Form>
       </Container>
 

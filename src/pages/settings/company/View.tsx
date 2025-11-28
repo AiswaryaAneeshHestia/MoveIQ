@@ -6,6 +6,7 @@ import toast, { Toaster } from "react-hot-toast";
 import CompanyService from "../../../services/settings/Company.services";
 import KiduLoader from "../../../components/KiduLoader";
 import KiduPrevious from "../../../components/KiduPrevious";
+import Attachments from "../../../components/KiduAttachments";
 
 const ViewCompany: React.FC = () => {
   const navigate = useNavigate();
@@ -154,6 +155,7 @@ const ViewCompany: React.FC = () => {
             </tbody>
           </Table>
         </div>
+        <Attachments tableName="COMPANY" recordId={Number(companyId)} />
       </Card>
 
       {/* DELETE MODAL */}

@@ -22,6 +22,10 @@ const EditExpenseType: React.FC = () => {
   const tableName = "expenseType";
   const recordId = Number(expenseTypeId);
 
+  const creditDebitTypeOptions = ["Credit", "Debit", "Indicative"].map(
+    (cd) => ({ value: cd, label: cd })
+  );
+
   const fields = [
     {
       name: "expenseTypeName",
@@ -31,6 +35,7 @@ const EditExpenseType: React.FC = () => {
       name: "expenseTypeCode",
       rules: { required: true, type: "text", label: "Expense Type Code" },
     },
+    { name: "creditDebitType", rules: { required: true, type: "text", label: "Credit Debit Type" } },
     {
       name: "description",
       rules: { required: false, type: "text", label: "Description" },
@@ -46,6 +51,7 @@ const EditExpenseType: React.FC = () => {
           const loadedValues = {
             expenseTypeName: d.expenseTypeName || "",
             expenseTypeCode: d.expenseTypeCode || "",
+            creditDebitType: d.creditDebitType || "",
             description: d.description || "",
           };
           setFormData(loadedValues);
@@ -101,13 +107,13 @@ const EditExpenseType: React.FC = () => {
         expenseTypeId: Number(expenseTypeId),
         expenseTypeName: formData.expenseTypeName,
         expenseTypeCode: formData.expenseTypeCode,
+        creditDebitType: formData.creditDebitType,
         description: formData.description,
         isActive: true,
-        isDeleted:false
+        isDeleted: false
       };
 
       const res = await ExpenseTypeService.update(Number(expenseTypeId), data);
-
       if (res.isSucess) {
         toast.success("Expense Type updated successfully!");
         setTimeout(
@@ -193,8 +199,32 @@ const EditExpenseType: React.FC = () => {
               )}
             </Col>
 
+            {/* credit debit Dropdown */}
+            <Col md={6} className="mb-3">
+              <Form.Label className="fw-semibold">{fields[2].rules.label} {fields[2].rules.required ? <span className="text-danger">*</span> : ""}</Form.Label>
+              <Form.Select
+                name={fields[2].name}
+                value={formData.creditDebitType}
+                onChange={handleChange}
+                onBlur={() =>
+                  validateField("creditDebitType", formData.creditDebitType)
+                }
+              >
+                <option value="" disabled >Select</option>
+                {creditDebitTypeOptions.map((cd, i) => (
+                  <option key={i} value={cd.value}>
+                    {cd.label}
+                  </option>
+                ))}
+              </Form.Select>
+              {errors.creditDebitType && (
+                <small className="text-danger">{errors.creditDebitType}</small>
+              )}
+            </Col>
+
+
             {/* Description */}
-            <Col md={12} className="mb-3">
+            <Col md={6} className="mb-3">
               <Form.Label className="fw-semibold">
                 {fields[2].rules.label}
               </Form.Label>
@@ -211,7 +241,7 @@ const EditExpenseType: React.FC = () => {
 
           {/* Buttons */}
           <div className="d-flex justify-content-end gap-2 mt-3">
-            <KiduReset initialValues={initialValues} setFormData={setFormData}  />
+            <KiduReset initialValues={initialValues} setFormData={setFormData} />
             <Button
               style={{ backgroundColor: "#18575A", border: "none" }}
               type="submit"

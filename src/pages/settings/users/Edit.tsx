@@ -9,6 +9,7 @@ import KiduPrevious from "../../../components/KiduPrevious";
 import KiduReset from "../../../components/ReuseButtons/KiduReset";
 import AuditTrailsComponent from "../../../components/KiduAuditLogs";
 import KiduLoader from "../../../components/KiduLoader";
+import Attachments from "../../../components/KiduAttachments";
 
 const UserEdit: React.FC = () => {
   const navigate = useNavigate();
@@ -263,6 +264,7 @@ const UserEdit: React.FC = () => {
             </Button>
           </div>
           <div className="mt-3">
+             <Attachments tableName="USER" recordId={recordId} />
             <AuditTrailsComponent tableName={tableName} recordId={recordId} />
           </div>
         </Form>
