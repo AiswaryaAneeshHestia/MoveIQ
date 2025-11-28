@@ -59,7 +59,8 @@ const UserEdit: React.FC = () => {
             companyId: d.companyId || "",
             userEmail: d.userEmail || "",
             phoneNumber: d.phoneNumber || "",
-            address: d.address || ""
+            address: d.address || "",
+            createAt:d.createAt || ""
           };
 
           setFormData(loadedValues);

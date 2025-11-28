@@ -164,7 +164,6 @@ function App() {
         {/* Catch-All Route for 404 */}
         <Route path='*' element={<PageNotFound />} />
 
-
       </Routes>
     </>
   )

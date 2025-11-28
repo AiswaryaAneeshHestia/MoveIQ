@@ -153,28 +153,29 @@ export const API_ENDPOINTS = {
   },
 
   COMMENT: {
-    GET_BY_TABLE_AND_ID: (tableName: string, recordId: number) => 
+    GET_BY_TABLE_AND_ID: (tableName: string, recordId: number) =>
       `${API_BASE_URL}/Comment/${tableName}/${recordId}`,
     CREATE: `${API_BASE_URL}/Comment/AddComment`,
-    DELETE: (commentId: number) => `${API_BASE_URL}/Comment/${commentId}`,
+    DELETE: (CommentId: number, deletedBy: string) =>
+      `${API_BASE_URL}/Comment/${CommentId}?deletedBy=${deletedBy}`,
   },
 };
 
 // ✅ Helper function to get full image URL
 export const getFullImageUrl = (imagePath: string | null | undefined): string => {
   if (!imagePath) return '';
-  
+
   // If already a complete URL, return as is
   if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
     return imagePath;
   }
-  
+
   // Otherwise, prepend API base URL
   const baseUrl = import.meta.env.VITE_API_BASE_URL || 'https://tripapi.hestiatechnology.com/api';
-  
+
   // Remove '/api' from base URL if present since image paths start with /
   const cleanBaseUrl = baseUrl.replace('/api', '');
-  
+
   // Ensure proper path construction
   return `${cleanBaseUrl}${imagePath}`;
 };

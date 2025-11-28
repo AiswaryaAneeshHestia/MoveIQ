@@ -61,10 +61,10 @@ const DriverList: React.FC = () => {
         loadData();
     }, [loadData]);
 
-    const handleAvailabilityClick = (driver: Driver) => {
-        setSelectedDriver(driver);
-        setShowAvailability(true);
-    };
+    // const handleAvailabilityClick = (driver: Driver) => {
+    //     setSelectedDriver(driver);
+    //     setShowAvailability(true);
+    // };
 
     if (loading) return <KiduLoader type="driver..." />;
 

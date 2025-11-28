@@ -57,6 +57,8 @@ const KiduCommentAccordion: React.FC<KiduCommentAccordionProps> = ({
 
             const deletedBy = localStorage.getItem("username") || "User";
             const res = await CommentService.delete(CommentId , deletedBy);
+            console.log(res);
+            
 
             if (res.isSucess) {
                 toast.success("Comment deleted successfully!");

@@ -24,6 +24,8 @@ const VehicleList: React.FC = () => {
             setLoading(true);
             const response = await VehicleService.getAll();
             console.log(response);
+            
+            console.log(response);
             if (response.isSucess && response.value) {
                 setVehicles(response.value);
                 setError(null);

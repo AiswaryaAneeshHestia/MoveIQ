@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import type { ChangeEvent } from "react";
 import { Card, Button, Form, Row, Col } from "react-bootstrap";
-import toast from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import { BsUpload } from "react-icons/bs";
 import UserService from "../services/settings/User.services";
 import  profileImg from "../assets/Images/profile.jpeg"
@@ -218,6 +218,8 @@ const Profile: React.FC = () => {
           </Form>
         </Card.Body>
       </Card>
+      <Toaster position="top-right" />
+
     </div>
   );
 };

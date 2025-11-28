@@ -100,7 +100,7 @@ const CreateUser: React.FC = () => {
 
                 <hr />
 
-                <Form onSubmit={handleSubmit} className="p-4">
+                <Form onSubmit={handleSubmit} autoComplete="off" className="p-4">
                     <Row>
 
                         {/* USER NAME */}
@@ -111,6 +111,7 @@ const CreateUser: React.FC = () => {
                             <Form.Control
                                 type="text"
                                 name="userName"
+                                autoComplete="new-user"
                                 placeholder="Enter username"
                                 value={formData.userName}
                                 onChange={handleChange}
@@ -128,6 +129,7 @@ const CreateUser: React.FC = () => {
                                 <Form.Control
                                     type={showPassword ? "text" : "password"}
                                     name="passwordHash"
+                                    autoComplete="new-password"
                                     placeholder="Enter password"
                                     value={formData.passwordHash}
                                     onChange={handleChange}

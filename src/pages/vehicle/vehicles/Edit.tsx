@@ -52,6 +52,8 @@ const VehicleEdit: React.FC = () => {
         const loadVehicle = async () => {
             try {
                 const res = await VehicleService.getById(Number(vehicleId));
+                console.log(res);
+                
                 if (res.isSucess && res.value) {
                     const d: Vehicle = res.value;
 
@@ -67,7 +69,7 @@ const VehicleEdit: React.FC = () => {
                             ? d.registrationExpiry.split("T")[0]
                             : "",
                         currentStatus: d.currentStatus || "",
-                        location: d.location || ""
+                        location: d.location || "",
                     };
                     setFormData(loadedValues);
                     setInitialValues(loadedValues);

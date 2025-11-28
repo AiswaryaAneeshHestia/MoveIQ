@@ -71,16 +71,16 @@ const HomePage: React.FC = () => {
 
         switch (status) {
           case "Scheduled":
-            navigate(`/dashboard/scheduled-trips/${trip.tripOrderId}`);
+            navigate(`/dashboard/total-trips/${trip.tripOrderId}`);
             break;
           case "Completed":
-            navigate(`/admin-dashboard/completed/${trip.tripOrderId}`);
+            navigate(`/dashboard/total-trips/${trip.tripOrderId}`);
             break;
           case "Canceled":
-            navigate(`/admin-dashboard/Cancelled/${trip.tripOrderId}`);
+            navigate(`/dashboard/total-trips/${trip.tripOrderId}`);
             break;
           default:
-            navigate(`/admin-dashboard/today-trips/${trip.tripOrderId}`);
+            navigate(`/dashboard/total-trips/${trip.tripOrderId}`);
         }
 
         toast.success(`Trip ${trip.tripOrderId} found! Opening ${status} trips...`);
