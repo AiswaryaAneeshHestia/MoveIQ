@@ -1,4 +1,4 @@
-import React, { useEffect, useState, } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, Table, Image, Button, Modal, Spinner } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import { FaEdit, FaTrash } from "react-icons/fa";
@@ -7,15 +7,15 @@ import type { Driver } from "../../types/Driver.types";
 import DriverService from "../../services/Driver.services";
 import Attachments from "../../components/KiduAttachments";
 import AuditTrailsComponent from "../../components/KiduAuditLogs";
-// import TripPaymentAccordion, { type TripPaymentAccordionRef } from "../../components/OtherComponents/TripPayementAccordion";
 import KiduLoader from "../../components/KiduLoader";
 import KiduPrevious from "../../components/KiduPrevious";
 import KiduPaymentAccordion from "../../components/KiduPaymentAccordion";
+import { getFullImageUrl } from "../../constants/API_ENDPOINTS";
+import defaultProfile from "../../assets/Images/profile.jpeg";
 
 const DriverView: React.FC = () => {
   const navigate = useNavigate();
   const { driverId } = useParams();
-  //   const paymentAccordionRef = useRef<TripPaymentAccordionRef>(null);
 
   const [data, setData] = useState<Driver | null>(null);
   const [loading, setLoading] = useState(true);
@@ -27,9 +27,14 @@ const DriverView: React.FC = () => {
     const loadDriver = async () => {
       try {
         const res = await DriverService.getById(Number(driverId));
-        if (res.isSucess && res.value) setData(res.value);
-        else toast.error("Driver not found.");
-      } catch {
+        if (res.isSucess && res.value) {
+          console.log("Driver loaded - profileImagePath:", res.value.profileImagePath);
+          setData(res.value);
+        } else {
+          toast.error("Driver not found.");
+        }
+      } catch (err) {
+        console.error("Error loading driver:", err);
         toast.error("Failed to load driver details.");
       } finally {
         setLoading(false);
@@ -73,13 +78,18 @@ const DriverView: React.FC = () => {
       await DriverService.delete(data.driverId);
       toast.success("Driver deleted successfully");
       setTimeout(() => navigate("/dashboard/driver-list"), 800);
-    } catch {
+    } catch (err) {
+      console.error("Error deleting driver:", err);
       toast.error("Failed to delete driver.");
     } finally {
       setLoadingDelete(false);
       setShowConfirm(false);
     }
   };
+
+  // ✅ Get full image URL using helper function
+  const imageUrl = data.profileImagePath ? getFullImageUrl(data.profileImagePath) : defaultProfile;
+  console.log("Final image URL in view:", imageUrl);
 
   return (
     <div className="container d-flex justify-content-center align-items-center mt-5" style={{ fontFamily: "Urbanist" }}>
@@ -112,13 +122,17 @@ const DriverView: React.FC = () => {
         {/* Driver Details Header with Image */}
         <div className="text-center mb-4">
           <Image
-            src={data.imageSrc || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWzfZX4ha78BX5OP6gm6PA_Q91tW9jC7KVTg&s"}
+            src={imageUrl}
             alt={data.driverName}
             roundedCircle
             width={100}
             height={100}
             className="mb-3"
-            style={{ border: "3px solid #18575A" }}
+            style={{ border: "3px solid #18575A", objectFit: "cover" }}
+            onError={(e: any) => { 
+              console.error("Image failed to load:", imageUrl);
+              e.target.src = defaultProfile; 
+            }}
           />
 
           <h5 className="fw-bold mb-1">{data.driverName}</h5>

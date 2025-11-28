@@ -6,11 +6,10 @@ export interface Driver {
     driverName: string;
     license: string;
     nationality: string;
-    imageSrc: string;
+    profileImagePath: string; 
     contactNumber: string;
     dob: string | null;
     dobString: string;
-    gender: string;
     nationalId: string;
     isRented: boolean;
     isActive: boolean;
