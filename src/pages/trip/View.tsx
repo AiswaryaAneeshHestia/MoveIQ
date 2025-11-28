@@ -14,6 +14,7 @@ import type { KiduPaymentAccordionRef } from "../../components/KiduPaymentAccord
 import type { KiduKilometerAccordionRef } from "../../components/KiduKilometerAccordion";
 import KiduPaymentAccordion from "../../components/KiduPaymentAccordion";
 import KiduKmAccordion from "../../components/KiduKilometerAccordion";
+import KiduCommentAccordion from "../../components/KiduCommentAccordion";
 
 const TripView: React.FC = () => {
   const navigate = useNavigate();
@@ -168,6 +169,7 @@ const TripView: React.FC = () => {
             )}
           </Row>
         </div>
+        
         {/* Payment Details Accordion */}
         <KiduPaymentAccordion
           ref={paymentAccordionRef}
@@ -183,6 +185,10 @@ const TripView: React.FC = () => {
         />
         {/* Attachments + Audits */}
         <Attachments tableName="TRIPORDER" recordId={data.tripOrderId} />
+        <KiduCommentAccordion
+          tableName="Trip"
+          recordId={data.tripOrderId}
+        />
         <AuditTrailsComponent tableName="TRIPORDER" recordId={data.tripOrderId} />
       </div>
       <Toaster position="top-right" />

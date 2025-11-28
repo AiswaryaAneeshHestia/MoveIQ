@@ -17,6 +17,7 @@ import KiduPaymentAccordion from "../../components/KiduPaymentAccordion";
 import KiduKilometerAccordion from "../../components/KiduKilometerAccordion";
 import TripStatusBadge from "./TripStatusBadge";
 import TripActionPanel from "./TripActionPanel";
+import KiduCommentAccordion from "../../components/KiduCommentAccordion";
 
 const TripEdit: React.FC = () => {
   const navigate = useNavigate();
@@ -100,7 +101,7 @@ const TripEdit: React.FC = () => {
       try {
         setIsLoading(true);
         const res = await TripService.getById(Number(tripId));
-        
+
         if (res.isSucess && res.value) {
           const trip = res.value;
 
@@ -509,6 +510,10 @@ const TripEdit: React.FC = () => {
             <Row className="mb-2 mx-3">
               <Col xs={12}>
                 <Attachments tableName={tableName} recordId={recordId} />
+                <KiduCommentAccordion
+                  tableName="Trip"
+                  recordId={recordId}
+                />
               </Col>
             </Row>
 

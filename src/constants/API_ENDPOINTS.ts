@@ -158,6 +158,13 @@ export const API_ENDPOINTS = {
 
  SERVER_SIDE_TRIP: {
   GET_PAGINATED: `${API_BASE_URL}/Api_PaginatedListData/trips-paginated`
-}
+},
+COMMENT: {
+  GET_BY_TABLE_AND_ID: (tableName: string, recordId: number) => 
+    `${API_BASE_URL}/Comment/${tableName}/${recordId}`,
+  CREATE: `${API_BASE_URL}/Comment/AddComment`,
+  DELETE: (commentId: number) => `${API_BASE_URL}/Comment/${commentId}`,
+},
+
 
 };
