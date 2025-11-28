@@ -9,236 +9,218 @@ import type { Comment } from "../types/common/Comment.types";
 import KiduCommentModal from "./KiduCommentsModal";
 
 interface KiduCommentAccordionProps {
-  tableName: string;
-  recordId: string | number;
+    tableName: string;
+    recordId: string | number;
 }
 
-const KiduCommentAccordion: React.FC<KiduCommentAccordionProps> = ({ 
-  tableName, 
-  recordId 
+const KiduCommentAccordion: React.FC<KiduCommentAccordionProps> = ({
+    tableName,
+    recordId
 }) => {
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-  const [showModal, setShowModal] = useState(false);
-  const [deletingId, setDeletingId] = useState<number | null>(null);
+    const [comments, setComments] = useState<Comment[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
+    const [showModal, setShowModal] = useState(false);
+    const [deletingId, setDeletingId] = useState<number | null>(null);
 
-  useEffect(() => {
-    if (tableName && recordId) {
-      fetchComments();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tableName, recordId]);
+    useEffect(() => {
+        if (tableName && recordId) {
+            fetchComments();
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [tableName, recordId]);
 
-  const fetchComments = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const data = await CommentService.getByTableAndId(tableName, recordId);
+    const fetchComments = async () => {
+        try {
+            setLoading(true);
+            setError(null);
+            const data = await CommentService.getByTableAndId(tableName, recordId);
 
-      if (data.isSucess && Array.isArray(data.value)) {
-        setComments(data.value.filter(c => !c.isDeleted));
-      } else if (data.isSucess && data.value && !Array.isArray(data.value)) {
-        setComments([data.value].filter(c => !c.isDeleted));
-      } else {
-        setComments([]);
-      }
-    } catch (err) {
-      console.error("Failed to fetch comments:", err);
-      setError("Failed to load comments. Please try again later.");
-    } finally {
-      setLoading(false);
-    }
-  };
+            if (data.isSucess && Array.isArray(data.value)) {
+                setComments(data.value.filter(c => !c.isDeleted));
+            } else if (data.isSucess && data.value && !Array.isArray(data.value)) {
+                setComments([data.value].filter(c => !c.isDeleted));
+            } else {
+                setComments([]);
+            }
+        } catch (err) {
+            console.error("Failed to fetch comments:", err);
+            setError("Failed to load comments. Please try again later.");
+        } finally {
+            setLoading(false);
+        }
+    };
 
-  const handleDeleteComment = async (commentId: number) => {
-    if (!window.confirm("Are you sure you want to delete this comment?")) {
-      return;
-    }
+    const handleDeleteComment = async (CommentId: number) => {
+        try {
+            setDeletingId(CommentId);
 
-    try {
-      setDeletingId(commentId);
-      const res = await CommentService.delete(commentId);
-      
-      if (res.isSucess) {
-        toast.success("Comment deleted successfully!");
-        fetchComments();
-      } else {
-        toast.error(res.customMessage || "Failed to delete comment");
-      }
-    } catch (err: any) {
-      console.error("Failed to delete comment:", err);
-      toast.error(err.message || "Failed to delete comment");
-    } finally {
-      setDeletingId(null);
-    }
-  };
+            const deletedBy = localStorage.getItem("username") || "User";
+            const res = await CommentService.delete(CommentId , deletedBy);
 
-  const formatDateSafe = (isoOrAny?: string) => {
-    if (!isoOrAny) return "—";
-    const d = new Date(isoOrAny);
-    if (isNaN(d.getTime())) return isoOrAny;
+            if (res.isSucess) {
+                toast.success("Comment deleted successfully!");
+                fetchComments();
+            } else {
+                toast.error(res.customMessage || "Failed to delete comment");
+            }
+        } catch (err: any) {
+            console.error("Failed to delete comment:", err);
+            toast.error(err.message || "Failed to delete comment");
+        } finally {
+            setDeletingId(null);
+        }
+    };
 
-    return d.toLocaleString("en-GB", {
-      day: "2-digit",
-      month: "long",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-    });
-  };
+    const formatDateSafe = (isoOrAny?: string) => {
+        if (!isoOrAny) return "—";
+        const d = new Date(isoOrAny);
+        if (isNaN(d.getTime())) return isoOrAny;
 
-  return (
-    <>
-      <Accordion className="mt-4 custom-accordion">
-        <Accordion.Item eventKey="0">
-          <Card.Header
-            as={Accordion.Button}
-            className="custom-comment-header"
-            style={{
-              backgroundColor: "#18575A",
-              color: "white",
-              width: "100%",
-              padding: "0.5rem 1rem",
-              borderRadius: "0.25rem",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              cursor: "pointer",
-              height: "50px",
-            }}
-          >
-            <h6 className="mb-0 fw-medium head-font d-flex align-items-center">
-              <FaComment className="me-2" />
-              Comments {comments.length > 0 && `(${comments.length})`}
-            </h6>
-            {/* <Button
-              size="sm"
-              variant="light"
-              className="ms-auto me-2"
-              onClick={(e) => {
-                e.stopPropagation();
-                setShowModal(true);
-              }}
-              style={{ 
-                fontSize: "0.75rem",
-                padding: "0.25rem 0.5rem"
-              }}
-            >
-              <FaPlus className="me-1" />
-              Add Comment
-            </Button> */}
-          </Card.Header>
+        return d.toLocaleString("en-GB", {
+            day: "2-digit",
+            month: "long",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: true,
+        });
+    };
 
-          <Accordion.Body>
-            <Card
-              style={{
-                maxWidth: "100%",
-                fontSize: "0.85rem",
-                backgroundColor: "#f0f0f0ff",
-                border: "1px solid #ccc",
-                borderRadius: "0.5rem",
-              }}
-              className="shadow-sm"
-            >
-              <Card.Body style={{ padding: "1rem" }} className="border border-1 m-2">
-                 <div className="d-flex justify-content-end mb-3">
-                <Button
-                      size="sm"
-                      style={{ backgroundColor: "#18575A", border: "none" }}
-                      onClick={() => setShowModal(true)}
+    return (
+        <>
+            <Accordion className="mt-4 custom-accordion">
+                <Accordion.Item eventKey="0">
+                    <Card.Header
+                        as={Accordion.Button}
+                        className="custom-comment-header"
+                        style={{
+                            backgroundColor: "#18575A",
+                            color: "white",
+                            width: "100%",
+                            padding: "0.5rem 1rem",
+                            borderRadius: "0.25rem",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            cursor: "pointer",
+                            height: "50px",
+                        }}
                     >
-                      <FaPlus className="me-1" />
-                      Add Comment
-                    </Button>
-                     </div>
-                {loading ? (
-                  <div className="text-center py-4">
-                    <Spinner animation="border" style={{ color: "#18575A" }} />
-                    <p className="mt-2 text-muted">Loading comments...</p>
-                  </div>
-                ) : error ? (
-                  <Alert variant="danger">{error}</Alert>
-                ) : comments.length === 0 ? (
-                  <div className="text-center py-4">
-                    <p className="text-muted mb-3">
-                      No comments available yet.
-                    </p>
-                    <Button
-                      size="sm"
-                      style={{ backgroundColor: "#18575A", border: "none" }}
-                      onClick={() => setShowModal(true)}
-                    >
-                      <FaPlus className="me-1" />
-                      Add First Comment
-                    </Button>
-                  </div>
-                ) : (
-                  <Accordion alwaysOpen>
-                    {comments.map((comment, idx) => (
-                      <Accordion.Item eventKey={idx.toString()} key={comment.commentId}>
-                        <Accordion.Header>
-                          <div className="head-font d-flex flex-column flex-sm-row justify-content-between w-100 pe-3">
-                            <span className="fw-medium fst-italic fs-6 head-font">
-                              <FaComment className="me-2" size={14} />
-                              Comment #{comment.commentId} by {comment.createdBy}
-                            </span>
-                            <small className="text-muted head-font">
-                              {formatDateSafe(comment.createdOn)}
-                            </small>
-                          </div>
-                        </Accordion.Header>
-                        <Accordion.Body>
-                          <div className="d-flex justify-content-between align-items-start">
-                            <div className="flex-grow-1">
-                              <div className="mb-2">
-                                <strong className="text-muted" style={{ fontSize: "0.8rem" }}>
-                                  Comment ID: {comment.commentId}
-                                </strong>
-                              </div>
-                              <div className="p-3 bg-light rounded border">
-                                <p className="mb-0" style={{ whiteSpace: "pre-wrap" }}>
-                                  {comment.description}
-                                </p>
-                              </div>
-                            </div>
-                            <Button
-                              variant="outline-danger"
-                              size="sm"
-                              className="ms-3"
-                              onClick={() => handleDeleteComment(comment.commentId)}
-                              disabled={deletingId === comment.commentId}
-                              title="Delete comment"
-                            >
-                              {deletingId === comment.commentId ? (
-                                <Spinner animation="border" size="sm" />
-                              ) : (
-                                <FaTrash />
-                              )}
-                            </Button>
-                          </div>
-                        </Accordion.Body>
-                      </Accordion.Item>
-                    ))}
-                  </Accordion>
-                )}
-              </Card.Body>
-            </Card>
-          </Accordion.Body>
-        </Accordion.Item>
-      </Accordion>
+                        <h6 className="mb-0 fw-medium head-font d-flex align-items-center">
+                            <FaComment className="me-2" />
+                            Comments {comments.length > 0 && `(${comments.length})`}
+                        </h6>
+                    </Card.Header>
 
-      {/* Comment Modal */}
-      <KiduCommentModal
-        show={showModal}
-        handleClose={() => setShowModal(false)}
-        handleSuccess={fetchComments}
-        tableName={tableName}
-        recordId={Number(recordId)}
-      />
+                    <Accordion.Body>
+                        <Card
+                            style={{
+                                maxWidth: "100%",
+                                fontSize: "0.85rem",
+                                backgroundColor: "#f0f0f0ff",
+                                border: "1px solid #ccc",
+                                borderRadius: "0.5rem",
+                            }}
+                            className="shadow-sm"
+                        >
+                            <Card.Body style={{ padding: "1rem" }} className="border border-1 m-2">
+                                <div className="d-flex justify-content-end mb-3">
+                                    <Button
+                                        size="sm"
+                                        style={{ backgroundColor: "#18575A", border: "none" }}
+                                        onClick={() => setShowModal(true)}
+                                    >
+                                        <FaPlus className="me-1" />
+                                        Add Comment
+                                    </Button>
+                                </div>
+                                {loading ? (
+                                    <div className="text-center py-4">
+                                        <Spinner animation="border" style={{ color: "#18575A" }} />
+                                        <p className="mt-2 text-muted">Loading comments...</p>
+                                    </div>
+                                ) : error ? (
+                                    <Alert variant="danger">{error}</Alert>
+                                ) : comments.length === 0 ? (
+                                    <div className="text-center py-4">
+                                        <p className="text-muted mb-3">
+                                            No comments available yet.
+                                        </p>
+                                        <Button
+                                            size="sm"
+                                            style={{ backgroundColor: "#18575A", border: "none" }}
+                                            onClick={() => setShowModal(true)}
+                                        >
+                                            <FaPlus className="me-1" />
+                                            Add First Comment
+                                        </Button>
+                                    </div>
+                                ) : (
+                                    <Accordion alwaysOpen>
+                                        {comments.map((comment, idx) => (
+                                            <Accordion.Item eventKey={idx.toString()} key={comment.commentId}>
+                                                <Accordion.Header>
+                                                    <div className="head-font d-flex flex-column flex-sm-row justify-content-between w-100 pe-3">
+                                                        <span className="fw-medium fst-italic fs-6 head-font">
+                                                            <FaComment className="me-2" size={14} />
+                                                            Comment #{comment.commentId} by {comment.createdBy}
+                                                        </span>
+                                                        <small className="text-muted head-font">
+                                                            {formatDateSafe(comment.createdOn)}
+                                                        </small>
+                                                    </div>
+                                                </Accordion.Header>
+                                                <Accordion.Body>
+                                                    <div className="d-flex justify-content-between align-items-start">
+                                                        <div className="flex-grow-1">
+                                                            <div className="mb-2">
+                                                                <strong className="text-muted" style={{ fontSize: "0.8rem" }}>
+                                                                    Comment ID: {comment.commentId}
+                                                                </strong>
+                                                            </div>
+                                                            <div className="p-3 bg-light rounded border">
+                                                                <p className="mb-0" style={{ whiteSpace: "pre-wrap" }}>
+                                                                    {comment.description}
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                        <Button
+                                                            variant="outline-danger"
+                                                            size="sm"
+                                                            className="ms-3"
+                                                            onClick={() => handleDeleteComment(comment.commentId)}
+                                                            disabled={deletingId === comment.commentId}
+                                                            title="Delete comment"
+                                                        >
+                                                            {deletingId === comment.commentId ? (
+                                                                <Spinner animation="border" size="sm" />
+                                                            ) : (
+                                                                <FaTrash />
+                                                            )}
+                                                        </Button>
+                                                    </div>
+                                                </Accordion.Body>
+                                            </Accordion.Item>
+                                        ))}
+                                    </Accordion>
+                                )}
+                            </Card.Body>
+                        </Card>
+                    </Accordion.Body>
+                </Accordion.Item>
+            </Accordion>
 
-      <style>{`
+            {/* Comment Modal */}
+            <KiduCommentModal
+                show={showModal}
+                handleClose={() => setShowModal(false)}
+                handleSuccess={fetchComments}
+                tableName={tableName}
+                recordId={Number(recordId)}
+            />
+
+            <style>{`
         .custom-comment-header.accordion-button {
           background-color: #18575A !important;
           color: white !important;
@@ -252,8 +234,8 @@ const KiduCommentAccordion: React.FC<KiduCommentAccordionProps> = ({
           filter: invert(1);
         }
       `}</style>
-    </>
-  );
+        </>
+    );
 };
 
 export default KiduCommentAccordion;

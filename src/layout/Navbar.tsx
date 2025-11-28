@@ -8,6 +8,7 @@ import Profile from "./Profile";
 import ActivityPanel from "./ActivityPanel";
 import KiduYearSelector from "../components/KiduYearSelector";
 import { useYear } from "../context/YearContext";
+import  profileImg from "../assets/Images/profile.jpeg"
 
 const NavbarComponent: React.FC = () => {
   const [showNotifications, setShowNotifications] = useState(false);
@@ -108,7 +109,7 @@ const NavbarComponent: React.FC = () => {
               onClick={toggleSettings}
             >
               <Image
-                src="http://www.pngall.com/wp-content/uploads/2018/04/Businessman-Transparent.png"
+                src={profileImg}
                 alt="profile"
                 className="rounded-circle me-2 border border-2"
                 style={{ width: "30px", height: "30px", objectFit: "cover" }}

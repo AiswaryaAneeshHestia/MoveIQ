@@ -4,13 +4,12 @@ import { Card, Button, Form, Row, Col } from "react-bootstrap";
 import toast from "react-hot-toast";
 import { BsUpload } from "react-icons/bs";
 import UserService from "../services/settings/User.services";
+import  profileImg from "../assets/Images/profile.jpeg"
 
 const Profile: React.FC = () => {
   const [username, setUsername] = useState("User");
  // const [password] = useState("********"); // cannot be edited
-  const [preview, setPreview] = useState<string>(
-    "http://www.pngall.com/wp-content/uploads/2018/04/Businessman-Transparent.png"
-  );
+  const [preview, setPreview] = useState<string>(profileImg);
     // NEW password fields
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");

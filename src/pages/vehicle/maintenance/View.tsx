@@ -132,7 +132,7 @@ const ViewMaintenance: React.FC = () => {
 
         {/* Title Section */}
         <div className="text-center mb-4">
-          <h5 className="fw-bold mb-1">{data.vehicleName}</h5>
+          <h5 className="fw-bold mb-1">{data.maintenanceType}</h5>
           <p className="small mb-0 fw-bold text-danger" style={{ color: "#18575A" }}>
             ID : {data.vehicleMaintenanceRecordId}
           </p>

@@ -160,7 +160,7 @@ const TripCreate: React.FC = () => {
  
     try {
       const drops = formData.dropLocations.filter((d: string) => d.trim() !== "");
- 
+       const loggedUser = JSON.parse(localStorage.getItem("user") || "{}");
       const payload = {
         tripBookingModeId: Number(formData.receivedVia),
         customerId: customerId,
@@ -174,7 +174,7 @@ const TripCreate: React.FC = () => {
         toLocation2: drops[1] || "",
         toLocation3: drops[2] || "",
         toLocation4: drops[3] || "",
-        bookedBy: "Admin",
+        bookedBy:  loggedUser.userEmail || "User",
         tripDetails: formData.details || "",
         tripStatus: "Scheduled",
         tripAmount: 0,

@@ -6,6 +6,7 @@ import PageNotFound from './pages/dashboard/PageNotFound';
 
 //Auth
 import Login from './Auth/Login';
+import ForgotPassword from './Auth/ForgotPassword';
 
 //Dashboard
 import DashBoard from './pages/dashboard/DashBoard';
@@ -84,6 +85,8 @@ function App() {
         {/* Preloader */}
         <Route path='/' element={<Preloader />} />
         <Route path="/login" element={<Login />} />
+        <Route path='/forgot-password' element={<ForgotPassword />} />
+
 
 
         {/* DashBoard */}

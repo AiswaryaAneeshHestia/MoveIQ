@@ -57,7 +57,8 @@ const EditVehicleMaintenance: React.FC = () => {
             odometerReading: d.odometerReading || "",
             performedBy: d.performedBy || "",
             description: d.description || "",
-            remarks: d.remarks || ""
+            remarks: d.remarks || "",
+            createdBy:d.createdBy || ""
           };
           setFormData(loadedValues);
           setInitialValues(loadedValues);

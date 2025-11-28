@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { Nav, Navbar, Container, Collapse } from "react-bootstrap";
 import { NavLink, useNavigate } from "react-router-dom";
-import { BsGridFill, BsChatDots, BsPeople, BsGear, BsPersonFill, BsChevronDown, BsCashStack, BsCarFront, } from "react-icons/bs";
+import { BsGridFill, BsPeople, BsGear, BsPersonFill, BsChevronDown, BsCashStack, BsCarFront, } from "react-icons/bs";
 import { BiLogOut } from "react-icons/bi";
 import AuthService from "../services/common/Auth.services";
 import { FaFileInvoice } from "react-icons/fa6";
+import { FaMapMarkerAlt } from "react-icons/fa";
+import  profileImg from "../assets/Images/profile.jpeg"
 
 const Sidebar: React.FC = () => {
     const [hovered, setHovered] = useState(false);
@@ -14,7 +16,7 @@ const Sidebar: React.FC = () => {
 
     const menuItems = [
         { icon: <BsGridFill />, label: "Dashboard", path: "/dashboard", exact: true },
-        { icon: <BsChatDots />, label: "My Trips", path: "/dashboard/trip-list" },
+        { icon:<FaMapMarkerAlt />, label: "My Trips", path: "/dashboard/trip-list" },
         { icon: <BsPeople />, label: "Customers", path: "/dashboard/customer-list" },
         { icon: <BsPersonFill />, label: "Drivers", path: "/dashboard/driver-list" },
        // { icon: <FaFileInvoice />, label: "Invoices", path: "/dashboard/invoice-list" },
@@ -57,12 +59,12 @@ const Sidebar: React.FC = () => {
                 {/* Profile section */}
                 <div className="profile-section text-center mb-4">
                     {hovered ? (
-                        <p className="mt-2 text-white fw-bold" style={{ fontSize: "14px" }}>
-                            MoveIQ
+                        <p className="mt-2 text-white fw-bold" style={{ fontSize: "15px" }}>
+                           <FaMapMarkerAlt /> <span>MoveIQ</span>
                         </p>
-                    ) : <p className="fw-bolder fs-6 text-white head-font"><img src="https://static.vecteezy.com/system/resources/previews/024/700/685/large_2x/r-symbol-trademark-on-transparent-background-free-png.png" alt="logo" style={{ width: "30px", height: "30px" }} /></p>}
+                    ) : <p className="fw-bolder fs-6 text-white head-font"><FaMapMarkerAlt /><span style={{fontSize:"8px"}}>MoveIQ</span></p>}
                     <img
-                        src="http://www.pngall.com/wp-content/uploads/2018/04/Businessman-Transparent.png"
+                        src={profileImg}
                         alt="profile"
                         className="rounded-circle mb-2"
                         style={{

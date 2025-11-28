@@ -2,7 +2,7 @@
 import HttpService from "./HttpService";
 import type { CustomResponse } from "../../types/common/ApiTypes";
 import { API_ENDPOINTS } from "../../constants/API_ENDPOINTS";
-import type { LoginRequest, LoginResponse } from "../../types/common/Auth.types";
+import type { ForgotPasswordRequest, LoginRequest, LoginResponse } from "../../types/common/Auth.types";
 
 class AuthService {
   static async login(credentials: LoginRequest): Promise<CustomResponse<LoginResponse>> {
@@ -136,6 +136,16 @@ class AuthService {
       console.error("Change password error:", error);
       throw error;
     }
+  }
+
+  //forgot-password
+  static async forgotPassword(data: ForgotPasswordRequest): Promise<CustomResponse<void>> {
+    return await HttpService.callApi<CustomResponse<void>>(
+      API_ENDPOINTS.AUTH.FORGOT_PASSWORD,
+      "POST",
+      data,
+      true //  public endpoint (no token required)
+    );
   }
 }
 

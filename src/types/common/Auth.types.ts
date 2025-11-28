@@ -31,3 +31,7 @@ export interface LoginResponse {
   expiresAt: string;
   user: User;
 }
+
+export interface ForgotPasswordRequest {
+  email: string;
+}

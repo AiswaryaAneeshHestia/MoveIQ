@@ -27,9 +27,9 @@ class CommentService {
   }
 
   // Delete a comment
-  static async delete(commentId: number): Promise<CommentResponse> {
+  static async delete(CommentId: number, deletedBy: string): Promise<CommentResponse> {
     return HttpService.callApi(
-      API_ENDPOINTS.COMMENT.DELETE(commentId),
+      API_ENDPOINTS.COMMENT.DELETE(CommentId),
       "DELETE"
     );
   }

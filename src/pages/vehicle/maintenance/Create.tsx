@@ -65,12 +65,13 @@ const CreateVehicleMaintenance: React.FC = () => {
     const handleSubmit = async (e: any) => {
         e.preventDefault();
         if (!validateForm()) return;
+        const loggedUser = JSON.parse(localStorage.getItem("user") || "{}");
 
         try {
             const payload = {
                 ...formData,
                 vehicleMaintenanceRecordId: 0,
-                createdBy: "Admin",
+                createdBy: loggedUser.userEmail || "User",
                 createdDate: new Date().toISOString()
             };
 

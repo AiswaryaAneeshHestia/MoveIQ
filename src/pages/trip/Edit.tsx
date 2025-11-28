@@ -235,6 +235,7 @@ const TripEdit: React.FC = () => {
 
     try {
       const drops = formData.dropLocations.filter((d: string) => d.trim() !== "");
+      const loggedUser = JSON.parse(localStorage.getItem("user") || "{}");
 
       const payload = {
         tripOrderId: Number(tripId),
@@ -251,12 +252,12 @@ const TripEdit: React.FC = () => {
         toLocation2: drops[1] || "",
         toLocation3: drops[2] || "",
         toLocation4: drops[3] || "",
-        bookedBy: "Admin",
+        bookedBy: loggedUser.userEmail || "User",
         tripDetails: formData.details || "",
         tripStatus,
-        tripAmount: 0,
-        advanceAmount: 0,
-        balanceAmount: 0,
+        tripAmount: formData.tripAmount,
+        advanceAmount: formData.advanceAmount,
+        balanceAmount: formData.balanceAmount,
         isActive: true,
         paymentMode: formData.paymentMode,
         paymentDetails: formData.paymentDetails || "",
