@@ -41,6 +41,7 @@ function KiduPopup<T extends Record<string, any>>({
   // 🔹 Fetch data when modal opens
   useEffect(() => {
     if (!show) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setQuery("");
     setLoading(true);
     HttpService.callApi<CustomResponse<T[]>>(fetchEndpoint, "GET")
