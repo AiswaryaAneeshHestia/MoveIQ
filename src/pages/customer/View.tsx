@@ -45,7 +45,7 @@ const ViewCustomer: React.FC = () => {
 
   const fields = [
     { key: "customerName", label: "Name" },
-    { key: "dob", label: "Date of Birth" },
+    { key: "dob", label: "Registered Date" },
     { key: "nationality", label: "Nationality" },
     { key: "customerPhone", label: "Phone Number" },
     { key: "customerEmail", label: "Email" },

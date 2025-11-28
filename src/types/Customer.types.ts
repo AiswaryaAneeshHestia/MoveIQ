@@ -12,7 +12,7 @@ export interface Customer {
     gender: string;
     nationalilty?: string; // matches API spelling
     nationality?: string; // correct spelling
-    createdAt: string;
+    createdAt?: string;
     isActive: boolean;
     auditTrails?: AuditTrails[];
 }
