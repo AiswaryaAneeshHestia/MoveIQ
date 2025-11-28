@@ -95,8 +95,8 @@ const KiduCommentAccordion: React.FC<KiduCommentAccordionProps> = ({
             <Accordion className="mt-4 custom-accordion">
                 <Accordion.Item eventKey="0">
                     <Accordion.Header>
-                        <h6 className="mb-0 fw-medium head-font d-flex align-items-center" style={{ color: PRIMARY_COLOR }}>
-                            <FaComment className="me-2" />
+                        <h6 className="mb-0 fw-bold head-font d-flex align-items-center" style={{ color: PRIMARY_COLOR }}>
+                           
                             Comments ({comments.length})
                         </h6>
                     </Accordion.Header>
