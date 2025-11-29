@@ -225,7 +225,7 @@ const TripView: React.FC = () => {
             )}
 
             {data.tripDetails && data.tripDetails.trim() !== "" && (
-              <Col xs={12} className="mt-3">
+              <Col xs={12} md={4} className="mt-3">
                 <div className="fw-semibold mb-1" style={{ fontSize: "1rem" }}>Other Trip Details</div>
                 <div className="text-muted" style={{ fontSize: "0.85rem", backgroundColor: "transparent" }}>
                   {data.tripDetails}
