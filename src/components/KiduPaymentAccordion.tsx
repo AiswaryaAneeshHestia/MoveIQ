@@ -54,6 +54,8 @@ const KiduPaymentAccordion = forwardRef<KiduPaymentAccordionRef, KiduPaymentAcco
         useImperativeHandle(ref, () => ({ refreshData: fetchData }));
 
         const handleSave = async (formData: any) => {
+                    const loggedUser = JSON.parse(localStorage.getItem("user") || "{}");
+
             try {
                 const payload: Expenses = {
                     expenseMasterId: editData?.expenseMasterId || 0,
@@ -65,7 +67,7 @@ const KiduPaymentAccordion = forwardRef<KiduPaymentAccordionRef, KiduPaymentAcco
                     relatedEntityId,
                     relatedEntityType,
                     createdOn: new Date().toISOString(),
-                    createdBy: localStorage.getItem("userName") || "Admin",
+                    createdBy:  loggedUser.userEmail || "User",
                     isActive: true,
                     isDeleted: false,
                 };
