@@ -314,11 +314,14 @@ const DriverEdit: React.FC = () => {
                   />
                   {errors.nationalId && <small className="text-danger">{errors.nationalId}</small>}
                 </Col>
-
               </Row>
             </Col>
-
           </Row>
+           {/* BUTTONS */}
+          <div className="d-flex gap-2 justify-content-end mt-4">
+            <KiduReset initialValues={initialValues} setFormData={setFormData} />
+            <Button type="submit" style={{ backgroundColor: "#18575A", border: "none" }}>Update</Button>
+          </div>
 
           {/* Attachments */}
           <Row className="mb-2">
@@ -335,12 +338,6 @@ const DriverEdit: React.FC = () => {
           {/* Audit Logs */}
           <div>
             <AuditTrailsComponent tableName={tableName} recordId={recordId} />
-          </div>
-
-          {/* BUTTONS */}
-          <div className="d-flex gap-2 justify-content-end mt-4">
-            <KiduReset initialValues={initialValues} setFormData={setFormData} />
-            <Button type="submit" style={{ backgroundColor: "#18575A", border: "none" }}>Update</Button>
           </div>
 
         </Form>
