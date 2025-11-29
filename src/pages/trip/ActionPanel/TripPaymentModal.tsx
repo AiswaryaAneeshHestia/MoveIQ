@@ -130,7 +130,7 @@ const TripPaymentModal: React.FC<TripPaymentModalProps> = ({
       });
 
       if (newId) setExpenseMasterId(newId);
-      toast.success(editData ? "Updated successfully" : "Saved successfully");
+      //toast.success(editData ? "Updated successfully" : "Saved successfully");
 
       if (editData) onHide();
     } catch {

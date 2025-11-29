@@ -115,7 +115,7 @@ const TripView: React.FC = () => {
       <div className="shadow-lg py-2 px-3 w-100" style={{ maxWidth: "1300px", borderRadius: "15px", border: "none" }}>
 
         {/* Header */}
-        <div className="d-flex justify-content-between w-100 align-items-center mb-1 px-2 " style={{
+        <div className="d-flex justify-content-between w-100 align-items-center mb-1 px-2 rounded " style={{
           backgroundColor: "#18575A",
           fontSize: "1rem",
           height: "60px",
@@ -128,9 +128,9 @@ const TripView: React.FC = () => {
               className="me-3"
               style={{ backgroundColor: "white", padding: "0.2rem 0.5rem", textDecoration: "none", color: "#18575A" }}
             >
-              <FaArrowLeft className="me-1 fw-bold" size={18} />
+              <FaArrowLeft className="fw-bold" size={18} />
             </Button>
-            <h5 className="fw-bold m-0 ms-2 text-white">Trip Details</h5>
+            <h5 className="fw-bold m-0 ms-1 text-white">Trip Details</h5>
           </div>
           <div className="d-flex align-items-center gap-2">
             {/* Trip Status Badge */}

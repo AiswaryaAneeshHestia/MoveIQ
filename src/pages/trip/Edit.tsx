@@ -293,13 +293,13 @@ const TripEdit: React.FC = () => {
   return (
     <>
       <Card className="mx-3" style={{ maxWidth: "100%", fontSize: "0.85rem", marginTop: "50px", backgroundColor: "#f0f0f0ff" }}>
-        <Card.Header style={{ backgroundColor: "#18575A", color: "white", padding: "0.5rem" }}>
+        <Card.Header style={{ backgroundColor: "#18575A", color: "white" , height:"65px" }}>
           <div className="d-flex justify-content-between align-items-center">
             <div className="d-flex align-items-center">
-              <Button size="sm" variant="link" className="me-2" style={{ backgroundColor: "white", padding: "0.2rem 0.5rem", color: "#18575A" }} onClick={() => navigate(-1)}>
+              <Button size="sm" variant="link" className="me-2 mb-2" style={{ backgroundColor: "white", padding: "0.2rem 0.5rem", color: "#18575A" }} onClick={() => navigate(-1)}>
                 <FaArrowLeft />
               </Button>
-              <h6 className="mb-0 p-2 fw-medium fs-5">Edit Booking</h6>
+              <h6 className="mb-0 px-2 fw-medium fs-5 mb-2">Edit Booking</h6>
             </div>
             <div className="d-flex align-items-center gap-2">
               <TripStatusBadge status={tripStatus} />
