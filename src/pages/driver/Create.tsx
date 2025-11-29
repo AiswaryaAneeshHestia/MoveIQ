@@ -63,6 +63,21 @@ const DriverCreate: React.FC = () => {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+    // AGE VALIDATION (Driver must be 18+)
+  if (formData.dob) {
+    const dob = new Date(formData.dob);
+    const today = new Date();
+    
+    const age = today.getFullYear() - dob.getFullYear();
+    const m = today.getMonth() - dob.getMonth();
+
+    const isUnder18 = age < 18 || (age === 18 && m < 0);
+
+    if (isUnder18) {
+      toast.error("Driver must be at least 18 years old");
+      return;
+    }
+  }
     if (!validateForm()) return;
 
     try {

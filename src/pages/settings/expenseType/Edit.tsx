@@ -253,7 +253,7 @@ const EditExpenseType: React.FC = () => {
       </Container>
 
       {/* Audit Trails */}
-      <div className="mt-3 mx-4">
+      <div className="mt-3">
         <AuditTrailsComponent tableName={tableName} recordId={recordId} />
       </div>
 

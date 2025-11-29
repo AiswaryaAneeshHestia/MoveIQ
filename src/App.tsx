@@ -1,7 +1,10 @@
 import { Route, Routes } from 'react-router-dom'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css'
+// Preloader
 import Preloader from './pages/dashboard/PreLoader';
+
+//Page not found
 import PageNotFound from './pages/dashboard/PageNotFound';
 
 //Auth
@@ -84,10 +87,10 @@ function App() {
       <Routes>
         {/* Preloader */}
         <Route path='/' element={<Preloader />} />
+
+        {/* Auth */}
         <Route path="/login" element={<Login />} />
         <Route path='/forgot-password' element={<ForgotPassword />} />
-
-
 
         {/* DashBoard */}
         <Route path="/dashboard" element={<DashBoard />}>
@@ -106,7 +109,6 @@ function App() {
           <Route path="completed" element={<CompletedTrips />} />
           <Route path="Cancelled" element={<CancelledTrips />} />
           <Route path="today-trips" element={<TodaysTrip />} />
-
 
           {/* Customer */}
           <Route path="customer-list" element={<CustomerList />} />
