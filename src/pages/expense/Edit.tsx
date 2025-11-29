@@ -34,6 +34,9 @@ const ExpenseEdit: React.FC = () => {
     { name: "relatedEntityId", rules: { required: true, type: "number", label: "Related Entity ID" } },
     { name: "remark", rules: { required: false, type: "text", label: "Remarks" } },
   ];
+
+  const paymentModes = ["Cash", "Debit", "POS", "Bank Transfer"];
+
   // Fetch expense types for dropdown
   useEffect(() => {
     const fetchExpenseTypes = async () => {
@@ -192,7 +195,21 @@ const ExpenseEdit: React.FC = () => {
             {/* Payment Mode */}
             <Col md={6} className="mb-3">
               <Form.Label className="fw-semibold">{fields[3].rules.label} <span className="text-danger">*</span></Form.Label>
-              <Form.Control type="text" name="paymentMode" value={formData.paymentMode} onChange={handleChange} onBlur={() => validateField("paymentMode", formData.paymentMode)} />
+              <Form.Select
+                name="paymentMode"
+                value={formData.paymentMode}
+                onChange={handleChange}
+                onBlur={() =>
+                  validateField("paymentMode", formData.paymentMode)
+                }
+              >
+                <option value="">Select Payment Mode</option>
+                {paymentModes.map((pm) => (
+                  <option key={pm} value={pm}>
+                    {pm}
+                  </option>
+                ))}
+              </Form.Select>
               {errors.paymentMode && <small className="text-danger">{errors.paymentMode}</small>}
             </Col>
 
