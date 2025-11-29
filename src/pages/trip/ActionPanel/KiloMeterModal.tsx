@@ -30,7 +30,8 @@ const KmModal: React.FC<KmModalProps> = ({ show, onHide, onSave, editData }) => 
   useEffect(() => {
     if (editData && show) {
       setVehicleId(editData.vehicleId);
-      setVehicleName(`${editData.vehicleType || ""} - ${editData.registrationNumber || ""}`);
+      //setVehicleName(`${editData.vehicleType || ""} - ${editData.registrationNumber || ""}`);
+      setVehicleName(editData.vehicleName);
       setBlackTopKm(editData.tripStartReading);
       setGradedKm(editData.tripEndReading);
 

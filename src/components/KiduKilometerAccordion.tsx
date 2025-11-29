@@ -37,7 +37,8 @@ const KiduKmAccordion = forwardRef<KiduKilometerAccordionRef, KiduKilometerAccor
         setError(null);
 
         const response = await TripKilometerService.getByTripId(tripId);
-
+        console.log(response);
+        
         if (response.isSucess && Array.isArray(response.value)) {
           setKilometers(response.value.filter(k => k.tripOrderId === tripId));
         } else {
@@ -72,6 +73,8 @@ const KiduKmAccordion = forwardRef<KiduKilometerAccordionRef, KiduKilometerAccor
           : () => TripKilometerService.create(payload);
 
         const res = await fn();
+        console.log(res);
+        
         if (!res.isSucess) return toast.error(res.customMessage || "Failed to save kilometer details");
 
         if (editData) toast.success("Trip kilometer updated successfully!");
@@ -205,7 +208,8 @@ const KiduKmAccordion = forwardRef<KiduKilometerAccordionRef, KiduKilometerAccor
             tripStartTimeString: editData.tripStartTimeString,
             tripEndingTimeString: editData.tripEndingTimeString,
             tripStartReading: editData.tripStartReading,
-            tripEndReading: editData.tripEndReading
+            tripEndReading: editData.tripEndReading,
+            vehicleName:editData.vehicleName
           } : null}
         />
 

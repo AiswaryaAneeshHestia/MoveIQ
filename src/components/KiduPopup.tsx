@@ -2,11 +2,12 @@
 // KiduPopup.tsx - FINAL FIXED VERSION
 // ============================================
 import React, { useState, useEffect, useMemo } from "react";
-import { Modal, Spinner } from "react-bootstrap";
+import { Modal} from "react-bootstrap";
 import HttpService from "../services/common/HttpService";
 import KiduTable from "./KiduTable";
 import KiduSearchBar from "./KiduSearchBar";
 import type { CustomResponse } from "../types/common/ApiTypes";
+import KiduLoader from "./KiduLoader";
 
 interface KiduPopupProps<T> {
   show: boolean;
@@ -81,13 +82,12 @@ function KiduPopup<T extends Record<string, any>>({
 
         <Modal.Body style={{ minHeight:"300px" }}>
           {loading ? (
-            <div className="text-center my-4">
-              <Spinner animation="border" size="sm" /> Loading...
-            </div>
+              <KiduLoader type="..." />
+           
           ) : (
             <>
               {/* 🔹 Search bar always visible at top */}
-              <div className="mb-3 px-2">
+              <div className="px-2">
                 <KiduSearchBar
                   onSearch={setQuery}
                   placeholder="Search records..."
